@@ -4,7 +4,6 @@ import { Theme } from "../Theme";
 import { CRA } from "../CRA";
 import { Login } from "../Login";
 import { NavLink } from "../CommonUi/NavLink";
-import "./App.css";
 import { Dashboard } from "../Dashboard";
 import { NoteDeFrais } from "../NDF";
 import { IK } from "../IK";

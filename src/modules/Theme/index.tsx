@@ -17,7 +17,8 @@ const theme = {
   buttons: {
     primary: {
       color: "#fff",
-      backgroundColor: blue
+      backgroundColor: blue,
+      ouline: "none"
     },
     outline: {
       color: blue,

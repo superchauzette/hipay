@@ -1,5 +1,5 @@
 import React from "react";
-import { Flex, Heading, Text } from "rebass";
+import { Flex, Heading, Text, Button } from "rebass";
 
 export function CRA() {
   return (
@@ -8,6 +8,7 @@ export function CRA() {
       <Text>Février 2019</Text>
       <Flex pt={4}>
         <input type="text" placeholder="Nom du client" />
+        <Button>toto</Button>
       </Flex>
     </Flex>
   );
