@@ -1,6 +1,7 @@
 import React from "react";
 import { Flex, Heading, Text, Box } from "rebass";
 import MaterialTable from "material-table";
+import { MonthSelector } from "../CommonUi/MonthSelector";
 
 type DataType = {
   [key: number]: number | string;
@@ -54,6 +55,7 @@ export function CRA() {
     <Flex p={3} flexDirection="column" alignItems="center">
       <Heading>Compte rendu d'Activité</Heading>
       <Text>Février 2019</Text>
+      <MonthSelector />
       <Flex pt={4} flexDirection="column">
         <Box mb={3}>
           <input type="text" placeholder="Nom du client" />
