@@ -1,140 +1,144 @@
-import React, { useState, useEffect } from "react";
-import { Flex, Heading, Box } from "rebass";
-import MaterialTable from "material-table";
+import React, { useState, useEffect, useMemo } from "react";
+import { Flex, Heading, Box, Text, Button } from "rebass";
+import { getCalendar } from "./getCalendar";
 import { MonthSelector } from "../CommonUi/MonthSelector";
 import { useUserContext } from "../UserHelper";
 import { db } from "../App/fire";
 
-type DataType = {
-  [key: number]: number | string;
+type CalandarType = {
+  nbOfday: number;
+  day: Date;
+  isWeekend: boolean;
+  isJourFerie: boolean;
+  dayOfWeek: string;
+  cra?: number;
 };
 
-function getWeekend(k: number) {
-  const firstWeekend = k + 4;
-  const weekend = firstWeekend % 7 === 0 || firstWeekend % 7 === 1;
-  return weekend;
-}
+function getTotal(calendar: CalandarType[]): number {
+  if (calendar.length === 0) return 0;
 
-function createColumns(length = 30) {
-  return Array.from({ length }, (v, k) => {
-    const weekend = getWeekend(k);
-
-    return {
-      title: String(k + 1),
-      field: String(k + 1),
-      cellStyle: {
-        backgroundColor: weekend ? "grey" : "white"
-      },
-      headerStyle: {
-        backgroundColor: weekend ? "grey" : "white"
-      }
-    };
-  });
-}
-
-function createCRA(length = 30): DataType[] {
-  let obj = {};
-  for (let i = 1; i <= length; i++) {
-    const weekend = getWeekend(i - 1);
-    obj[i] = weekend ? "" : 1;
-  }
-  return [obj];
-}
-
-function getTotal(data: DataType[]): number {
-  if (!data || data.length === 0) return 0;
-
-  const total = Object.entries(data[0])
-    .map(([k, v]) => v)
+  const total = calendar
+    .map(c => c.cra || 0)
     .reduce((a, b) => Number(a) + Number(b), 0);
+
   return Number(total);
+}
+
+function createTab(length) {
+  return Array.from({ length }, (_, k) => k + 1);
 }
 
 export function CRA() {
   const user = useUserContext();
-  const column = createColumns();
-  const [dataCra, setData] = useState([] as DataType[]);
   const [month, setMonth] = useState(0);
   const [year, setYear] = useState(0);
-  const total = getTotal(dataCra);
+  const [date, setDate] = useState();
 
-  async function getCRA(user, month: number, year: number) {
-    if (user) {
-      const doc = await db()
-        .collection(`users/${user.uid}/years/${year}/month/${month}/cra`)
-        .doc("1")
-        .get();
-      const cra = doc.data();
-      setData(cra && cra.cra);
-    }
-  }
-
-  async function setCRA() {
-    await db()
-      .collection(`users/${user.uid}/years/${year}/month/${month}`)
-      .add({ cra: createCRA() });
-    await getCRA(user, month, year);
-  }
-
-  async function deleteCRA() {
-    await db()
-      .collection(`users/${user.uid}/years/${year}/month/${month}`)
-      .add({ cra: [] });
-    await getCRA(user, month, year);
-  }
-
-  async function changeCRA({ month, year }) {
-    setMonth(month);
-    setYear(year);
-  }
+  const [calendar, setCalendar] = useState([] as CalandarType[]);
+  const total = useMemo(() => getTotal(calendar), [calendar]);
 
   useEffect(() => {
-    getCRA(user, month, year);
-  }, [user, month, year]);
+    getCalendar({ date, user, month, year }).then(setCalendar);
+  }, [date, user, calendar]);
+
+  async function changeCRA({ month, year }, selectedDate) {
+    setMonth(month);
+    setYear(year);
+    setDate(selectedDate);
+  }
+
+  function fillAll() {
+    setCalendar(calendar =>
+      calendar.map(c => (!c.isWeekend && !c.isJourFerie ? { ...c, cra: 1 } : c))
+    );
+  }
+
+  function updateCRA(nbOfday: number, value: string) {
+    setCalendar(calendar =>
+      calendar.map(c =>
+        c.nbOfday === nbOfday ? { ...c, cra: Number(value) } : c
+      )
+    );
+  }
+
+  async function saveCRA() {
+    await db()
+      .collection(`users/${user.uid}/years/${year}/month/${month}/cra`)
+      .doc("1")
+      .set({ calendar });
+  }
+
+  // async function addCRA() {
+  //   const newNbCRA = nbCRA + 1;
+  //   const newCalendar = await getCalculatedCalendar(date);
+  //   setCalendars(cs => [...cs, newCalendar]);
+
+  //   await db()
+  //     .collection(`users/${user.uid}/years/${year}/month/${month}/cra`)
+  //     .doc(String(newNbCRA))
+  //     .set({ calendar: newCalendar });
+  //   setNbCRA(newNbCRA);
+  // }
 
   return (
     <Flex p={3} flexDirection="column" alignItems="center">
       <Heading>Compte rendu d'Activité</Heading>
       <MonthSelector onChange={changeCRA} />
+
       <Flex pt={4} flexDirection="column">
-        <Box mb={3}>
-          <input type="text" placeholder="Nom du client" />
-        </Box>
-        <Box width={"96vw"}>
-          <MaterialTable
-            title={`Total : ${total}`}
-            options={{
-              search: false
-            }}
-            columns={column}
-            data={dataCra}
-            editable={{
-              onRowAdd: () => {
-                console.log("add");
-                return db()
-                  .collection(`users/${user.uid}/years/${year}/month/${month}`)
-                  .doc()
-                  .set({ cra: createCRA() })
-                  .then(() => getCRA(user, month, year));
-              },
-              onRowUpdate: (newData, oldData) => {
-                console.log("update");
-                return db()
-                  .collection(`users/${user.uid}/years/${year}/month/${month}`)
-                  .doc()
-                  .set({ cra: createCRA() })
-                  .then(() => getCRA(user, month, year));
-              },
-              onRowDelete: oldData => {
-                console.log("delete");
-                return db()
-                  .collection(`users/${user.uid}/years/${year}/month/${month}`)
-                  .doc()
-                  .set({ cra: [] })
-                  .then(() => getCRA(user, month, year));
-              }
+        <Flex mb={3}>
+          <input
+            type="text"
+            placeholder="Nom du client"
+            style={{
+              border: "none",
+              borderBottom: "1px solid gray",
+              outline: "none"
             }}
           />
+          <Button mx={3} onClick={fillAll}>
+            Fill All
+          </Button>
+
+          <Text>Total : {total}</Text>
+        </Flex>
+        <Box width={"96vw"}>
+          <Flex justifyContent="space-between" flexWrap="wrap">
+            {calendar.map(c => (
+              <Box key={c.nbOfday} width={["56px", "32px"]} mb={3}>
+                <Text
+                  textAlign="center"
+                  bg={c.isWeekend || c.isJourFerie ? "grey" : "white"}
+                >
+                  {c.dayOfWeek}
+                </Text>
+                <Text
+                  textAlign="center"
+                  bg={c.isWeekend || c.isJourFerie ? "grey" : "white"}
+                >
+                  {c.nbOfday}
+                </Text>
+                {!c.isWeekend && !c.isJourFerie && (
+                  <input
+                    type="text"
+                    max="1"
+                    style={{
+                      width: "100%",
+                      border: "none",
+                      borderBottom: "1px solid gray",
+                      outline: "none",
+                      textAlign: "center"
+                    }}
+                    value={c.cra}
+                    onChange={e => updateCRA(c.nbOfday, e.target.value)}
+                  />
+                )}
+              </Box>
+            ))}
+          </Flex>
+        </Box>
+        <Box>
+          <Button onClick={saveCRA}>Save</Button>
         </Box>
       </Flex>
     </Flex>

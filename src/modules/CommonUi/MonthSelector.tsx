@@ -5,7 +5,7 @@ import frLocale from "date-fns/locale/fr";
 import { Button, Text, Flex } from "rebass";
 
 export type MonthSelectorProps = {
-  onChange?: (date: any) => void;
+  onChange: (dateFormatted: any, date: any) => void;
 };
 
 const formatDate = date => format(date, "MMMM YYYY", { locale: frLocale });
@@ -18,12 +18,15 @@ const formatDateOut = date => {
   };
 };
 
-export function MonthSelector({ onChange = () => {} }: MonthSelectorProps) {
+const today = new Date();
+
+function MonthSelectorComp({ onChange }: MonthSelectorProps) {
   const [index, setIndex] = React.useState(0);
-  const date = addMonths(new Date(), index);
+  const date = addMonths(today, index);
+
   useEffect(() => {
-    onChange(formatDateOut(date));
-  }, [date]);
+    onChange(formatDateOut(date), date);
+  }, [index, date, onChange]);
 
   function addMonth() {
     setIndex(index => index + 1);
@@ -34,10 +37,12 @@ export function MonthSelector({ onChange = () => {} }: MonthSelectorProps) {
   }
 
   return (
-    <Flex>
+    <Flex alignItems="center">
       <Button onClick={subMonth}>{"<"}</Button>
-      <Text>{formatDate(date)}</Text>
+      <Text mx={2}>{formatDate(date)}</Text>
       <Button onClick={addMonth}> {">"} </Button>
     </Flex>
   );
 }
+
+export const MonthSelector = React.memo(MonthSelectorComp, () => true);
