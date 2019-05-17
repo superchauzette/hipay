@@ -1,7 +1,9 @@
-import React from "react";
-import { Flex, Heading, Text, Box } from "rebass";
+import React, { useState, useEffect } from "react";
+import { Flex, Heading, Box } from "rebass";
 import MaterialTable from "material-table";
 import { MonthSelector } from "../CommonUi/MonthSelector";
+import { useUserContext } from "../UserHelper";
+import { db } from "../App/fire";
 
 type DataType = {
   [key: number]: number | string;
@@ -30,7 +32,7 @@ function createColumns(length = 30) {
   });
 }
 
-function createData(length = 30): DataType[] {
+function createCRA(length = 30): DataType[] {
   let obj = {};
   for (let i = 1; i <= length; i++) {
     const weekend = getWeekend(i - 1);
@@ -40,6 +42,8 @@ function createData(length = 30): DataType[] {
 }
 
 function getTotal(data: DataType[]): number {
+  if (!data || data.length === 0) return 0;
+
   const total = Object.entries(data[0])
     .map(([k, v]) => v)
     .reduce((a, b) => Number(a) + Number(b), 0);
@@ -47,15 +51,51 @@ function getTotal(data: DataType[]): number {
 }
 
 export function CRA() {
+  const user = useUserContext();
   const column = createColumns();
-  const data = createData();
-  const total = getTotal(data);
+  const [dataCra, setData] = useState([] as DataType[]);
+  const [month, setMonth] = useState(0);
+  const [year, setYear] = useState(0);
+  const total = getTotal(dataCra);
+
+  async function getCRA(user, month: number, year: number) {
+    if (user) {
+      const doc = await db()
+        .collection(`users/${user.uid}/years/${year}/month/${month}/cra`)
+        .doc("1")
+        .get();
+      const cra = doc.data();
+      setData(cra && cra.cra);
+    }
+  }
+
+  async function setCRA() {
+    await db()
+      .collection(`users/${user.uid}/years/${year}/month/${month}`)
+      .add({ cra: createCRA() });
+    await getCRA(user, month, year);
+  }
+
+  async function deleteCRA() {
+    await db()
+      .collection(`users/${user.uid}/years/${year}/month/${month}`)
+      .add({ cra: [] });
+    await getCRA(user, month, year);
+  }
+
+  async function changeCRA({ month, year }) {
+    setMonth(month);
+    setYear(year);
+  }
+
+  useEffect(() => {
+    getCRA(user, month, year);
+  }, [user, month, year]);
 
   return (
     <Flex p={3} flexDirection="column" alignItems="center">
       <Heading>Compte rendu d'Activité</Heading>
-      <Text>Février 2019</Text>
-      <MonthSelector />
+      <MonthSelector onChange={changeCRA} />
       <Flex pt={4} flexDirection="column">
         <Box mb={3}>
           <input type="text" placeholder="Nom du client" />
@@ -67,43 +107,32 @@ export function CRA() {
               search: false
             }}
             columns={column}
-            data={data}
+            data={dataCra}
             editable={{
-              onRowAdd: newData =>
-                new Promise((resolve, reject) => {
-                  setTimeout(() => {
-                    {
-                      /* const data = this.state.data;
-                              data.push(newData);
-                              this.setState({ data }, () => resolve()); */
-                    }
-                    resolve();
-                  }, 1000);
-                }),
-              onRowUpdate: (newData, oldData) =>
-                new Promise((resolve, reject) => {
-                  setTimeout(() => {
-                    {
-                      /* const data = this.state.data;
-                              const index = data.indexOf(oldData);
-                              data[index] = newData;                
-                              this.setState({ data }, () => resolve()); */
-                    }
-                    resolve();
-                  }, 1000);
-                }),
-              onRowDelete: oldData =>
-                new Promise((resolve, reject) => {
-                  setTimeout(() => {
-                    {
-                      /* let data = this.state.data;
-                              const index = data.indexOf(oldData);
-                              data.splice(index, 1);
-                              this.setState({ data }, () => resolve()); */
-                    }
-                    resolve();
-                  }, 1000);
-                })
+              onRowAdd: () => {
+                console.log("add");
+                return db()
+                  .collection(`users/${user.uid}/years/${year}/month/${month}`)
+                  .doc()
+                  .set({ cra: createCRA() })
+                  .then(() => getCRA(user, month, year));
+              },
+              onRowUpdate: (newData, oldData) => {
+                console.log("update");
+                return db()
+                  .collection(`users/${user.uid}/years/${year}/month/${month}`)
+                  .doc()
+                  .set({ cra: createCRA() })
+                  .then(() => getCRA(user, month, year));
+              },
+              onRowDelete: oldData => {
+                console.log("delete");
+                return db()
+                  .collection(`users/${user.uid}/years/${year}/month/${month}`)
+                  .doc()
+                  .set({ cra: [] })
+                  .then(() => getCRA(user, month, year));
+              }
             }}
           />
         </Box>
