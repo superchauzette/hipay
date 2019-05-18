@@ -92,12 +92,14 @@ export function CRA({
   const [calendar, setCalendar] = useState([] as CalandarType[]);
   const [isSaved, setIsSaved] = useState(false);
   const [isLoading, setLoading] = useState(false);
+  const [client, setClient] = useState("");
   const total = getTotal(calendar);
 
   useEffect(() => {
     getCRA({ id, date, user, month, year }).then(cra => {
       setCalendar(cra.calendar);
       setIsSaved(cra.isSaved);
+      setClient(cra.client || localStorage.getItem(`client-${id}`));
     });
   }, [date, month, year, user, id]);
 
@@ -122,7 +124,7 @@ export function CRA({
       await db()
         .collection(`users/${user.uid}/years/${year}/month/${month}/cra`)
         .doc(String(id))
-        .set({ calendar, isSaved: true });
+        .set({ calendar, isSaved: true, client });
       setLoading(false);
     }
   }
@@ -133,6 +135,12 @@ export function CRA({
       .collection(`users/${user.uid}/years/${year}/month/${month}/cra`)
       .doc(String(id))
       .delete();
+  }
+
+  function saveClient(e) {
+    const value = e.target.value;
+    setClient(value);
+    localStorage.setItem(`client-${id}`, value);
   }
 
   return (
@@ -147,6 +155,8 @@ export function CRA({
               borderBottom: "1px solid gray",
               outline: "none"
             }}
+            value={client}
+            onChange={saveClient}
           />
           <Button mx={3} onClick={fillAll}>
             Fill All
