@@ -16,7 +16,7 @@ type HeaderProps = {
 
 export function Header({ title, prevLink, nextLink }: HeaderProps) {
   return (
-    <Flex alignItems="center">
+    <Flex alignItems="center" justifyContent="space-around" width={1}>
       <Link to={prevLink.to}>{prevLink.label}</Link>
       <Heading textAlign="center" fontSize={3} mx={3}>
         {title}

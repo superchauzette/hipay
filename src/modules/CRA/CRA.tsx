@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Flex, Box, Text, Button } from "rebass";
 import { display, width, space } from "styled-system";
+import { Delete as DeleteIcon } from "@material-ui/icons";
 import { getCRA } from "./service";
 import { userType } from "../UserHelper";
 import { db } from "../App/fire";
@@ -54,11 +55,11 @@ function bourage(calendar: CalandarType[]): number[] {
 
 function WhiteSpace({ calendar }) {
   return (
-    <Box>
+    <>
       {bourage(calendar).map(c => (
         <MyBox key={c} width={[1 / 7]} mb={3} display={["block", "none"]} />
       ))}
-    </Box>
+    </>
   );
 }
 
@@ -145,34 +146,40 @@ export function CRA({
 
   return (
     <Card width={1} p={3}>
-      <Flex pt={4} flexDirection="column">
-        <Flex mb={3} flexWrap="wrap">
+      <Flex flexDirection="column">
+        <Flex mt={3}>
           <input
             type="text"
             placeholder="Nom du client"
             style={{
               border: "none",
-              borderBottom: "1px solid gray",
-              outline: "none"
+              borderBottom: "1px solid #80808063",
+              outline: "none",
+              backgroundColor: "transparent",
+              fontSize: "18px",
+              fontWeight: "bold"
             }}
             value={client}
             onChange={saveClient}
           />
-          <Button mx={3} onClick={fillAll}>
-            Fill All
-          </Button>
-
           <Box m="auto" />
-
           {showTrash && (
-            <Button mx={3} onClick={deleteCRA}>
-              Poubelle
+            <Button bg="red" onClick={deleteCRA}>
+              <DeleteIcon />
             </Button>
           )}
-
-          <Text>Total : {total}</Text>
         </Flex>
-        <Box width={["100%"]} mt={4}>
+
+        <Flex mt={3} alignItems="center">
+          <Button onClick={fillAll}>Fill All</Button>
+          <Box m="auto" />
+          <Flex>
+            <Text mx={1}>Total :</Text>
+            <Text fontWeight={"bold"}>{total}</Text>
+          </Flex>
+        </Flex>
+
+        <Box width={["100%"]} mt={2}>
           <Flex
             justifyContent={["flex-start", "space-between"]}
             flexWrap="wrap"
@@ -190,31 +197,41 @@ export function CRA({
                 <MyBox display={["none", "block"]}>
                   <Text textAlign="center">{c.dayOfWeek}</Text>
                 </MyBox>
-                <Text textAlign="center">{c.nbOfday}</Text>
-
-                <input
-                  key={`${id}-${month}-${year}-${c.nbOfday}-${c.dayOfWeek}`}
-                  type="number"
-                  max="1"
-                  min="0"
-                  step="0.5"
-                  name="craValue"
-                  style={{
-                    width: "100%",
-                    border: "none",
-                    borderBottom: "1px solid gray",
-                    outline: "none",
-                    textAlign: "center"
-                  }}
-                  value={c.cra}
-                  onChange={e => updateCRA(c.nbOfday, e.target.value)}
-                  disabled={c.isWeekend || c.isJourFerie || isSaved}
-                />
+                <Text textAlign="center" pt={1}>
+                  {c.nbOfday}
+                </Text>
+                <Box px={1} pt={1}>
+                  <input
+                    key={`${id}-${month}-${year}-${c.nbOfday}-${c.dayOfWeek}`}
+                    type="number"
+                    max="1"
+                    min="0"
+                    step="0.5"
+                    name="craValue"
+                    style={{
+                      width: "100%",
+                      height: "30px",
+                      border: "none",
+                      borderBottom: "1px solid gray",
+                      outline: "none",
+                      textAlign: "center"
+                    }}
+                    value={c.cra}
+                    onChange={e => updateCRA(c.nbOfday, e.target.value)}
+                    disabled={c.isWeekend || c.isJourFerie || isSaved}
+                  />
+                </Box>
               </Box>
             ))}
           </Flex>
         </Box>
-        <Flex alignItems="center">
+        <Flex width={[1, "40%"]} mt={1}>
+          <textarea
+            placeholder="Commentaire, astreintes"
+            style={{ width: "100%", height: "120px" }}
+          />
+        </Flex>
+        <Flex alignItems="center" mt={2}>
           <Button onClick={saveCRA}>
             {isSaved ? "Modifier" : "Sauvegarder"}
           </Button>
