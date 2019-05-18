@@ -1,60 +1,36 @@
-import {} from "./CRA";
-import {} from "./CRA";
 import React, { useState, useEffect } from "react";
-import { Flex, Heading, Box, Button } from "rebass";
-import { getCalculatedCalendar } from "./getCalendar";
-import { MonthSelector } from "../CommonUi/MonthSelector";
+import { Box, Button } from "rebass";
+import { addNewCalendarFirebase, getCraIdsFirebase } from "./service";
+import { MonthSelector, useDateChange } from "../CommonUi/MonthSelector";
 import { useUserContext } from "../UserHelper";
-import { db } from "../App/fire";
 import { CRA } from "./CRA";
-import { Link } from "react-router-dom";
+import { Header } from "../CommonUi/Header";
+import { PageWrapper } from "../CommonUi/PageWrapper";
 
 export function CRAS() {
   const user = useUserContext();
-  const [month, setMonth] = useState(0);
-  const [year, setYear] = useState(0);
-  const [date, setDate] = useState();
-  const [nbCRA, setNbCRA] = useState(["1"] as string[]);
+  const { month, year, date, handleChangeMonth } = useDateChange();
+  const [idsCRA, setIdsCRA] = useState(["1"] as string[]);
 
   useEffect(() => {
-    if (user)
-      db()
-        .collection(`users/${user.uid}/years/${year}/month/${month}/cra`)
-        .get()
-        .then(query => {
-          const ids = [] as any[];
-          query.forEach(doc => {
-            ids.push(doc.id);
-          });
-          setNbCRA(ids.length ? ids : ["1"]);
-        });
-  }, [user, month, year]);
+    if (user) getCraIdsFirebase({ user, year, month }).then(setIdsCRA);
+  }, [user, year, month]);
 
-  async function changeCRA({ month, year }, selectedDate) {
-    setMonth(month);
-    setYear(year);
-    setDate(selectedDate);
-  }
-
-  async function addCRA() {
-    const newCalendar = await getCalculatedCalendar(date);
-
-    const { id } = await db()
-      .collection(`users/${user.uid}/years/${year}/month/${month}/cra`)
-      .add({ calendar: newCalendar });
-    setNbCRA(ids => [...ids, id]);
+  async function addNewCRA() {
+    const id = await addNewCalendarFirebase({ date, user, month, year });
+    setIdsCRA(ids => [...ids, id]);
   }
 
   return (
-    <Flex p={[0, 3]} flexDirection="column" alignItems="center">
-      <Flex alignItems="center">
-        <Link to="/">{"<"}</Link>
-        <Heading textAlign="center">Compte rendu d'Activité</Heading>
-        <Link to="/ndf"> {">"} </Link>
-      </Flex>
-      <MonthSelector onChange={changeCRA} />
+    <PageWrapper>
+      <Header
+        title="Compte rendu d'Activité"
+        prevLink={{ to: "/", label: "dash" }}
+        nextLink={{ to: "/ndf", label: "ndf" }}
+      />
+      <MonthSelector onChange={handleChangeMonth} />
 
-      {nbCRA.map((idCRA, index) => (
+      {idsCRA.map((idCRA, index) => (
         <CRA
           key={idCRA}
           showTrash={index !== 0}
@@ -63,13 +39,13 @@ export function CRAS() {
           date={date}
           month={month}
           year={year}
-          onDelete={id => setNbCRA(ids => ids.filter(i => i !== id))}
+          onDelete={id => setIdsCRA(ids => ids.filter(i => i !== id))}
         />
       ))}
 
       <Box mt={4}>
-        <Button onClick={addCRA}>+</Button>
+        <Button onClick={addNewCRA}>+</Button>
       </Box>
-    </Flex>
+    </PageWrapper>
   );
 }

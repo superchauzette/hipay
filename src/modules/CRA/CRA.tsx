@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Flex, Box, Text, Button } from "rebass";
 import { display, width, space } from "styled-system";
-import { getCalendar } from "./getCalendar";
+import { getCRA } from "./service";
 import { userType } from "../UserHelper";
 import { db } from "../App/fire";
 import styled from "styled-components";
+import { Card } from "../CommonUi/Card";
 
 const MyBox: any = styled.div`
   ${display}
@@ -68,6 +69,7 @@ function DayofWeekMobile() {
         <MyBox key={day} width={[1 / 7]} mb={3} display={["block", "none"]}>
           <Text
             textAlign="center"
+            p={"10px"}
             bg={["sa", "di"].includes(day) ? "grey" : "white"}
           >
             {day}
@@ -88,12 +90,15 @@ export function CRA({
   onDelete
 }: CRAProps) {
   const [calendar, setCalendar] = useState([] as CalandarType[]);
+  const [isSaved, setIsSaved] = useState(false);
+  const [isLoading, setLoading] = useState(false);
   const total = getTotal(calendar);
 
-  console.log(calendar);
-
   useEffect(() => {
-    getCalendar({ id, date, user, month, year }).then(setCalendar);
+    getCRA({ id, date, user, month, year }).then(cra => {
+      setCalendar(cra.calendar);
+      setIsSaved(cra.isSaved);
+    });
   }, [date, month, year, user, id]);
 
   function fillAll() {
@@ -111,10 +116,15 @@ export function CRA({
   }
 
   async function saveCRA() {
-    await db()
-      .collection(`users/${user.uid}/years/${year}/month/${month}/cra`)
-      .doc(String(id))
-      .set({ calendar });
+    setIsSaved(save => !save);
+    if (!isSaved) {
+      setLoading(true);
+      await db()
+        .collection(`users/${user.uid}/years/${year}/month/${month}/cra`)
+        .doc(String(id))
+        .set({ calendar, isSaved: true });
+      setLoading(false);
+    }
   }
 
   async function deleteCRA() {
@@ -126,76 +136,84 @@ export function CRA({
   }
 
   return (
-    <Flex pt={4} flexDirection="column">
-      <Flex mb={3} flexWrap="wrap">
-        <input
-          type="text"
-          placeholder="Nom du client"
-          style={{
-            border: "none",
-            borderBottom: "1px solid gray",
-            outline: "none"
-          }}
-        />
-        <Button mx={3} onClick={fillAll}>
-          Fill All
-        </Button>
-
-        <Text>Total : {total}</Text>
-
-        {showTrash && (
-          <Button mx={3} onClick={deleteCRA}>
-            Poubelle
+    <Card width={1} p={3}>
+      <Flex pt={4} flexDirection="column">
+        <Flex mb={3} flexWrap="wrap">
+          <input
+            type="text"
+            placeholder="Nom du client"
+            style={{
+              border: "none",
+              borderBottom: "1px solid gray",
+              outline: "none"
+            }}
+          />
+          <Button mx={3} onClick={fillAll}>
+            Fill All
           </Button>
-        )}
-      </Flex>
-      <Box width={["100%", "96vw"]} mt={4}>
-        <Flex justifyContent={["flex-start", "space-between"]} flexWrap="wrap">
-          <DayofWeekMobile />
-          <WhiteSpace calendar={calendar} />
 
-          {calendar.map(c => (
-            <Box
-              key={`${id}-${month}-${year}-${c.nbOfday}`}
-              width={[1 / 7, "32px"]}
-              mb={3}
-            >
-              <MyBox display={["none", "block"]}>
-                <Text
-                  textAlign="center"
-                  bg={c.isWeekend || c.isJourFerie ? "grey" : "white"}
-                >
-                  {c.dayOfWeek}
-                </Text>
-              </MyBox>
-              <Text
-                textAlign="center"
+          <Box m="auto" />
+
+          {showTrash && (
+            <Button mx={3} onClick={deleteCRA}>
+              Poubelle
+            </Button>
+          )}
+
+          <Text>Total : {total}</Text>
+        </Flex>
+        <Box width={["100%"]} mt={4}>
+          <Flex
+            justifyContent={["flex-start", "space-between"]}
+            flexWrap="wrap"
+          >
+            <DayofWeekMobile />
+            <WhiteSpace calendar={calendar} />
+
+            {calendar.map(c => (
+              <Box
+                key={`${id}-${month}-${year}-${c.nbOfday}`}
+                width={[1 / 7, "36px"]}
+                mb={3}
                 bg={c.isWeekend || c.isJourFerie ? "grey" : "white"}
               >
-                {c.nbOfday}
-              </Text>
+                <MyBox display={["none", "block"]}>
+                  <Text textAlign="center">{c.dayOfWeek}</Text>
+                </MyBox>
+                <Text textAlign="center">{c.nbOfday}</Text>
 
-              <input
-                key={`${id}-${month}-${year}-${c.nbOfday}-${c.dayOfWeek}`}
-                type="text"
-                style={{
-                  width: "100%",
-                  border: "none",
-                  borderBottom: "1px solid gray",
-                  outline: "none",
-                  textAlign: "center"
-                }}
-                value={c.cra}
-                onChange={e => updateCRA(c.nbOfday, e.target.value)}
-                disabled={c.isWeekend || c.isJourFerie}
-              />
-            </Box>
-          ))}
+                <input
+                  key={`${id}-${month}-${year}-${c.nbOfday}-${c.dayOfWeek}`}
+                  type="number"
+                  max="1"
+                  min="0"
+                  step="0.5"
+                  name="craValue"
+                  style={{
+                    width: "100%",
+                    border: "none",
+                    borderBottom: "1px solid gray",
+                    outline: "none",
+                    textAlign: "center"
+                  }}
+                  value={c.cra}
+                  onChange={e => updateCRA(c.nbOfday, e.target.value)}
+                  disabled={c.isWeekend || c.isJourFerie || isSaved}
+                />
+              </Box>
+            ))}
+          </Flex>
+        </Box>
+        <Flex alignItems="center">
+          <Button onClick={saveCRA}>
+            {isSaved ? "Modifier" : "Sauvegarder"}
+          </Button>
+          {isLoading && isSaved && <Text ml={3}>...Loading</Text>}
+          {!isLoading && isSaved && (
+            <Text ml={3}>Votre CRA a été sauvegardé</Text>
+          )}
         </Flex>
-      </Box>
-      <Box>
-        <Button onClick={saveCRA}>Save</Button>
-      </Box>
-    </Flex>
+      </Flex>
+    </Card>
   );
 }

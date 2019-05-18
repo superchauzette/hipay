@@ -9,10 +9,12 @@ import { Dashboard } from "../Dashboard";
 import { NoteDeFrais } from "../NDF";
 import { IK } from "../IK";
 import { Charges } from "../Charges";
+import { Avatar } from "../CommonUi/Avatar";
+import { Flex } from "rebass";
 
 function Menu() {
   return (
-    <div style={{ display: "flex" }}>
+    <Flex flexWrap="wrap">
       <NavLink exact to="/">
         Dashboard
       </NavLink>
@@ -20,7 +22,7 @@ function Menu() {
       <NavLink to="/ndf">NDF</NavLink>
       <NavLink to="/ik">IK</NavLink>
       <NavLink to="/charges">CHARGES</NavLink>
-    </div>
+    </Flex>
   );
 }
 
@@ -39,18 +41,19 @@ export function App() {
     <UserProvider value={authUser}>
       <Theme>
         <Router>
-          {/* <header
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              padding: "10px 10px",
-              backgroundColor: "#d0d0d087"
-            }}
+          <Flex
+            alignItems="center"
+            justifyContent="space-between"
+            flexWrap="wrap"
+            bg="#d0d0d087"
+            p={1}
           >
-             <Menu /> 
-            <p>Kevin Tillot</p>
-          </header> */}
+            <Menu />
+            <Flex mr={2} alignItems="center">
+              <Avatar src={authUser && authUser.photoURL} m={2} />
+              <p>{authUser && authUser.displayName}</p>
+            </Flex>
+          </Flex>
           <main>
             <Route exact path="/" component={Dashboard} />
             <Route path="/login" component={Login} />
