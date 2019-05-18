@@ -12,10 +12,6 @@ code {
     monospace;
 }
 
-th {
-  padding: 0 !important;
-}
-
-td {
-  padding: 0 !important;
+input:disabled {
+  background-color: grey;
 }

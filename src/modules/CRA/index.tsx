@@ -1,45 +1,34 @@
-import React, { useState, useEffect, useMemo } from "react";
-import { Flex, Heading, Box, Text, Button } from "rebass";
-import { getCalendar } from "./getCalendar";
+import {} from "./CRA";
+import {} from "./CRA";
+import React, { useState, useEffect } from "react";
+import { Flex, Heading, Box, Button } from "rebass";
+import { getCalculatedCalendar } from "./getCalendar";
 import { MonthSelector } from "../CommonUi/MonthSelector";
 import { useUserContext } from "../UserHelper";
 import { db } from "../App/fire";
+import { CRA } from "./CRA";
+import { Link } from "react-router-dom";
 
-type CalandarType = {
-  nbOfday: number;
-  day: Date;
-  isWeekend: boolean;
-  isJourFerie: boolean;
-  dayOfWeek: string;
-  cra?: number;
-};
-
-function getTotal(calendar: CalandarType[]): number {
-  if (calendar.length === 0) return 0;
-
-  const total = calendar
-    .map(c => c.cra || 0)
-    .reduce((a, b) => Number(a) + Number(b), 0);
-
-  return Number(total);
-}
-
-function createTab(length) {
-  return Array.from({ length }, (_, k) => k + 1);
-}
-
-export function CRA() {
+export function CRAS() {
   const user = useUserContext();
   const [month, setMonth] = useState(0);
   const [year, setYear] = useState(0);
   const [date, setDate] = useState();
-
-  const [calendar, setCalendar] = useState([] as CalandarType[]);
-  const total = useMemo(() => getTotal(calendar), [calendar]);
+  const [nbCRA, setNbCRA] = useState(["1"] as string[]);
 
   useEffect(() => {
-    getCalendar({ date, user, month, year }).then(setCalendar);
-  }, [date, user, calendar]);
+    if (user)
+      db()
+        .collection(`users/${user.uid}/years/${year}/month/${month}/cra`)
+        .get()
+        .then(query => {
+          const ids = [] as any[];
+          query.forEach(doc => {
+            ids.push(doc.id);
+          });
+          setNbCRA(ids.length ? ids : ["1"]);
+        });
+  }, [user, month, year]);
 
   async function changeCRA({ month, year }, selectedDate) {
     setMonth(month);
@@ -47,100 +36,40 @@ export function CRA() {
     setDate(selectedDate);
   }
 
-  function fillAll() {
-    setCalendar(calendar =>
-      calendar.map(c => (!c.isWeekend && !c.isJourFerie ? { ...c, cra: 1 } : c))
-    );
-  }
+  async function addCRA() {
+    const newCalendar = await getCalculatedCalendar(date);
 
-  function updateCRA(nbOfday: number, value: string) {
-    setCalendar(calendar =>
-      calendar.map(c =>
-        c.nbOfday === nbOfday ? { ...c, cra: Number(value) } : c
-      )
-    );
-  }
-
-  async function saveCRA() {
-    await db()
+    const { id } = await db()
       .collection(`users/${user.uid}/years/${year}/month/${month}/cra`)
-      .doc("1")
-      .set({ calendar });
+      .add({ calendar: newCalendar });
+    setNbCRA(ids => [...ids, id]);
   }
-
-  // async function addCRA() {
-  //   const newNbCRA = nbCRA + 1;
-  //   const newCalendar = await getCalculatedCalendar(date);
-  //   setCalendars(cs => [...cs, newCalendar]);
-
-  //   await db()
-  //     .collection(`users/${user.uid}/years/${year}/month/${month}/cra`)
-  //     .doc(String(newNbCRA))
-  //     .set({ calendar: newCalendar });
-  //   setNbCRA(newNbCRA);
-  // }
 
   return (
-    <Flex p={3} flexDirection="column" alignItems="center">
-      <Heading>Compte rendu d'Activité</Heading>
+    <Flex p={[0, 3]} flexDirection="column" alignItems="center">
+      <Flex alignItems="center">
+        <Link to="/">{"<"}</Link>
+        <Heading textAlign="center">Compte rendu d'Activité</Heading>
+        <Link to="/ndf"> {">"} </Link>
+      </Flex>
       <MonthSelector onChange={changeCRA} />
 
-      <Flex pt={4} flexDirection="column">
-        <Flex mb={3}>
-          <input
-            type="text"
-            placeholder="Nom du client"
-            style={{
-              border: "none",
-              borderBottom: "1px solid gray",
-              outline: "none"
-            }}
-          />
-          <Button mx={3} onClick={fillAll}>
-            Fill All
-          </Button>
+      {nbCRA.map((idCRA, index) => (
+        <CRA
+          key={idCRA}
+          showTrash={index !== 0}
+          id={idCRA}
+          user={user}
+          date={date}
+          month={month}
+          year={year}
+          onDelete={id => setNbCRA(ids => ids.filter(i => i !== id))}
+        />
+      ))}
 
-          <Text>Total : {total}</Text>
-        </Flex>
-        <Box width={"96vw"}>
-          <Flex justifyContent="space-between" flexWrap="wrap">
-            {calendar.map(c => (
-              <Box key={c.nbOfday} width={["56px", "32px"]} mb={3}>
-                <Text
-                  textAlign="center"
-                  bg={c.isWeekend || c.isJourFerie ? "grey" : "white"}
-                >
-                  {c.dayOfWeek}
-                </Text>
-                <Text
-                  textAlign="center"
-                  bg={c.isWeekend || c.isJourFerie ? "grey" : "white"}
-                >
-                  {c.nbOfday}
-                </Text>
-                {!c.isWeekend && !c.isJourFerie && (
-                  <input
-                    type="text"
-                    max="1"
-                    style={{
-                      width: "100%",
-                      border: "none",
-                      borderBottom: "1px solid gray",
-                      outline: "none",
-                      textAlign: "center"
-                    }}
-                    value={c.cra}
-                    onChange={e => updateCRA(c.nbOfday, e.target.value)}
-                  />
-                )}
-              </Box>
-            ))}
-          </Flex>
-        </Box>
-        <Box>
-          <Button onClick={saveCRA}>Save</Button>
-        </Box>
-      </Flex>
+      <Box mt={4}>
+        <Button onClick={addCRA}>+</Button>
+      </Box>
     </Flex>
   );
 }

@@ -40,11 +40,16 @@ export async function getCalculatedCalendar(date: Date) {
   });
 }
 
-async function getCalendarFirebase(user, month: number, year: number) {
+async function getCalendarFirebase(
+  id: number,
+  user,
+  month: number,
+  year: number
+) {
   if (user) {
     const doc = await db()
       .collection(`users/${user.uid}/years/${year}/month/${month}/cra`)
-      .doc("1")
+      .doc(String(id))
       .get();
     const cra = doc.data();
     return cra && cra.calendar;
@@ -52,8 +57,8 @@ async function getCalendarFirebase(user, month: number, year: number) {
   return undefined;
 }
 
-export async function getCalendar({ date, user, month, year }) {
-  const calendarData = await getCalendarFirebase(user, month, year);
+export async function getCalendar({ id, date, user, month, year }) {
+  const calendarData = await getCalendarFirebase(id, user, month, year);
   if (calendarData) {
     return calendarData;
   } else {

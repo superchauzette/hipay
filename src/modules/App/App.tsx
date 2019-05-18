@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 import { useAuth, UserProvider } from "../UserHelper";
 import { Theme } from "../Theme";
-import { CRA } from "../CRA";
+import { CRAS } from "../CRA";
 import { Login } from "../Login";
 import { NavLink } from "../CommonUi/NavLink";
 import { Dashboard } from "../Dashboard";
@@ -17,7 +17,7 @@ function Menu() {
         Dashboard
       </NavLink>
       <NavLink to="/cra">CRA</NavLink>
-      <NavLink to="/ndk">NDF</NavLink>
+      <NavLink to="/ndf">NDF</NavLink>
       <NavLink to="/ik">IK</NavLink>
       <NavLink to="/charges">CHARGES</NavLink>
     </div>
@@ -39,7 +39,7 @@ export function App() {
     <UserProvider value={authUser}>
       <Theme>
         <Router>
-          <header
+          {/* <header
             style={{
               display: "flex",
               alignItems: "center",
@@ -48,14 +48,14 @@ export function App() {
               backgroundColor: "#d0d0d087"
             }}
           >
-            <Menu />
+             <Menu /> 
             <p>Kevin Tillot</p>
-          </header>
+          </header> */}
           <main>
             <Route exact path="/" component={Dashboard} />
             <Route path="/login" component={Login} />
-            <Route path="/cra" component={CRA} />
-            <Route path="/ndk" component={NoteDeFrais} />
+            <Route path="/cra" component={CRAS} />
+            <Route path="/ndf" component={NoteDeFrais} />
             <Route path="/ik" component={IK} />
             <Route path="/charges" component={Charges} />
           </main>

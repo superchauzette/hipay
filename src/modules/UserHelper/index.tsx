@@ -1,7 +1,7 @@
 import React, { useState, useEffect, createContext, useContext } from "react";
 import firebase from "firebase";
 
-type userType = {
+export type userType = {
   uid: string;
   displayName: string | null;
   email: string | null;
