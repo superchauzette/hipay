@@ -3,6 +3,8 @@ import format from "date-fns/format";
 import addMonths from "date-fns/add_months";
 import frLocale from "date-fns/locale/fr";
 import { Button, Text, Flex } from "rebass";
+import LeftIcon from "@material-ui/icons/KeyboardArrowLeftRounded";
+import RightIcon from "@material-ui/icons/KeyboardArrowRightRounded";
 
 export type MonthSelectorProps = {
   onChange: (dateFormatted: any, date: any) => void;
@@ -38,9 +40,25 @@ function MonthSelectorComp({ onChange }: MonthSelectorProps) {
 
   return (
     <Flex alignItems="center">
-      <Button onClick={subMonth}>{"<"}</Button>
-      <Text mx={2}>{formatDate(date)}</Text>
-      <Button onClick={addMonth}> {">"} </Button>
+      <Button
+        onClick={subMonth}
+        color="black"
+        bg="transparent"
+        style={{ outline: "none" }}
+      >
+        <LeftIcon style={{ fontSize: "27px" }} />
+      </Button>
+      <Text mx={2} color="black" width="160px" textAlign="center">
+        {formatDate(date)}
+      </Text>
+      <Button
+        onClick={addMonth}
+        color="black"
+        bg="transparent"
+        style={{ outline: "none" }}
+      >
+        <RightIcon style={{ fontSize: "27px" }} />
+      </Button>
     </Flex>
   );
 }

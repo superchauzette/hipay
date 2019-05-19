@@ -7,12 +7,18 @@ type ThemeProp = {
 
 const blue = "#07c";
 const lightgray = "#f6f6ff";
+const black = "rgb(72, 72, 72)";
 
 const theme = {
   fontSizes: [12, 14, 16, 24, 32, 48, 64],
   colors: {
     blue,
-    lightgray
+    lightgray,
+    black
+  },
+  fonts: {
+    sans: "Roboto",
+    mono: "Roboto"
   },
   buttons: {
     primary: {

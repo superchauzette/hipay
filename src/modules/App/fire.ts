@@ -15,3 +15,5 @@ export function initFirebase() {
 }
 
 export const db = () => firebase.firestore();
+
+export const storage = () => firebase.storage();

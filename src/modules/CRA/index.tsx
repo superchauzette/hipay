@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { Box, Button } from "rebass";
 import AddIcon from "@material-ui/icons/Add";
 import Fab from "@material-ui/core/Fab";
 import { addNewCalendarFirebase, getCraIdsFirebase } from "./service";
@@ -48,10 +47,15 @@ export function CRAS() {
       </PageWrapper>
 
       <Fab
-        color="primary"
         aria-label="Add"
         onClick={addNewCRA}
-        style={{ position: "fixed", bottom: "30px", right: "30px" }}
+        style={{
+          position: "fixed",
+          bottom: "30px",
+          right: "30px",
+          backgroundColor: "#07c",
+          color: "white"
+        }}
       >
         <AddIcon />
       </Fab>

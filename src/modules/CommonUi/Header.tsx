@@ -1,5 +1,4 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import { Flex, Heading } from "rebass";
 
 type HeaderProps = {
@@ -16,12 +15,10 @@ type HeaderProps = {
 
 export function Header({ title, prevLink, nextLink }: HeaderProps) {
   return (
-    <Flex alignItems="center" justifyContent="space-around" width={1}>
-      <Link to={prevLink.to}>{prevLink.label}</Link>
-      <Heading textAlign="center" fontSize={3} mx={3}>
+    <Flex justifyContent="space-around" width={1}>
+      <Heading fontSize={3} mb={4} color="rgb(72, 72, 72)">
         {title}
       </Heading>
-      <Link to={nextLink.to}>{nextLink.label}</Link>
     </Flex>
   );
 }

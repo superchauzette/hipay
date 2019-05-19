@@ -5,15 +5,13 @@ export function NavLink(props: any) {
   return (
     <Link
       style={{
-        margin: "0 20px",
-        color: "black",
-        border: "none",
+        margin: "0 5px 5px",
         textDecoration: "none"
       }}
       activeStyle={{
         fontWeight: "bold",
-        border: "none",
-        borderBottom: "3px solid white"
+        color: "#07c",
+        borderColor: "#07c"
       }}
       {...props}
     />

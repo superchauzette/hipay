@@ -3,7 +3,7 @@ import { Flex, Box, Text, Button } from "rebass";
 import { Delete as DeleteIcon } from "@material-ui/icons";
 import { getCraFirebase, getCalculatedCalendar } from "./service";
 import { userType } from "../UserHelper";
-import { db } from "../App/fire";
+import { db, storage } from "../App/fire";
 import { Card } from "../CommonUi/Card";
 import { DayofWeekMobile } from "./DayofWeekMobile";
 import { UploadCRA } from "./UploadCRA";
@@ -11,6 +11,7 @@ import { MyInput } from "../CommonUi/MyInput";
 import { MyBox } from "../CommonUi/MyBox";
 import { CalandarType } from "./CalandarType";
 import { WhiteSpace } from "./WhiteSpace";
+import IconButton from "@material-ui/core/IconButton";
 
 type CRAProps = {
   id: string;
@@ -48,7 +49,12 @@ export function CRA({
   const [isLoading, setLoading] = useState(false);
   const [client, setClient] = useState();
   const [commentaire, setCommentaire] = useState("");
+  const [file, setFile] = useState();
   const total = getTotal(calendar);
+
+  const pathCra = user
+    ? `users/${user.uid}/years/${year}/month/${month}/cra`
+    : "";
 
   async function init() {
     const calendarCal = await getCalculatedCalendar(date);
@@ -59,6 +65,7 @@ export function CRA({
       if (craData.calendar) setCalendar(craData.calendar);
       setIsSaved(craData.isSaved);
       setClient(craData.client);
+      setFile(craData.file);
     }
   }
 
@@ -92,6 +99,23 @@ export function CRA({
     }
   }
 
+  async function saveFileInfo(fileUploaded) {
+    setFile(fileUploaded);
+    storage()
+      .ref(pathCra + "/" + fileUploaded.name)
+      .put(fileUploaded);
+    db()
+      .collection(pathCra)
+      .doc(String(id))
+      .set({
+        file: {
+          name: fileUploaded.name,
+          size: fileUploaded.size,
+          type: fileUploaded.type
+        }
+      });
+  }
+
   async function deleteCRA() {
     onDelete(id);
     await db()
@@ -108,7 +132,11 @@ export function CRA({
 
   return (
     <Flex flexDirection="column" width={1}>
-      <UploadCRA />
+      <UploadCRA
+        key={`${id}-${month}-${year}`}
+        file={file}
+        onFile={saveFileInfo}
+      />
       <Text textAlign="center" fontWeight="bold">
         ou
       </Text>
@@ -132,9 +160,9 @@ export function CRA({
             />
             <Box m="auto" />
             {showTrash && (
-              <Button bg="red" onClick={deleteCRA}>
-                <DeleteIcon />
-              </Button>
+              <IconButton aria-label="Delete" onClick={deleteCRA}>
+                <DeleteIcon fontSize="large" />
+              </IconButton>
             )}
           </Flex>
 

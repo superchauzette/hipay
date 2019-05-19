@@ -11,17 +11,22 @@ import { IK } from "../IK";
 import { Charges } from "../Charges";
 import { Avatar } from "../CommonUi/Avatar";
 import { Flex } from "rebass";
+import Button from "@material-ui/core/Button";
+
+const LinkMenu = props => (
+  <Button variant="outlined" size="small" component={NavLink} {...props} />
+);
 
 function Menu() {
   return (
     <Flex flexWrap="wrap">
-      <NavLink exact to="/">
+      <LinkMenu exact to="/">
         Dashboard
-      </NavLink>
-      <NavLink to="/cra">CRA</NavLink>
-      <NavLink to="/ndf">NDF</NavLink>
-      <NavLink to="/ik">IK</NavLink>
-      <NavLink to="/charges">CHARGES</NavLink>
+      </LinkMenu>
+      <LinkMenu to="/cra">CRA</LinkMenu>
+      <LinkMenu to="/ndf">NDF</LinkMenu>
+      <LinkMenu to="/ik">IK</LinkMenu>
+      <LinkMenu to="/charges">CHARGES</LinkMenu>
     </Flex>
   );
 }
@@ -45,14 +50,12 @@ export function App() {
             alignItems="center"
             justifyContent="space-between"
             flexWrap="wrap"
-            bg="#d0d0d087"
             p={1}
           >
             <Menu />
-            <Flex mr={2} alignItems="center">
+            {/* <Flex mr={2} justifyContent="flex-end" width={1}>
               <Avatar src={authUser && authUser.photoURL} m={2} />
-              <p>{authUser && authUser.displayName}</p>
-            </Flex>
+            </Flex> */}
           </Flex>
           <main>
             <Route exact path="/" component={Dashboard} />
