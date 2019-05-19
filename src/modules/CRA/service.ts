@@ -41,8 +41,8 @@ export async function getCalculatedCalendar(date: Date) {
   });
 }
 
-async function getCraFirebase(
-  id: number,
+export async function getCraFirebase(
+  id: string,
   user: userType,
   month: number,
   year: number
@@ -56,16 +56,6 @@ async function getCraFirebase(
     return cra;
   }
   return undefined;
-}
-
-export async function getCRA({ id, date, user, month, year }) {
-  const calendarData = await getCraFirebase(id, user, month, year);
-  if (calendarData) {
-    return calendarData;
-  } else {
-    const calendar = await getCalculatedCalendar(date);
-    return { calendar, isSaved: false };
-  }
 }
 
 export function getCraIdsFirebase({ user, year, month }) {
