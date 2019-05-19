@@ -13,7 +13,11 @@ code {
 }
 
 input:disabled {
-  background-color: grey;
+  background-color: white;
+}
+textarea:disabled {
+  background-color: white;
+  color: grey;
 }
 
 input::-webkit-outer-spin-button,

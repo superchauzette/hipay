@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Box, Button } from "rebass";
+import AddIcon from "@material-ui/icons/Add";
+import Fab from "@material-ui/core/Fab";
 import { addNewCalendarFirebase, getCraIdsFirebase } from "./service";
 import { MonthSelector, useDateChange } from "../CommonUi/MonthSelector";
 import { useUserContext } from "../UserHelper";
@@ -22,30 +24,37 @@ export function CRAS() {
   }
 
   return (
-    <PageWrapper>
-      <Header
-        title="Compte rendu d'Activité"
-        prevLink={{ to: "/", label: "dash" }}
-        nextLink={{ to: "/ndf", label: "ndf" }}
-      />
-      <MonthSelector onChange={handleChangeMonth} />
-
-      {idsCRA.map((idCRA, index) => (
-        <CRA
-          key={idCRA}
-          showTrash={index !== 0}
-          id={idCRA}
-          user={user}
-          date={date}
-          month={month}
-          year={year}
-          onDelete={id => setIdsCRA(ids => ids.filter(i => i !== id))}
+    <>
+      <PageWrapper pb="60px">
+        <Header
+          title="Compte rendu d'Activité"
+          prevLink={{ to: "/", label: "dash" }}
+          nextLink={{ to: "/ndf", label: "ndf" }}
         />
-      ))}
+        <MonthSelector onChange={handleChangeMonth} />
 
-      <Box mt={4}>
-        <Button onClick={addNewCRA}>+</Button>
-      </Box>
-    </PageWrapper>
+        {idsCRA.map((idCRA, index) => (
+          <CRA
+            key={idCRA}
+            showTrash={index !== 0}
+            id={idCRA}
+            user={user}
+            date={date}
+            month={month}
+            year={year}
+            onDelete={id => setIdsCRA(ids => ids.filter(i => i !== id))}
+          />
+        ))}
+      </PageWrapper>
+
+      <Fab
+        color="primary"
+        aria-label="Add"
+        onClick={addNewCRA}
+        style={{ position: "fixed", bottom: "30px", right: "30px" }}
+      >
+        <AddIcon />
+      </Fab>
+    </>
   );
 }

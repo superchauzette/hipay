@@ -11,7 +11,7 @@ export function Card({ children, ...props }: CardType) {
       width={[1, 1, 1 / 2]}
       p={2}
       my={3}
-      bg="#f6f6ff"
+      bg="white"
       borderRadius={8}
       boxShadow="0 2px 16px rgba(0, 0, 0, 0.25)"
       {...props}

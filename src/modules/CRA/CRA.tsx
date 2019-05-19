@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { Flex, Box, Text, Button } from "rebass";
-import { display, width, space } from "styled-system";
 import { Delete as DeleteIcon } from "@material-ui/icons";
 import { getCraFirebase, getCalculatedCalendar } from "./service";
 import { userType } from "../UserHelper";
 import { db } from "../App/fire";
-import styled from "styled-components";
 import { Card } from "../CommonUi/Card";
-
-const MyBox: any = styled.div`
-  ${display}
-  ${width}
-  ${space}
-`;
+import { DayofWeekMobile } from "./DayofWeekMobile";
+import { UploadCRA } from "./UploadCRA";
+import { MyInput } from "../CommonUi/MyInput";
+import { MyBox } from "../CommonUi/MyBox";
+import { CalandarType } from "./CalandarType";
+import { WhiteSpace } from "./WhiteSpace";
 
 type CRAProps = {
   id: string;
@@ -24,16 +22,7 @@ type CRAProps = {
   onDelete: (id: string) => void;
 };
 
-type CalandarType = {
-  nbOfday: number;
-  day: Date;
-  isWeekend: boolean;
-  isJourFerie: boolean;
-  dayOfWeek: string;
-  cra?: number;
-};
-
-const tabDays = ["lu", "ma", "me", "je", "ve", "sa", "di"];
+export const tabDays = ["lu", "ma", "me", "je", "ve", "sa", "di"];
 
 function getTotal(calendar: CalandarType[]): number {
   if (calendar.length === 0) return 0;
@@ -43,42 +32,6 @@ function getTotal(calendar: CalandarType[]): number {
     .reduce((a, b) => Number(a) + Number(b), 0);
 
   return Number(total);
-}
-
-function bourage(calendar: CalandarType[]): number[] {
-  if (!calendar.length) return [];
-
-  const firstDay = calendar[0].dayOfWeek;
-  const length = tabDays.indexOf(firstDay);
-  return Array.from({ length }, (_, k) => k);
-}
-
-function WhiteSpace({ calendar }) {
-  return (
-    <>
-      {bourage(calendar).map(c => (
-        <MyBox key={c} width={[1 / 7]} mb={3} display={["block", "none"]} />
-      ))}
-    </>
-  );
-}
-
-function DayofWeekMobile() {
-  return (
-    <>
-      {tabDays.map(day => (
-        <MyBox key={day} width={[1 / 7]} mb={3} display={["block", "none"]}>
-          <Text
-            textAlign="center"
-            p={"10px"}
-            bg={["sa", "di"].includes(day) ? "grey" : "white"}
-          >
-            {day}
-          </Text>
-        </MyBox>
-      ))}
-    </>
-  );
 }
 
 export function CRA({
@@ -93,7 +46,7 @@ export function CRA({
   const [calendar, setCalendar] = useState([] as CalandarType[]);
   const [isSaved, setIsSaved] = useState(false);
   const [isLoading, setLoading] = useState(false);
-  const [client, setClient] = useState("");
+  const [client, setClient] = useState();
   const [commentaire, setCommentaire] = useState("");
   const total = getTotal(calendar);
 
@@ -154,108 +107,112 @@ export function CRA({
   }
 
   return (
-    <Card width={1} p={3}>
-      <Flex flexDirection="column">
-        <Flex mt={3}>
-          <input
-            type="text"
-            placeholder="Nom du client"
-            style={{
-              border: "none",
-              borderBottom: "1px solid #80808063",
-              outline: "none",
-              backgroundColor: "transparent",
-              fontSize: "18px",
-              fontWeight: "bold"
-            }}
-            value={client}
-            onChange={saveClient}
-            disabled={isSaved}
-          />
-          <Box m="auto" />
-          {showTrash && (
-            <Button bg="red" onClick={deleteCRA}>
-              <DeleteIcon />
-            </Button>
-          )}
-        </Flex>
-
-        <Flex mt={3} alignItems="center">
-          {!isSaved && <Button onClick={fillAll}>Fill All</Button>}
-          <Box m="auto" />
-          <Flex alignItems="center">
-            <Text mx={1}>Total :</Text>
-            <Text fontWeight={"bold"} fontSize={3}>
-              {total}
-            </Text>
+    <Flex flexDirection="column" width={1}>
+      <UploadCRA />
+      <Text textAlign="center" fontWeight="bold">
+        ou
+      </Text>
+      <Card width={1} p={3}>
+        <Flex flexDirection="column">
+          <Flex mt={3}>
+            <input
+              type="text"
+              placeholder="Nom du client"
+              style={{
+                border: "none",
+                borderBottom: "1px solid #80808063",
+                outline: "none",
+                backgroundColor: "transparent",
+                fontSize: "18px",
+                fontWeight: "bold"
+              }}
+              value={client}
+              onChange={saveClient}
+              disabled={isSaved}
+            />
+            <Box m="auto" />
+            {showTrash && (
+              <Button bg="red" onClick={deleteCRA}>
+                <DeleteIcon />
+              </Button>
+            )}
           </Flex>
-        </Flex>
 
-        <Box width={["100%"]} mt={2}>
-          <Flex
-            justifyContent={["flex-start", "flex-start", "space-between"]}
-            flexWrap={["wrap", "wrap", "nowrap"]}
-          >
-            <DayofWeekMobile />
-            <WhiteSpace calendar={calendar} />
+          <Flex mt={3} alignItems="center">
+            {!isSaved && <Button onClick={fillAll}>Fill All</Button>}
+            <Box m="auto" />
+            <Flex alignItems="center">
+              <Text mx={1}>Total :</Text>
+              <Text fontWeight={"bold"} fontSize={3}>
+                {total}
+              </Text>
+            </Flex>
+          </Flex>
 
-            {calendar.map(c => (
-              <Box
-                key={`${id}-${month}-${year}-${c.nbOfday}`}
-                width={[1 / 7, "40px", 1]}
-                mb={3}
-                bg={c.isWeekend || c.isJourFerie ? "grey" : "white"}
-              >
-                <MyBox display={["none", "block"]}>
-                  <Text textAlign="center">{c.dayOfWeek}</Text>
-                </MyBox>
-                <Text textAlign="center" pt={1}>
-                  {c.nbOfday}
-                </Text>
-                <Box pt={1}>
-                  <input
-                    key={`${id}-${month}-${year}-${c.nbOfday}-${c.dayOfWeek}`}
-                    type="number"
-                    max="1"
-                    min="0"
-                    step="0.5"
-                    name="craValue"
-                    style={{
-                      width: "100%",
-                      height: "30px",
-                      border: "none",
-                      borderBottom: "1px solid gray",
-                      outline: "none",
-                      textAlign: "center"
-                    }}
-                    value={c.cra}
-                    onChange={e => updateCRA(c.nbOfday, e.target.value)}
-                    disabled={c.isWeekend || c.isJourFerie || isSaved}
-                  />
+          <Box width={["100%"]} mt={2}>
+            <Flex
+              justifyContent={["flex-start", "flex-start", "space-between"]}
+              flexWrap={["wrap", "wrap", "nowrap"]}
+            >
+              <DayofWeekMobile tabDays={tabDays} />
+              <WhiteSpace calendar={calendar} tabDays={tabDays} />
+
+              {calendar.map(c => (
+                <Box
+                  key={`${id}-${month}-${year}-${c.nbOfday}`}
+                  width={[1 / 7, "40px", 1]}
+                  color={c.isWeekend || c.isJourFerie ? "grey" : "black"}
+                >
+                  <MyBox display={["none", "block"]}>
+                    <Text textAlign="center">{c.dayOfWeek}</Text>
+                  </MyBox>
+                  <Text textAlign="center" p={1}>
+                    {c.nbOfday}
+                  </Text>
+                  <Box pt={1}>
+                    <MyInput
+                      key={`${id}-${month}-${year}-${c.nbOfday}-${c.dayOfWeek}`}
+                      type="number"
+                      max="1"
+                      min="0"
+                      step="0.5"
+                      name="craValue"
+                      value={c.cra}
+                      onChange={e => updateCRA(c.nbOfday, e.target.value)}
+                      disabled={c.isWeekend || c.isJourFerie || isSaved}
+                    />
+                  </Box>
                 </Box>
-              </Box>
-            ))}
+              ))}
+            </Flex>
+          </Box>
+          <Flex width={[1, "40%"]} mt={1}>
+            <textarea
+              placeholder="Commentaire, astreintes"
+              style={{
+                width: "100%",
+                height: "120px",
+                padding: "5px",
+                borderRadius: "10px",
+                marginTop: "8px"
+              }}
+              value={commentaire}
+              onChange={e => setCommentaire(e.target.value)}
+              disabled={isSaved}
+            />
           </Flex>
-        </Box>
-        <Flex width={[1, "40%"]} mt={1}>
-          <textarea
-            placeholder="Commentaire, astreintes"
-            style={{ width: "100%", height: "120px", padding: "5px" }}
-            value={commentaire}
-            onChange={e => setCommentaire(e.target.value)}
-            disabled={isSaved}
-          />
+          <Flex alignItems="center" mt={2}>
+            {console.log(client === "", "client", client)}
+            <Button onClick={saveCRA} disabled={!Boolean(client)}>
+              {isSaved ? "Modifier" : "Sauvegarder"}
+            </Button>
+            {isLoading && isSaved && <Text ml={3}>...Loading</Text>}
+            {!isLoading && isSaved && (
+              <Text ml={3}>Votre CRA a été sauvegardé</Text>
+            )}
+          </Flex>
         </Flex>
-        <Flex alignItems="center" mt={2}>
-          <Button onClick={saveCRA}>
-            {isSaved ? "Modifier" : "Sauvegarder"}
-          </Button>
-          {isLoading && isSaved && <Text ml={3}>...Loading</Text>}
-          {!isLoading && isSaved && (
-            <Text ml={3}>Votre CRA a été sauvegardé</Text>
-          )}
-        </Flex>
-      </Flex>
-    </Card>
+      </Card>
+    </Flex>
   );
 }
