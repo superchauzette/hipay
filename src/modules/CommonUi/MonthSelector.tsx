@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import format from "date-fns/format";
 import addMonths from "date-fns/add_months";
 import frLocale from "date-fns/locale/fr";
-import { Button, Text, Flex } from "rebass";
+import { Text, Flex } from "rebass";
 import LeftIcon from "@material-ui/icons/KeyboardArrowLeftRounded";
 import RightIcon from "@material-ui/icons/KeyboardArrowRightRounded";
+import { IconButton } from "@material-ui/core";
 
 export type MonthSelectorProps = {
   onChange: (dateFormatted: any, date: any) => void;
@@ -39,26 +40,16 @@ function MonthSelectorComp({ onChange }: MonthSelectorProps) {
   }
 
   return (
-    <Flex alignItems="center">
-      <Button
-        onClick={subMonth}
-        color="black"
-        bg="transparent"
-        style={{ outline: "none" }}
-      >
+    <Flex alignItems="center" color="black">
+      <IconButton onClick={subMonth} style={{ outline: "none" }}>
         <LeftIcon style={{ fontSize: "27px" }} />
-      </Button>
+      </IconButton>
       <Text mx={2} color="black" width="160px" textAlign="center">
         {formatDate(date)}
       </Text>
-      <Button
-        onClick={addMonth}
-        color="black"
-        bg="transparent"
-        style={{ outline: "none" }}
-      >
+      <IconButton onClick={addMonth} style={{ outline: "none" }}>
         <RightIcon style={{ fontSize: "27px" }} />
-      </Button>
+      </IconButton>
     </Flex>
   );
 }
