@@ -57,21 +57,19 @@ export function CRA({
     ? `users/${user.uid}/years/${year}/month/${month}/cra`
     : "";
 
-  async function init() {
-    const calendarCal = await getCalculatedCalendar(date);
-    setCalendar(calendarCal);
-
-    const craData = await getCraFirebase(id, user, month, year);
-    if (craData) {
-      if (craData.calendar) setCalendar(craData.calendar);
-      setIsSaved(craData.isSaved);
-      setClient(craData.client || localStorage.getItem("client"));
-      setFile(craData.file);
-    }
-  }
-
   useEffect(() => {
-    init();
+    (async function init() {
+      const calendarCal = await getCalculatedCalendar(date);
+      setCalendar(calendarCal);
+
+      const craData = await getCraFirebase(id, user, month, year);
+      if (craData) {
+        if (craData.calendar) setCalendar(craData.calendar);
+        setIsSaved(craData.isSaved);
+        setClient(craData.client || localStorage.getItem("client"));
+        setFile(craData.file);
+      }
+    })();
   }, [date, month, year, user, id]);
 
   function fillAll() {
@@ -95,18 +93,25 @@ export function CRA({
       await db()
         .collection(`users/${user.uid}/years/${year}/month/${month}/cra`)
         .doc(String(id))
-        .set({
-          calendar,
-          isSaved: true,
-          client,
-          commentaire,
-          file: file ? file : {}
-        });
+        .set(
+          {
+            calendar,
+            total,
+            isSaved: true,
+            client,
+            commentaire
+          },
+          { merge: true }
+        );
       setLoading(false);
     }
   }
 
-  async function saveFileInfo(fileUploaded) {
+  async function saveFileInfo(fileUploaded: {
+    name: string;
+    size: number;
+    type: string;
+  }) {
     setFile(fileUploaded);
     storage()
       .ref(pathCra + "/" + fileUploaded.name)
@@ -114,17 +119,16 @@ export function CRA({
     db()
       .collection(pathCra)
       .doc(String(id))
-      .set({
-        calendar,
-        isSaved: true,
-        ...(client && { client }),
-        commentaire,
-        file: {
-          name: fileUploaded.name,
-          size: fileUploaded.size,
-          type: fileUploaded.type
-        }
-      });
+      .set(
+        {
+          file: {
+            name: fileUploaded.name,
+            size: fileUploaded.size,
+            type: fileUploaded.type
+          }
+        },
+        { merge: true }
+      );
   }
 
   async function deleteCRA() {
@@ -145,13 +149,12 @@ export function CRA({
     db()
       .collection(`users/${user.uid}/years/${year}/month/${month}/cra`)
       .doc(String(id))
-      .set({
-        calendar,
-        isSaved: true,
-        ...(client && { client }),
-        commentaire,
-        file: {}
-      });
+      .set(
+        {
+          file: {}
+        },
+        { merge: true }
+      );
     storage()
       .ref(pathCra + "/" + file.name)
       .delete();
