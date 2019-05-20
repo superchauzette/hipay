@@ -65,7 +65,7 @@ export function CRA({
     if (craData) {
       if (craData.calendar) setCalendar(craData.calendar);
       setIsSaved(craData.isSaved);
-      setClient(craData.client);
+      setClient(craData.client || localStorage.getItem("client"));
       setFile(craData.file);
     }
   }
@@ -138,7 +138,7 @@ export function CRA({
   function saveClient(e) {
     const value = e.target.value;
     setClient(value);
-    localStorage.setItem(`client-${id}`, value);
+    localStorage.setItem(`client`, value);
   }
 
   async function deleteCRAUpload() {

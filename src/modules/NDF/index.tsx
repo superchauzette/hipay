@@ -1,13 +1,11 @@
 import React, { useState } from "react";
-import { Flex, Heading, Text, Button } from "rebass";
+import { Flex, Text, Button } from "rebass";
 import { MonthSelector, useDateChange } from "../CommonUi/MonthSelector";
 import { Header } from "../CommonUi/Header";
 import { PageWrapper } from "../CommonUi/PageWrapper";
 import TextField from "@material-ui/core/TextField";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
 import ButtonMd from "@material-ui/core/Button";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import Divider from "@material-ui/core/Divider";
@@ -15,12 +13,25 @@ import { Card } from "../CommonUi/Card";
 import IconButton from "@material-ui/core/IconButton";
 import { Delete as DeleteIcon } from "@material-ui/icons";
 import { useUserContext } from "../UserHelper";
+import { db } from "../App/fire";
 
-function MyListItem() {
+type NoteType = {
+  id: string;
+  dateaAchat?: Date;
+  type?: string;
+  description?: string;
+  montant?: number;
+  tva?: number;
+  file?: any;
+};
+
+function MyListItem({ note, onChange }) {
   const [file, setFile] = useState();
+
   function handleFile(files) {
-    console.log(files);
-    setFile(files[0]);
+    const file = files[0];
+    setFile(file);
+    onChange({ file });
   }
 
   return (
@@ -45,6 +56,8 @@ function MyListItem() {
           InputLabelProps={{
             shrink: true
           }}
+          value={note.dateAchat}
+          onChange={e => onChange({ dateAchat: e.target.value })}
         />
         <TextField
           id="Type"
@@ -54,6 +67,8 @@ function MyListItem() {
           InputLabelProps={{
             shrink: true
           }}
+          value={note.type}
+          onChange={e => onChange({ type: e.target.value })}
         />
         <TextField
           id="description"
@@ -63,15 +78,19 @@ function MyListItem() {
           InputLabelProps={{
             shrink: true
           }}
+          value={note.description}
+          onChange={e => onChange({ description: e.target.value })}
         />
         <TextField
           id="description"
-          label="motant"
+          label="montant"
           type="number"
           style={{ marginRight: "10px", marginBottom: "10px" }}
           InputLabelProps={{
             shrink: true
           }}
+          value={note.montant}
+          onChange={e => onChange({ montant: e.target.value })}
         />
         <TextField
           id="description"
@@ -81,22 +100,26 @@ function MyListItem() {
           InputLabelProps={{
             shrink: true
           }}
+          value={note.tva}
+          onChange={e => onChange({ tva: e.target.value })}
         />
-        <input
-          accept="image/*"
-          id="contained-button-file"
-          // multiple
-          type="file"
-          style={{ display: "none" }}
-          onChange={e => handleFile(e.target.files)}
-        />
-        <label htmlFor="contained-button-file">
-          <ButtonMd variant="contained" component="span">
-            Upload
-            <CloudUploadIcon style={{ marginLeft: "8px" }} />
-          </ButtonMd>
-        </label>
-        <Text>{file && file.name}</Text>
+        <Flex flexDirection="column" alignItems="center">
+          <input
+            accept="image/*"
+            id="contained-button-file"
+            // multiple
+            type="file"
+            style={{ display: "none" }}
+            onChange={e => handleFile(e.target.files)}
+          />
+          <label htmlFor="contained-button-file">
+            <ButtonMd variant="contained" component="span">
+              Upload
+              <CloudUploadIcon style={{ marginLeft: "8px" }} />
+            </ButtonMd>
+          </label>
+          <Text mt={2}>{file && file.name}</Text>
+        </Flex>
 
         <IconButton aria-label="Delete">
           <DeleteIcon />
@@ -108,18 +131,27 @@ function MyListItem() {
 
 export function NoteDeFrais() {
   const user = useUserContext();
-  const { handleChangeMonth } = useDateChange();
-  const [notes, setNotes] = useState([] as number[]);
+  const { month, year, handleChangeMonth } = useDateChange();
+  const [notes, setNotes] = useState([] as NoteType[]);
 
-  // const pathCra = user
-  //   ? `users/${user.uid}/years/${year}/month/${month}/cra`
-  //   : "";
+  const pathNDF =
+    user && year ? `users/${user.uid}/years/${year}/month/${month}/ndf` : "";
 
   function addNote() {
-    setNotes(n => [...n, 1]);
+    setNotes(n => [...n, { id: "2" }]);
   }
 
-  function saveNotes() {}
+  async function saveNotes() {
+    if (pathNDF) {
+      await db()
+        .collection(pathNDF)
+        .add(notes);
+    }
+  }
+
+  function handleChange(id: string, obj: NoteType) {
+    setNotes(pnotes => pnotes.map(n => (n.id === id ? { ...n, ...obj } : n)));
+  }
 
   return (
     <PageWrapper>
@@ -136,9 +168,15 @@ export function NoteDeFrais() {
       </Flex>
       <Card width={1}>
         <List>
-          {notes.map(n => (
+          {!notes.length && (
+            <Text textAlign="center">Ajouter vos notes de frais</Text>
+          )}
+          {notes.map(note => (
             <>
-              <MyListItem />
+              <MyListItem
+                note={note}
+                onChange={n => handleChange(note.id, n)}
+              />
               <Divider />
             </>
           ))}

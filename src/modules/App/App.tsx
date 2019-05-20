@@ -45,16 +45,17 @@ function HeaderBar({ authUser }) {
   );
 }
 
-export function App() {
-  const { authUser, isSignedOutUser } = useAuth();
+function AuthRoute({ isLogged, component: Component, ...props }) {
+  return (
+    <Route
+      render={() => (isLogged ? <Redirect to="/login" /> : <Component />)}
+      {...props}
+    />
+  );
+}
 
-  if (isSignedOutUser) {
-    return (
-      <Router>
-        <Redirect to="/login" />
-      </Router>
-    );
-  }
+export function App() {
+  const { authUser, isLogged } = useAuth();
 
   return (
     <UserProvider value={authUser}>
@@ -67,17 +68,28 @@ export function App() {
           >
             <HeaderBar authUser={authUser} />
             <Menu />
-            {/* <Flex mr={2} justifyContent="flex-end" width={1}>
-              <Avatar src={authUser && authUser.photoURL} m={2} />
-            </Flex> */}
           </Flex>
           <main>
-            <Route exact path="/" component={Dashboard} />
+            <AuthRoute
+              exact
+              path="/"
+              isLogged={isLogged}
+              component={Dashboard}
+            />
             <Route path="/login" component={Login} />
-            <Route path="/cra" component={CRAS} />
-            <Route path="/ndf" component={NoteDeFrais} />
-            <Route path="/ik" component={IK} />
-            <Route path="/charges" component={Charges} />
+
+            <AuthRoute path="/cra" isLogged={isLogged} component={CRAS} />
+            <AuthRoute
+              path="/ndf"
+              isLogged={isLogged}
+              component={NoteDeFrais}
+            />
+            <AuthRoute path="/ik" isLogged={isLogged} component={IK} />
+            <AuthRoute
+              path="/charges"
+              isLogged={isLogged}
+              component={Charges}
+            />
           </main>
         </Router>
       </Theme>

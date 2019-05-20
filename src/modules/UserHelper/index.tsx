@@ -19,7 +19,7 @@ export const useUserContext = () => useContext<userType>(contextUser);
 
 export function useAuth() {
   const [authUser, setUser] = useState(undefined as userType | undefined);
-  const [isSignedOutUser, setIsSignedOutUser] = useState(false);
+  const [isLogged, setIsLogged] = useState(false);
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged(function(user) {
@@ -39,10 +39,10 @@ export function useAuth() {
         };
         setUser(data);
       } else {
-        setIsSignedOutUser(true);
+        setIsLogged(true);
       }
     });
   }, []);
 
-  return { authUser, isSignedOutUser };
+  return { authUser, isLogged };
 }

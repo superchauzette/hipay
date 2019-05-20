@@ -13,7 +13,8 @@ export function Login() {
 
   async function doLogin() {
     const provider = new firebase.auth.GoogleAuthProvider();
-    const result = await firebase.auth().signInWithPopup(provider);
+    await firebase.auth().signInWithRedirect(provider);
+    const result = await firebase.auth().getRedirectResult();
     // const token = result.credential && result.credential.accessToken;
     const user = result.user;
     setUser(user);
