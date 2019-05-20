@@ -1,9 +1,16 @@
 import React from "react";
-import firebase from "firebase";
+import firebase from "firebase/app";
 import { Redirect } from "react-router";
+import { Button } from "@material-ui/core";
+import { Flex } from "rebass";
 
-async function useLogin() {
+export function Login() {
   const [user, setUser] = React.useState();
+
+  if (user) {
+    return <Redirect to="/" />;
+  }
+
   async function doLogin() {
     const provider = new firebase.auth.GoogleAuthProvider();
     const result = await firebase.auth().signInWithPopup(provider);
@@ -12,23 +19,14 @@ async function useLogin() {
     setUser(user);
   }
 
-  React.useEffect(() => {
-    doLogin();
-  }, []);
-
-  return user;
-}
-
-export function Login() {
-  const user = useLogin();
-
-  if (user) {
-    return <Redirect to="/" />;
-  }
-
   return (
-    <div>
-      <h1>Login </h1>
-    </div>
+    <Flex p={3} flexDirection="column">
+      <h1>Login</h1>
+      <div>
+        <Button onClick={doLogin} color="primary" variant="raised">
+          Google Login
+        </Button>
+      </div>
+    </Flex>
   );
 }

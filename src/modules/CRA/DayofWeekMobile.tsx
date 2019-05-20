@@ -16,9 +16,8 @@ export function DayofWeekMobile({ tabDays }) {
             textAlign="center"
             p={"10px"}
             bg={["sa", "di"].includes(day) ? "grey" : "white"}
-            style={{ borderRadius: "50%" }}
-            width={8 / 10}
-            height={8 / 10}
+            style={{ borderRadius: "50%", height: "95%" }}
+            width={9 / 10}
           >
             {day}
           </Text>

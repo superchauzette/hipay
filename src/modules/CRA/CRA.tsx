@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Flex, Box, Text, Button } from "rebass";
+import { Flex, Box, Text } from "rebass";
 import { Delete as DeleteIcon } from "@material-ui/icons";
 import { getCraFirebase, getCalculatedCalendar } from "./service";
 import { userType } from "../UserHelper";
@@ -12,6 +12,7 @@ import { MyBox } from "../CommonUi/MyBox";
 import { CalandarType } from "./CalandarType";
 import { WhiteSpace } from "./WhiteSpace";
 import IconButton from "@material-ui/core/IconButton";
+import { Button } from "@material-ui/core";
 
 type CRAProps = {
   id: string;
@@ -94,7 +95,13 @@ export function CRA({
       await db()
         .collection(`users/${user.uid}/years/${year}/month/${month}/cra`)
         .doc(String(id))
-        .set({ calendar, isSaved: true, client, commentaire });
+        .set({
+          calendar,
+          isSaved: true,
+          client,
+          commentaire,
+          file: file ? file : {}
+        });
       setLoading(false);
     }
   }
@@ -108,6 +115,10 @@ export function CRA({
       .collection(pathCra)
       .doc(String(id))
       .set({
+        calendar,
+        isSaved: true,
+        ...(client && { client }),
+        commentaire,
         file: {
           name: fileUploaded.name,
           size: fileUploaded.size,
@@ -130,12 +141,30 @@ export function CRA({
     localStorage.setItem(`client-${id}`, value);
   }
 
+  async function deleteCRAUpload() {
+    db()
+      .collection(`users/${user.uid}/years/${year}/month/${month}/cra`)
+      .doc(String(id))
+      .set({
+        calendar,
+        isSaved: true,
+        ...(client && { client }),
+        commentaire,
+        file: {}
+      });
+    storage()
+      .ref(pathCra + "/" + file.name)
+      .delete();
+    setFile({});
+  }
+
   return (
     <Flex flexDirection="column" width={1}>
       <UploadCRA
         key={`${id}-${month}-${year}`}
         file={file}
         onFile={saveFileInfo}
+        onDelete={deleteCRAUpload}
       />
       <Text textAlign="center" fontWeight="bold">
         ou
@@ -161,13 +190,17 @@ export function CRA({
             <Box m="auto" />
             {showTrash && (
               <IconButton aria-label="Delete" onClick={deleteCRA}>
-                <DeleteIcon fontSize="large" />
+                <DeleteIcon />
               </IconButton>
             )}
           </Flex>
 
           <Flex mt={3} alignItems="center">
-            {!isSaved && <Button onClick={fillAll}>Fill All</Button>}
+            {!isSaved && (
+              <Button variant="outlined" onClick={fillAll}>
+                Fill All
+              </Button>
+            )}
             <Box m="auto" />
             <Flex alignItems="center">
               <Text mx={1}>Total :</Text>
@@ -230,8 +263,12 @@ export function CRA({
             />
           </Flex>
           <Flex alignItems="center" mt={2}>
-            {console.log(client === "", "client", client)}
-            <Button onClick={saveCRA} disabled={!Boolean(client)}>
+            <Button
+              variant="raised"
+              color="primary"
+              onClick={saveCRA}
+              disabled={!Boolean(client)}
+            >
               {isSaved ? "Modifier" : "Sauvegarder"}
             </Button>
             {isLoading && isSaved && <Text ml={3}>...Loading</Text>}

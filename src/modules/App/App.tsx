@@ -10,8 +10,10 @@ import { NoteDeFrais } from "../NDF";
 import { IK } from "../IK";
 import { Charges } from "../Charges";
 import { Avatar } from "../CommonUi/Avatar";
-import { Flex } from "rebass";
+import { Flex, Box, Text } from "rebass";
 import Button from "@material-ui/core/Button";
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
 
 const LinkMenu = props => (
   <Button variant="outlined" size="small" component={NavLink} {...props} />
@@ -19,7 +21,7 @@ const LinkMenu = props => (
 
 function Menu() {
   return (
-    <Flex flexWrap="wrap">
+    <Flex flexWrap="wrap" mt={2}>
       <LinkMenu exact to="/">
         Dashboard
       </LinkMenu>
@@ -28,6 +30,18 @@ function Menu() {
       <LinkMenu to="/ik">IK</LinkMenu>
       <LinkMenu to="/charges">CHARGES</LinkMenu>
     </Flex>
+  );
+}
+
+function HeaderBar({ authUser }) {
+  return (
+    <AppBar position="static">
+      <Toolbar>
+        <Text fontSize={3}>Hipay</Text>
+        <Box m={"auto"} />
+        <Avatar src={authUser && authUser.photoURL} m={2} />
+      </Toolbar>
+    </AppBar>
   );
 }
 
@@ -50,8 +64,8 @@ export function App() {
             alignItems="center"
             justifyContent="space-between"
             flexWrap="wrap"
-            p={1}
           >
+            <HeaderBar authUser={authUser} />
             <Menu />
             {/* <Flex mr={2} justifyContent="flex-end" width={1}>
               <Avatar src={authUser && authUser.photoURL} m={2} />
