@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Flex, Text, Button } from "rebass";
 import { MonthSelector, useDateChange } from "../CommonUi/MonthSelector";
 import { Header } from "../CommonUi/Header";
@@ -16,7 +16,7 @@ import { useUserContext } from "../UserHelper";
 import { db } from "../App/fire";
 
 type NoteType = {
-  id: string;
+  id: number;
   dateaAchat?: Date;
   type?: string;
   description?: string;
@@ -25,7 +25,7 @@ type NoteType = {
   file?: any;
 };
 
-function MyListItem({ note, onChange }) {
+function MyListItem({ note, onChange, onDelete }) {
   const [file, setFile] = useState();
 
   function handleFile(files) {
@@ -35,7 +35,7 @@ function MyListItem({ note, onChange }) {
   }
 
   return (
-    <ListItem>
+    <ListItem key={note.id}>
       <form
         noValidate
         style={{
@@ -121,7 +121,7 @@ function MyListItem({ note, onChange }) {
           <Text mt={2}>{file && file.name}</Text>
         </Flex>
 
-        <IconButton aria-label="Delete">
+        <IconButton aria-label="Delete" onClick={() => onDelete(note.id)}>
           <DeleteIcon />
         </IconButton>
       </form>
@@ -137,8 +137,15 @@ export function NoteDeFrais() {
   const pathNDF =
     user && year ? `users/${user.uid}/years/${year}/month/${month}/ndf` : "";
 
+  useEffect(() => {
+    setNotes([]);
+  }, [month, year]);
+
   function addNote() {
-    setNotes(n => [...n, { id: "2" }]);
+    setNotes(n => {
+      const id = n.length ? n[n.length - 1].id + 1 : 0;
+      return [...n, { id }];
+    });
   }
 
   async function saveNotes() {
@@ -149,7 +156,9 @@ export function NoteDeFrais() {
     }
   }
 
-  function handleChange(id: string, obj: NoteType) {
+  function deleteNote(id: number) {}
+
+  function handleChange(id: number, obj: NoteType) {
     setNotes(pnotes => pnotes.map(n => (n.id === id ? { ...n, ...obj } : n)));
   }
 
@@ -171,11 +180,12 @@ export function NoteDeFrais() {
           {!notes.length && (
             <Text textAlign="center">Ajouter vos notes de frais</Text>
           )}
-          {notes.map(note => (
+          {notes.map((note, index) => (
             <>
               <MyListItem
                 note={note}
-                onChange={n => handleChange(note.id, n)}
+                onChange={n => handleChange(index, n)}
+                onDelete={deleteNote}
               />
               <Divider />
             </>
