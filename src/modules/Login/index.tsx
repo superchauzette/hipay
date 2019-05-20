@@ -5,9 +5,7 @@ import { Button } from "@material-ui/core";
 import { Flex } from "rebass";
 
 export function Login() {
-  const [user, setUser] = React.useState();
-
-  if (user) {
+  if (firebase.auth().currentUser) {
     return <Redirect to="/" />;
   }
 
@@ -17,7 +15,6 @@ export function Login() {
     const result = await firebase.auth().getRedirectResult();
     // const token = result.credential && result.credential.accessToken;
     const user = result.user;
-    setUser(user);
   }
 
   return (
