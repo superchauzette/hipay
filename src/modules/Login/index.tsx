@@ -1,20 +1,16 @@
 import React from "react";
-import firebase from "firebase/app";
 import { Redirect } from "react-router";
 import { Button } from "@material-ui/core";
 import { Flex } from "rebass";
+import { auth, googleAuth } from "../FirebaseHelper";
 
 export function Login() {
-  if (firebase.auth().currentUser) {
+  if (auth().currentUser) {
     return <Redirect to="/" />;
   }
 
   async function doLogin() {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    await firebase.auth().signInWithRedirect(provider);
-    const result = await firebase.auth().getRedirectResult();
-    // const token = result.credential && result.credential.accessToken;
-    const user = result.user;
+    await googleAuth();
   }
 
   return (

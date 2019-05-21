@@ -1,5 +1,5 @@
 import React, { useState, useEffect, createContext, useContext } from "react";
-import { auth } from "../FirebaseHelper";
+import { auth, db } from "../FirebaseHelper";
 
 export type userType = {
   uid: string;
@@ -17,6 +17,22 @@ export const UserProvider = props => <contextUser.Provider {...props} />;
 
 export const useUserContext = () => useContext<userType>(contextUser);
 
+export function extractUser(user) {
+  const photoURL = user.photoURL;
+  const isAnonymous = user.isAnonymous;
+  const providerData = user.providerData;
+
+  return {
+    uid: user.uid,
+    displayName: user.displayName,
+    email: user.email,
+    emailVerified: user.emailVerified,
+    photoURL,
+    isAnonymous,
+    providerData
+  };
+}
+
 export function useAuth() {
   const [authUser, setUser] = useState(undefined as userType | undefined);
   const [isLogged, setIsLogged] = useState(false);
@@ -25,19 +41,12 @@ export function useAuth() {
     auth().onAuthStateChanged(function(user) {
       if (user) {
         // User is signed in.
-        const photoURL = user.photoURL;
-        const isAnonymous = user.isAnonymous;
-        const providerData = user.providerData;
-        const data: userType = {
-          uid: user.uid,
-          displayName: user.displayName,
-          email: user.email,
-          emailVerified: user.emailVerified,
-          photoURL,
-          isAnonymous,
-          providerData
-        };
+        const data: userType = extractUser(user);
         setUser(data);
+        db()
+          .collection("users")
+          .doc(data.uid)
+          .set({ info: data }, { merge: true });
       } else {
         setIsLogged(true);
       }

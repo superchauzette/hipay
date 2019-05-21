@@ -29,6 +29,13 @@ export const auth = () => firebase.auth();
 export const db = () => firebase.firestore();
 export const storage = () => firebase.storage();
 
+export async function googleAuth() {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  await firebase.auth().signInWithRedirect(provider);
+  const result = await firebase.auth().getRedirectResult();
+  return result;
+}
+
 function appDataCollection({ user, year, month }: AppCollection) {
   return db()
     .collection("users")
