@@ -78,7 +78,9 @@ export function getCraIdsFirebase({ user, year, month }) {
 
 export async function addNewCalendarFirebase({ date, user, month, year }) {
   const newCalendar = await getCalculatedCalendar(date);
-  const { id } = await calendarCol({ user, month, year }).add(newCalendar);
+  const { id } = await calendarCol({ user, month, year }).add({
+    calendar: newCalendar
+  });
   return id;
 }
 

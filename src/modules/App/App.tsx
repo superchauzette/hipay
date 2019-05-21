@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 import { useAuth, UserProvider } from "../UserHelper";
-import { Theme } from "../Theme";
+import { Theme, blue } from "../Theme";
 import { CRAS } from "../CRA";
 import { Login } from "../Login";
 import { NavLink } from "../CommonUi/NavLink";
@@ -35,7 +35,7 @@ function Menu() {
 
 function HeaderBar({ authUser }) {
   return (
-    <AppBar position="static">
+    <AppBar position="static" style={{ backgroundColor: blue }}>
       <Toolbar>
         <Text fontSize={3}>Hipay</Text>
         <Box m={"auto"} />

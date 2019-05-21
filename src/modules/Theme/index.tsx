@@ -5,9 +5,9 @@ type ThemeProp = {
   children: any;
 };
 
-const blue = "#07c";
-const lightgray = "#f6f6ff";
-const black = "rgb(72, 72, 72)";
+export const blue = "#07c";
+export const lightgray = "#f6f6ff";
+export const black = "rgb(72, 72, 72)";
 
 const theme = {
   fontSizes: [12, 14, 16, 24, 32, 48, 64],
