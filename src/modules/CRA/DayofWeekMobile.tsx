@@ -1,6 +1,6 @@
 import React from "react";
 import { Text } from "rebass";
-import { MyBox } from "../CommonUi/MyBox";
+import { MyBox } from "../CommonUi";
 
 type DayofWeekMobileProps = {
   tabDays: string[];

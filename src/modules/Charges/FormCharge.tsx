@@ -1,9 +1,6 @@
 import React, { useState } from "react";
-import { Delete as DeleteIcon } from "@material-ui/icons";
-import { IconButton } from "@material-ui/core";
 import { Text } from "rebass";
-import { BtnUpload } from "../CommonUi/BtnUpload";
-import { TextField } from "../CommonUi/TextField";
+import { TextField, BtnUpload, BtnDelete } from "../CommonUi";
 import { ChargeType, FileType } from "./types";
 
 type FormIkProps = {
@@ -56,13 +53,7 @@ export function FormCharge({
         onChange={e => handleFile(e.target.files)}
       />
       <Text mt={2}>{file && file.name}</Text>
-      <IconButton
-        aria-label="Delete"
-        onClick={() => onDelete(charge.id)}
-        disabled={disabled}
-      >
-        <DeleteIcon />
-      </IconButton>
+      <BtnDelete onClick={() => onDelete(charge.id)} disabled={disabled} />
     </form>
   );
 }

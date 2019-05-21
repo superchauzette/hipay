@@ -2,7 +2,7 @@ import React from "react";
 import { Flex, Text } from "rebass";
 import IconButton from "@material-ui/core/IconButton";
 import { Delete as DeleteIcon } from "@material-ui/icons";
-import { BtnUpload } from "../CommonUi/BtnUpload";
+import { BtnUpload } from "../CommonUi";
 
 export function UploadCRA({ file, key, onFile, onDelete }) {
   function handleFile(files) {

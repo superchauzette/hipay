@@ -1,9 +1,6 @@
 import React, { useState } from "react";
-import { Delete as DeleteIcon } from "@material-ui/icons";
-import { IconButton } from "@material-ui/core";
 import { Flex, Text } from "rebass";
-import { BtnUpload } from "../CommonUi/BtnUpload";
-import { TextField } from "../CommonUi/TextField";
+import { BtnUpload, BtnDelete, TextField } from "../CommonUi";
 import { NoteType, FileType } from "./types";
 
 type FormNDFProps = {
@@ -89,13 +86,7 @@ export function FormNDF({
         <Text mt={2}>{file && file.name}</Text>
       </Flex>
 
-      <IconButton
-        aria-label="Delete"
-        onClick={() => onDelete(note.id)}
-        disabled={disabled}
-      >
-        <DeleteIcon />
-      </IconButton>
+      <BtnDelete onClick={() => onDelete(note.id)} disabled={disabled} />
     </form>
   );
 }

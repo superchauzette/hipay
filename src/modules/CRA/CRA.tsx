@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Flex, Box, Text } from "rebass";
-import { Delete as DeleteIcon } from "@material-ui/icons";
 import {
   getCraFirebase,
   getCalculatedCalendar,
@@ -8,14 +7,11 @@ import {
   storageCRA
 } from "./service";
 import { userType } from "../UserHelper";
-import { Card } from "../CommonUi/Card";
+import { Card, MyInput, MyBox, BtnDelete } from "../CommonUi";
 import { DayofWeekMobile } from "./DayofWeekMobile";
 import { UploadCRA } from "./UploadCRA";
-import { MyInput } from "../CommonUi/MyInput";
-import { MyBox } from "../CommonUi/MyBox";
 import { CalandarType } from "./CalandarType";
 import { WhiteSpace } from "./WhiteSpace";
-import IconButton from "@material-ui/core/IconButton";
 import { Button } from "@material-ui/core";
 
 type CRAProps = {
@@ -182,11 +178,7 @@ export function CRA({
               disabled={isSaved}
             />
             <Box m="auto" />
-            {showTrash && (
-              <IconButton aria-label="Delete" onClick={deleteCRA}>
-                <DeleteIcon />
-              </IconButton>
-            )}
+            {showTrash && <BtnDelete onClick={deleteCRA} />}
           </Flex>
 
           <Flex mt={3} alignItems="center">

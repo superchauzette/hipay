@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { addNewCalendarFirebase, getCraIdsFirebase } from "./service";
-import { MonthSelector, useDateChange } from "../CommonUi/MonthSelector";
 import { useUserContext } from "../UserHelper";
 import { CRA } from "./CRA";
-import { Header } from "../CommonUi/Header";
-import { PageWrapper } from "../CommonUi/PageWrapper";
-import { BtnAdd } from "../CommonUi/BtnAdd";
+import {
+  Header,
+  PageWrapper,
+  BtnAdd,
+  MonthSelector,
+  useDateChange
+} from "../CommonUi";
 
 export function CRAS() {
   const user = useUserContext();

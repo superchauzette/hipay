@@ -1,9 +1,6 @@
 import React, { useState } from "react";
-import { Delete as DeleteIcon } from "@material-ui/icons";
-import { IconButton } from "@material-ui/core";
 import { Flex, Text } from "rebass";
-import { BtnUpload } from "../CommonUi/BtnUpload";
-import { TextField } from "../CommonUi/TextField";
+import { TextField, BtnUpload, BtnDelete } from "../CommonUi";
 import { ikType, FileType } from "./types";
 
 type FormIkProps = {
@@ -98,13 +95,7 @@ export function FormIK({
         <Text mt={2}>{file && file.name}</Text>
       </Flex>
 
-      <IconButton
-        aria-label="Delete"
-        onClick={() => onDelete(ik.id)}
-        disabled={disabled}
-      >
-        <DeleteIcon />
-      </IconButton>
+      <BtnDelete onClick={() => onDelete(ik.id)} disabled={disabled} />
     </form>
   );
 }

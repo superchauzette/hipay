@@ -9,11 +9,9 @@ import { Dashboard } from "../Dashboard";
 import { NoteDeFrais } from "../NDF";
 import { IK } from "../IK";
 import { Charges } from "../Charges";
-import { Avatar } from "../CommonUi/Avatar";
+import { Avatar } from "../CommonUi";
 import { Flex, Box, Text } from "rebass";
-import Button from "@material-ui/core/Button";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
+import { AppBar, Button, Toolbar } from "@material-ui/core";
 
 const LinkMenu = props => (
   <Button variant="outlined" size="small" component={NavLink} {...props} />
