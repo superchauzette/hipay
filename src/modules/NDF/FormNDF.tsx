@@ -1,10 +1,8 @@
 import React, { useState } from "react";
-import {
-  Delete as DeleteIcon,
-  CloudUpload as CloudUploadIcon
-} from "@material-ui/icons";
-import { TextField, IconButton, Button } from "@material-ui/core";
+import { Delete as DeleteIcon } from "@material-ui/icons";
+import { TextField, IconButton } from "@material-ui/core";
 import { Flex, Text } from "rebass";
+import { BtnUpload } from "../CommonUi/BtnUpload";
 import { NoteType, FileType } from "./types";
 
 type FormNDFProps = {
@@ -105,20 +103,11 @@ export function FormNDF({
         onChange={e => onChange({ tva: Number(e.target.value) })}
       />
       <Flex flexDirection="column" alignItems="center">
-        <input
-          accept="image/*"
-          id="contained-button-file"
-          // multiple
-          type="file"
-          style={{ display: "none" }}
+        <BtnUpload
+          id={`btn-ik-upload-${note.id}`}
+          disabled={disabled}
           onChange={e => handleFile(e.target.files)}
         />
-        <label htmlFor="contained-button-file">
-          <Button variant="contained" component="span" disabled={disabled}>
-            Upload
-            <CloudUploadIcon style={{ marginLeft: "8px" }} />
-          </Button>
-        </label>
         <Text mt={2}>{file && file.name}</Text>
       </Flex>
 

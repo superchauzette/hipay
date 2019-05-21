@@ -61,11 +61,8 @@ export function CRA({
     (async function init() {
       const calendarCal = await getCalculatedCalendar(date);
       setCalendar(calendarCal);
-
       const craData = await getCraFirebase(id, user, month, year);
-      console.log(craData);
       if (craData) {
-        console.log("craData");
         if (craData.calendar) setCalendar(craData.calendar);
         setIsSaved(craData.isSaved);
         setClient(craData.client || localStorage.getItem("client"));

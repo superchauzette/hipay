@@ -11,6 +11,8 @@ import { Card } from "../CommonUi/Card";
 import { useUserContext } from "../UserHelper";
 import { FormNDF } from "./FormNDF";
 import { appDoc, storageRef } from "../FirebaseHelper";
+import { CircularProgress } from "@material-ui/core";
+import { BtnAdd } from "../CommonUi/BtnAdd";
 
 type NoteType = {
   id?: string;
@@ -43,6 +45,12 @@ function ndfDoc({ user, year, month }) {
   return appDoc().ndf({ user, year, month });
 }
 
+function notesCol({ user, year, month }) {
+  return appDoc()
+    .ndf({ user, year, month })
+    .collection("notes");
+}
+
 function getNotes(query): NoteType[] {
   const notesData = [] as any[];
   query.forEach(docData => {
@@ -54,6 +62,7 @@ function getNotes(query): NoteType[] {
 export function NoteDeFrais() {
   const user = useUserContext();
   const { month, year, handleChangeMonth } = useDateChange();
+  const [isLoading, setLoading] = useState(false);
   const [notes, setNotes] = useState([] as NoteType[]);
   const [isValid, setIsValid] = useState(false);
   const total = getTotal(notes);
@@ -61,23 +70,21 @@ export function NoteDeFrais() {
   useEffect(() => {
     (async function init() {
       if (user) {
-        ndfDoc({ user, year, month })
-          .collection("notes")
+        setLoading(true);
+        notesCol({ user, year, month })
           .get()
           .then(getNotes)
           .then(setNotes);
         const doc = await ndfDoc({ user, year, month }).get();
-        console.log(doc.data());
         const isValidData = (doc.data() || {}).isValid;
         setIsValid(isValidData);
+        setLoading(false);
       }
     })();
   }, [user, month, year]);
 
   async function addNote() {
-    const { id } = await ndfDoc({ user, year, month })
-      .collection("notes")
-      .add({});
+    const { id } = await notesCol({ user, year, month }).add({});
     setNotes(n => [...n, { id }]);
   }
 
@@ -87,8 +94,7 @@ export function NoteDeFrais() {
   }
 
   function deleteNote(id: string | undefined) {
-    ndfDoc({ user, year, month })
-      .collection("notes")
+    notesCol({ user, year, month })
       .doc(id)
       .delete();
     setNotes(n => n.filter(v => v.id !== id));
@@ -96,8 +102,7 @@ export function NoteDeFrais() {
 
   function handleChange(id: string | undefined, note: NoteType) {
     setNotes(pnotes => pnotes.map(n => (n.id === id ? { ...n, ...note } : n)));
-    ndfDoc({ user, year, month })
-      .collection("notes")
+    notesCol({ user, year, month })
       .doc(id)
       .update(note);
     ndfDoc({ user, year, month }).set({ total }, { merge: true });
@@ -114,20 +119,17 @@ export function NoteDeFrais() {
       <Header title="Note de Frais" />
       <MonthSelector onChange={handleChangeMonth} />
 
-      <Flex width={1} mb={3} justifyContent="space-between">
-        <Button
-          variant="raised"
-          color="primary"
-          onClick={addNote}
-          disabled={isValid}
-        >
-          Add
-        </Button>
+      <Flex width={1} mb={3} justifyContent="flex-end">
         <Text>Total: {total}€</Text>
       </Flex>
       <Card width={1}>
         <List>
-          {!notes.length && (
+          {isLoading && (
+            <Flex width={1} justifyContent="center">
+              <CircularProgress />
+            </Flex>
+          )}
+          {!notes.length && !isLoading && (
             <Text textAlign="center">Ajouter vos notes de frais</Text>
           )}
           {notes.map(note => (
@@ -146,11 +148,12 @@ export function NoteDeFrais() {
           ))}
         </List>
       </Card>
-      <Flex justifyContent="flex-end" width={1} mt={3}>
+      <Flex width={1} mt={3}>
         <Button variant="raised" color="primary" onClick={validNotes}>
           {isValid ? "Modifier" : "Valider"}
         </Button>
       </Flex>
+      <BtnAdd onClick={addNote} disabled={isValid} />
     </PageWrapper>
   );
 }

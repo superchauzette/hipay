@@ -1,9 +1,8 @@
 import React from "react";
 import { Flex, Text } from "rebass";
-import ButtonMd from "@material-ui/core/Button";
-import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import IconButton from "@material-ui/core/IconButton";
 import { Delete as DeleteIcon } from "@material-ui/icons";
+import { BtnUpload } from "../CommonUi/BtnUpload";
 
 export function UploadCRA({ file, key, onFile, onDelete }) {
   function handleFile(files) {
@@ -18,20 +17,10 @@ export function UploadCRA({ file, key, onFile, onDelete }) {
       </Text>
       <Flex alignItems="center" flexDirection="column">
         <Flex width={"300px"} justifyContent="space-around" alignItems="center">
-          <input
-            accept="image/*"
-            id="contained-button-file"
-            // multiple
-            type="file"
-            style={{ display: "none" }}
+          <BtnUpload
+            id={key || "btn- cra-update"}
             onChange={e => handleFile(e.target.files)}
           />
-          <label htmlFor="contained-button-file">
-            <ButtonMd variant="contained" component="span">
-              Upload
-              <CloudUploadIcon style={{ marginLeft: "8px" }} />
-            </ButtonMd>
-          </label>
           {file && file.name && (
             <Flex ml={2}>
               <IconButton aria-label="Delete" onClick={onDelete}>
@@ -40,7 +29,6 @@ export function UploadCRA({ file, key, onFile, onDelete }) {
             </Flex>
           )}
         </Flex>
-
         <Text mt={3}>{file && file.name}</Text>
       </Flex>
     </Flex>
