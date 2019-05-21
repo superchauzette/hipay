@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { Flex, Text } from "rebass";
 import { MonthSelector, useDateChange } from "../CommonUi/MonthSelector";
-import { Header } from "../CommonUi/Header";
-import { PageWrapper } from "../CommonUi/PageWrapper";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import Button from "@material-ui/core/Button";
-import Divider from "@material-ui/core/Divider";
-import { Card } from "../CommonUi/Card";
+import {
+  List,
+  ListItem,
+  Button,
+  Divider,
+  CircularProgress
+} from "@material-ui/core";
+import { Card, Header, BtnAdd, PageWrapper } from "../CommonUi";
 import { useUserContext } from "../UserHelper";
 import { FormCharge } from "./FormCharge";
 import { appDoc, storageRef } from "../FirebaseHelper";
 import { ChargeType, FileType } from "./types";
-import { BtnAdd } from "../CommonUi/BtnAdd";
 
 function chargesDoc({ user, year, month }) {
   return appDoc().charges({ user, year, month });
@@ -35,10 +35,12 @@ export function Charges() {
   const { month, year, handleChangeMonth } = useDateChange();
   const [charges, setCharges] = useState([] as ChargeType[]);
   const [isValid, setIsValid] = useState(false);
+  const [isLoading, setLoading] = useState(false);
 
   useEffect(() => {
     (async function init() {
       if (user) {
+        setLoading(true);
         chargesCol({ user, year, month })
           .get()
           .then(getCharges)
@@ -46,6 +48,7 @@ export function Charges() {
         const doc = await chargesDoc({ user, year, month }).get();
         const isValidData = (doc.data() || {}).isValid;
         setIsValid(isValidData);
+        setLoading(false);
       }
     })();
   }, [user, month, year]);
@@ -90,7 +93,12 @@ export function Charges() {
 
       <Card width={1}>
         <List>
-          {!charges.length && (
+          {isLoading && (
+            <Flex width={1} justifyContent="center">
+              <CircularProgress />
+            </Flex>
+          )}
+          {!charges.length && !isLoading && (
             <Text textAlign="center">Ajouter vos charges</Text>
           )}
           {charges.map(charge => (

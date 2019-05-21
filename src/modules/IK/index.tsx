@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { Flex, Text } from "rebass";
 import { MonthSelector, useDateChange } from "../CommonUi/MonthSelector";
-import { Header } from "../CommonUi/Header";
-import { PageWrapper } from "../CommonUi/PageWrapper";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import Button from "@material-ui/core/Button";
-import Divider from "@material-ui/core/Divider";
-import { Card } from "../CommonUi/Card";
+import { Card, Header, PageWrapper } from "../CommonUi";
 import { useUserContext } from "../UserHelper";
 import { FormIK } from "./FormIK";
 import { appDoc, storageRef } from "../FirebaseHelper";
 import { ikType, FileType } from "./types";
 import { BtnAdd } from "../CommonUi/BtnAdd";
+import {
+  Button,
+  Divider,
+  CircularProgress,
+  List,
+  ListItem
+} from "@material-ui/core";
 
 function getTotal(iks: ikType[]) {
   if (!iks) return 0;
@@ -46,11 +47,13 @@ export function IK() {
   const { month, year, handleChangeMonth } = useDateChange();
   const [iks, setIks] = useState([] as ikType[]);
   const [isValid, setIsValid] = useState(false);
+  const [isLoading, setLoading] = useState(false);
   const total = getTotal(iks);
 
   useEffect(() => {
     (async function init() {
       if (user) {
+        setLoading(true);
         iksCol({ user, year, month })
           .get()
           .then(getIks)
@@ -58,6 +61,7 @@ export function IK() {
         const doc = await ikDoc({ user, year, month }).get();
         const isValidData = (doc.data() || {}).isValid;
         setIsValid(isValidData);
+        setLoading(false);
       }
     })();
   }, [user, month, year]);
@@ -103,7 +107,12 @@ export function IK() {
       </Flex>
       <Card width={1}>
         <List>
-          {!iks.length && (
+          {isLoading && (
+            <Flex width={1} justifyContent="center">
+              <CircularProgress />
+            </Flex>
+          )}
+          {!iks.length && !isLoading && (
             <Text textAlign="center">Ajouter vos indemnités kilométriques</Text>
           )}
           {iks.map(ik => (
