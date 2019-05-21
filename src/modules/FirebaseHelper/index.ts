@@ -1,6 +1,7 @@
 import * as firebase from "firebase/app";
 import "firebase/firestore";
 import "firebase/storage";
+import "firebase/auth";
 
 type AppCollection = {
   user: {
@@ -24,8 +25,8 @@ export function initFirebase() {
   firebase.initializeApp(firebaseConfig);
 }
 
+export const auth = () => firebase.auth();
 export const db = () => firebase.firestore();
-
 export const storage = () => firebase.storage();
 
 function appDataCollection({ user, year, month }: AppCollection) {

@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { Delete as DeleteIcon } from "@material-ui/icons";
-import { TextField as TextFieldMd, IconButton } from "@material-ui/core";
+import { IconButton } from "@material-ui/core";
 import { Flex, Text } from "rebass";
 import { BtnUpload } from "../CommonUi/BtnUpload";
+import { TextField } from "../CommonUi/TextField";
 import { ikType, FileType } from "./types";
 
 type FormIkProps = {
@@ -12,14 +13,6 @@ type FormIkProps = {
   onDelete: (id: string | undefined) => void;
   onUpdateFile: (file: FileType) => void;
 };
-
-const TextField = props => (
-  <TextFieldMd
-    style={{ marginRight: "10px", marginBottom: "10px", width: "150px" }}
-    InputLabelProps={{ shrink: true }}
-    {...props}
-  />
-);
 
 export function FormIK({
   ik,

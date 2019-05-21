@@ -21,7 +21,7 @@ export function Login() {
     <Flex p={3} flexDirection="column">
       <h1>Login</h1>
       <div>
-        <Button onClick={doLogin} color="primary" variant="raised">
+        <Button onClick={doLogin} color="primary" variant="contained">
           Google Login
         </Button>
       </div>

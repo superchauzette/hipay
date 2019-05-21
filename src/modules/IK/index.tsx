@@ -123,7 +123,7 @@ export function IK() {
         </List>
       </Card>
       <Flex width={1} mt={3}>
-        <Button variant="raised" color="primary" onClick={validNotes}>
+        <Button variant="contained" color="primary" onClick={validNotes}>
           {isValid ? "Modifier" : "Valider"}
         </Button>
       </Flex>

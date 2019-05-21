@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { Delete as DeleteIcon } from "@material-ui/icons";
-import { TextField, IconButton } from "@material-ui/core";
+import { IconButton } from "@material-ui/core";
 import { Flex, Text } from "rebass";
 import { BtnUpload } from "../CommonUi/BtnUpload";
+import { TextField } from "../CommonUi/TextField";
 import { NoteType, FileType } from "./types";
 
 type FormNDFProps = {
@@ -46,10 +47,6 @@ export function FormNDF({
         id="date"
         label="Date d'achat"
         type="date"
-        style={{ marginRight: "10px", marginBottom: "10px", width: "150px" }}
-        InputLabelProps={{
-          shrink: true
-        }}
         disabled={disabled}
         value={note.dateAchat}
         onChange={e => onChange({ dateAchat: e.target.value })}
@@ -57,11 +54,6 @@ export function FormNDF({
       <TextField
         id="Type"
         label="Type"
-        type="text"
-        style={{ marginRight: "10px", marginBottom: "10px" }}
-        InputLabelProps={{
-          shrink: true
-        }}
         disabled={disabled}
         value={note.type}
         onChange={e => onChange({ type: e.target.value })}
@@ -69,11 +61,6 @@ export function FormNDF({
       <TextField
         id="description"
         label="description"
-        type="text"
-        style={{ marginRight: "10px", marginBottom: "10px" }}
-        InputLabelProps={{
-          shrink: true
-        }}
         disabled={disabled}
         value={note.description}
         onChange={e => onChange({ description: e.target.value })}
@@ -82,11 +69,6 @@ export function FormNDF({
         id="description"
         label="montant"
         type="number"
-        style={{ marginRight: "10px", marginBottom: "10px" }}
-        disabled={disabled}
-        InputLabelProps={{
-          shrink: true
-        }}
         value={note.montant}
         onChange={e => onChange({ montant: Number(e.target.value) })}
       />
@@ -94,10 +76,6 @@ export function FormNDF({
         id="description"
         label="TVA"
         type="number"
-        style={{ marginRight: "10px", marginBottom: "10px" }}
-        InputLabelProps={{
-          shrink: true
-        }}
         disabled={disabled}
         value={note.tva}
         onChange={e => onChange({ tva: Number(e.target.value) })}

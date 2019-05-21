@@ -1,5 +1,5 @@
 import React, { useState, useEffect, createContext, useContext } from "react";
-import firebase from "firebase";
+import { auth } from "../FirebaseHelper";
 
 export type userType = {
   uid: string;
@@ -22,7 +22,7 @@ export function useAuth() {
   const [isLogged, setIsLogged] = useState(false);
 
   useEffect(() => {
-    firebase.auth().onAuthStateChanged(function(user) {
+    auth().onAuthStateChanged(function(user) {
       if (user) {
         // User is signed in.
         const photoURL = user.photoURL;

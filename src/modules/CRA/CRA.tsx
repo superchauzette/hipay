@@ -258,7 +258,7 @@ export function CRA({
           </Flex>
           <Flex alignItems="center" mt={2}>
             <Button
-              variant="raised"
+              variant="contained"
               color="primary"
               onClick={saveCRA}
               disabled={!Boolean(client)}
