@@ -13,11 +13,11 @@ import { Card } from "../CommonUi/Card";
 import IconButton from "@material-ui/core/IconButton";
 import { Delete as DeleteIcon } from "@material-ui/icons";
 import { useUserContext } from "../UserHelper";
-import { db } from "../App/fire";
+import { db, storage } from "../App/fire";
 
 type NoteType = {
-  id: number;
-  dateaAchat?: Date;
+  id?: string;
+  dateAchat?: string;
   type?: string;
   description?: string;
   montant?: number;
@@ -25,175 +25,248 @@ type NoteType = {
   file?: any;
 };
 
-function MyListItem({ note, onChange, onDelete }) {
-  const [file, setFile] = useState();
+type FileType = {
+  name: string;
+  type: string;
+  size: number;
+};
+
+type FormNDFProps = {
+  note: NoteType;
+  disabled: boolean;
+  onChange: (note: NoteType) => void;
+  onDelete: (id: string | undefined) => void;
+  onUpdateFile: (file: FileType) => void;
+};
+
+function FormNDF({
+  note,
+  disabled,
+  onChange,
+  onDelete,
+  onUpdateFile
+}: FormNDFProps) {
+  const [file, setFile] = useState(note.file);
 
   function handleFile(files) {
-    const file = files[0];
+    const file: FileType = files[0];
     setFile(file);
-    onChange({ file });
+    onChange({ file: { name: file.name, size: file.size, type: file.type } });
+    onUpdateFile(file);
   }
 
   return (
-    <ListItem key={note.id}>
-      <form
-        noValidate
-        style={{
-          width: "100%",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          flexWrap: "wrap",
-          padding: "0 10px",
-          marginTop: "10px"
+    <form
+      noValidate
+      style={{
+        width: "100%",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        flexWrap: "wrap",
+        padding: "0 10px",
+        marginTop: "10px"
+      }}
+    >
+      <TextField
+        id="date"
+        label="Date d'achat"
+        type="date"
+        style={{ marginRight: "10px", marginBottom: "10px", width: "150px" }}
+        InputLabelProps={{
+          shrink: true
         }}
-      >
-        <TextField
-          id="date"
-          label="Date d'achat"
-          type="date"
-          style={{ marginRight: "10px", marginBottom: "10px" }}
-          InputLabelProps={{
-            shrink: true
-          }}
-          value={note.dateAchat}
-          onChange={e => onChange({ dateAchat: e.target.value })}
+        disabled={disabled}
+        value={note.dateAchat}
+        onChange={e => onChange({ dateAchat: e.target.value })}
+      />
+      <TextField
+        id="Type"
+        label="Type"
+        type="text"
+        style={{ marginRight: "10px", marginBottom: "10px" }}
+        InputLabelProps={{
+          shrink: true
+        }}
+        disabled={disabled}
+        value={note.type}
+        onChange={e => onChange({ type: e.target.value })}
+      />
+      <TextField
+        id="description"
+        label="description"
+        type="text"
+        style={{ marginRight: "10px", marginBottom: "10px" }}
+        InputLabelProps={{
+          shrink: true
+        }}
+        disabled={disabled}
+        value={note.description}
+        onChange={e => onChange({ description: e.target.value })}
+      />
+      <TextField
+        id="description"
+        label="montant"
+        type="number"
+        style={{ marginRight: "10px", marginBottom: "10px" }}
+        disabled={disabled}
+        InputLabelProps={{
+          shrink: true
+        }}
+        value={note.montant}
+        onChange={e => onChange({ montant: Number(e.target.value) })}
+      />
+      <TextField
+        id="description"
+        label="TVA"
+        type="number"
+        style={{ marginRight: "10px", marginBottom: "10px" }}
+        InputLabelProps={{
+          shrink: true
+        }}
+        disabled={disabled}
+        value={note.tva}
+        onChange={e => onChange({ tva: Number(e.target.value) })}
+      />
+      <Flex flexDirection="column" alignItems="center">
+        <input
+          accept="image/*"
+          id="contained-button-file"
+          // multiple
+          type="file"
+          style={{ display: "none" }}
+          onChange={e => handleFile(e.target.files)}
         />
-        <TextField
-          id="Type"
-          label="Type"
-          type="text"
-          style={{ marginRight: "10px", marginBottom: "10px" }}
-          InputLabelProps={{
-            shrink: true
-          }}
-          value={note.type}
-          onChange={e => onChange({ type: e.target.value })}
-        />
-        <TextField
-          id="description"
-          label="description"
-          type="text"
-          style={{ marginRight: "10px", marginBottom: "10px" }}
-          InputLabelProps={{
-            shrink: true
-          }}
-          value={note.description}
-          onChange={e => onChange({ description: e.target.value })}
-        />
-        <TextField
-          id="description"
-          label="montant"
-          type="number"
-          style={{ marginRight: "10px", marginBottom: "10px" }}
-          InputLabelProps={{
-            shrink: true
-          }}
-          value={note.montant}
-          onChange={e => onChange({ montant: e.target.value })}
-        />
-        <TextField
-          id="description"
-          label="TVA"
-          type="number"
-          style={{ marginRight: "10px", marginBottom: "10px" }}
-          InputLabelProps={{
-            shrink: true
-          }}
-          value={note.tva}
-          onChange={e => onChange({ tva: e.target.value })}
-        />
-        <Flex flexDirection="column" alignItems="center">
-          <input
-            accept="image/*"
-            id="contained-button-file"
-            // multiple
-            type="file"
-            style={{ display: "none" }}
-            onChange={e => handleFile(e.target.files)}
-          />
-          <label htmlFor="contained-button-file">
-            <ButtonMd variant="contained" component="span">
-              Upload
-              <CloudUploadIcon style={{ marginLeft: "8px" }} />
-            </ButtonMd>
-          </label>
-          <Text mt={2}>{file && file.name}</Text>
-        </Flex>
+        <label htmlFor="contained-button-file">
+          <ButtonMd variant="contained" component="span" disabled={disabled}>
+            Upload
+            <CloudUploadIcon style={{ marginLeft: "8px" }} />
+          </ButtonMd>
+        </label>
+        <Text mt={2}>{file && file.name}</Text>
+      </Flex>
 
-        <IconButton aria-label="Delete" onClick={() => onDelete(note.id)}>
-          <DeleteIcon />
-        </IconButton>
-      </form>
-    </ListItem>
+      <IconButton
+        aria-label="Delete"
+        onClick={() => onDelete(note.id)}
+        disabled={disabled}
+      >
+        <DeleteIcon />
+      </IconButton>
+    </form>
   );
+}
+
+function getTotal(notes: NoteType[]) {
+  if (!notes) return 0;
+
+  return Number(
+    notes
+      .map(note => note.montant)
+      .filter(montant => montant !== undefined)
+      .reduce((a, b) => (a || 0) + (b || 0), 0)
+  );
+}
+
+function ndfDoc({ user, year, month }) {
+  return db()
+    .collection("users")
+    .doc(user.uid)
+    .collection("years")
+    .doc(String(year))
+    .collection("month")
+    .doc(String(month))
+    .collection("appData")
+    .doc("ndf");
 }
 
 export function NoteDeFrais() {
   const user = useUserContext();
   const { month, year, handleChangeMonth } = useDateChange();
   const [notes, setNotes] = useState([] as NoteType[]);
-
-  const pathNDF =
-    user && year ? `users/${user.uid}/years/${year}/month/${month}/ndf` : "";
+  const [isValid, setIsValid] = useState(false);
+  const total = getTotal(notes);
 
   useEffect(() => {
-    setNotes([]);
-  }, [month, year]);
+    (async function init() {
+      if (user) {
+        // const doc = await ndfDoc({ user, year, month }).get();
+        const query = await ndfDoc({ user, year, month })
+          .collection("notes")
+          .get();
+        const notesData = [] as any[];
+        query.forEach(docData => {
+          notesData.push({ ...docData.data(), id: docData.id });
+        });
+        setNotes(notesData);
+      }
+    })();
+  }, [user, month, year]);
 
-  function addNote() {
-    setNotes(n => {
-      const id = n.length ? n[n.length - 1].id + 1 : 0;
-      return [...n, { id }];
-    });
+  async function addNote() {
+    const { id } = await ndfDoc({ user, year, month })
+      .collection("notes")
+      .add({});
+    setNotes(n => [...n, { id }]);
   }
 
-  async function saveNotes() {
-    if (pathNDF) {
-      await db()
-        .collection(pathNDF)
-        .add(notes);
-    }
+  function validNotes() {
+    setIsValid(v => !v);
   }
 
-  function deleteNote(id: number) {}
+  function deleteNote(id: string | undefined) {
+    ndfDoc({ user, year, month })
+      .collection("notes")
+      .doc(id)
+      .delete();
+    setNotes(n => n.filter(v => v.id !== id));
+  }
 
-  function handleChange(id: number, obj: NoteType) {
-    setNotes(pnotes => pnotes.map(n => (n.id === id ? { ...n, ...obj } : n)));
+  function handleChange(id: string | undefined, note: NoteType) {
+    setNotes(pnotes => pnotes.map(n => (n.id === id ? { ...n, ...note } : n)));
+    ndfDoc({ user, year, month })
+      .collection("notes")
+      .doc(id)
+      .update(note);
+    ndfDoc({ user, year, month }).set({ total });
+  }
+
+  function updateFile(file: FileType) {
+    storage()
+      .ref(`users/${user.uid}/years/${year}/month/${month}/ndk/${file.name}`)
+      .put(file);
   }
 
   return (
     <PageWrapper>
-      <Header
-        title="Note de Frais"
-        prevLink={{ to: "/cra", label: "cra" }}
-        nextLink={{ to: "/ik", label: "ik" }}
-      />
+      <Header title="Note de Frais" />
       <MonthSelector onChange={handleChangeMonth} />
 
       <Flex width={1} mb={3} justifyContent="space-between">
         <Button onClick={addNote}>Add</Button>
-        <Text>Total: 236€</Text>
+        <Text>Total: {total}€</Text>
       </Flex>
       <Card width={1}>
         <List>
           {!notes.length && (
             <Text textAlign="center">Ajouter vos notes de frais</Text>
           )}
-          {notes.map((note, index) => (
-            <>
-              <MyListItem
+          {notes.map(note => (
+            <ListItem key={note.id}>
+              <FormNDF
+                disabled={isValid}
                 note={note}
-                onChange={n => handleChange(index, n)}
+                onChange={n => handleChange(note.id, n)}
                 onDelete={deleteNote}
+                onUpdateFile={updateFile}
               />
               <Divider />
-            </>
+            </ListItem>
           ))}
         </List>
       </Card>
       <Flex justifyContent="flex-end" width={1} mt={3}>
-        <Button onClick={saveNotes}>Sauvegarder</Button>
+        <Button onClick={validNotes}>{isValid ? "Modifier" : "Valider"}</Button>
       </Flex>
     </PageWrapper>
   );

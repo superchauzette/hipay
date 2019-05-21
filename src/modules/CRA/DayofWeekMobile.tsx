@@ -2,7 +2,11 @@ import React from "react";
 import { Text } from "rebass";
 import { MyBox } from "../CommonUi/MyBox";
 
-export function DayofWeekMobile({ tabDays }) {
+type DayofWeekMobileProps = {
+  tabDays: string[];
+};
+
+export function DayofWeekMobile({ tabDays }: DayofWeekMobileProps) {
   return (
     <>
       {tabDays.map(day => (

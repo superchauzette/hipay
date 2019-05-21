@@ -11,17 +11,17 @@ export type MonthSelectorProps = {
   onChange: (dateFormatted: any, date: any) => void;
 };
 
-const formatDate = date => format(date, "MMMM YYYY", { locale: frLocale });
-const formatDateOut = date => {
+const today = new Date();
+const formatDate = (date: Date) =>
+  format(date, "MMMM YYYY", { locale: frLocale });
+function formatDateOut(date: Date) {
   const dateFormatted = format(date, "MM YYYY", { locale: frLocale });
   const [month, year] = dateFormatted.split(" ");
   return {
     month: Number(month),
     year: Number(year)
   };
-};
-
-const today = new Date();
+}
 
 function MonthSelectorComp({ onChange }: MonthSelectorProps) {
   const [index, setIndex] = React.useState(0);
