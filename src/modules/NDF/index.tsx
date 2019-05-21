@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Flex, Text, Button } from "rebass";
+import { Flex, Text } from "rebass";
 import { MonthSelector, useDateChange } from "../CommonUi/MonthSelector";
 import { Header } from "../CommonUi/Header";
 import { PageWrapper } from "../CommonUi/PageWrapper";
 import TextField from "@material-ui/core/TextField";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
-import ButtonMd from "@material-ui/core/Button";
+import Button from "@material-ui/core/Button";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import Divider from "@material-ui/core/Divider";
 import { Card } from "../CommonUi/Card";
@@ -138,10 +138,10 @@ function FormNDF({
           onChange={e => handleFile(e.target.files)}
         />
         <label htmlFor="contained-button-file">
-          <ButtonMd variant="contained" component="span" disabled={disabled}>
+          <Button variant="contained" component="span" disabled={disabled}>
             Upload
             <CloudUploadIcon style={{ marginLeft: "8px" }} />
-          </ButtonMd>
+          </Button>
         </label>
         <Text mt={2}>{file && file.name}</Text>
       </Flex>
@@ -211,6 +211,7 @@ export function NoteDeFrais() {
   }
 
   function validNotes() {
+    ndfDoc({ user, year, month }).update({ isValid: !isValid });
     setIsValid(v => !v);
   }
 
@@ -228,7 +229,7 @@ export function NoteDeFrais() {
       .collection("notes")
       .doc(id)
       .update(note);
-    ndfDoc({ user, year, month }).set({ total });
+    ndfDoc({ user, year, month }).update({ total });
   }
 
   function updateFile(file: FileType) {
@@ -243,7 +244,14 @@ export function NoteDeFrais() {
       <MonthSelector onChange={handleChangeMonth} />
 
       <Flex width={1} mb={3} justifyContent="space-between">
-        <Button onClick={addNote}>Add</Button>
+        <Button
+          variant="raised"
+          color="primary"
+          onClick={addNote}
+          disabled={isValid}
+        >
+          Add
+        </Button>
         <Text>Total: {total}€</Text>
       </Flex>
       <Card width={1}>
@@ -252,21 +260,25 @@ export function NoteDeFrais() {
             <Text textAlign="center">Ajouter vos notes de frais</Text>
           )}
           {notes.map(note => (
-            <ListItem key={note.id}>
-              <FormNDF
-                disabled={isValid}
-                note={note}
-                onChange={n => handleChange(note.id, n)}
-                onDelete={deleteNote}
-                onUpdateFile={updateFile}
-              />
+            <>
+              <ListItem key={note.id}>
+                <FormNDF
+                  disabled={isValid}
+                  note={note}
+                  onChange={n => handleChange(note.id, n)}
+                  onDelete={deleteNote}
+                  onUpdateFile={updateFile}
+                />
+              </ListItem>
               <Divider />
-            </ListItem>
+            </>
           ))}
         </List>
       </Card>
       <Flex justifyContent="flex-end" width={1} mt={3}>
-        <Button onClick={validNotes}>{isValid ? "Modifier" : "Valider"}</Button>
+        <Button variant="raised" color="primary" onClick={validNotes}>
+          {isValid ? "Modifier" : "Valider"}
+        </Button>
       </Flex>
     </PageWrapper>
   );
