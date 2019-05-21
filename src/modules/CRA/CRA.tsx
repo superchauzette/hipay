@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Flex, Box, Text } from "rebass";
 import { Delete as DeleteIcon } from "@material-ui/icons";
-import { getCraFirebase, getCalculatedCalendar } from "./service";
+import {
+  getCraFirebase,
+  getCalculatedCalendar,
+  calendarCol,
+  storageCRA
+} from "./service";
 import { userType } from "../UserHelper";
-import { db, storage } from "../App/fire";
 import { Card } from "../CommonUi/Card";
 import { DayofWeekMobile } from "./DayofWeekMobile";
 import { UploadCRA } from "./UploadCRA";
@@ -53,17 +57,15 @@ export function CRA({
   const [file, setFile] = useState();
   const total = getTotal(calendar);
 
-  const pathCra = user
-    ? `users/${user.uid}/years/${year}/month/${month}/cra`
-    : "";
-
   useEffect(() => {
     (async function init() {
       const calendarCal = await getCalculatedCalendar(date);
       setCalendar(calendarCal);
 
       const craData = await getCraFirebase(id, user, month, year);
+      console.log(craData);
       if (craData) {
+        console.log("craData");
         if (craData.calendar) setCalendar(craData.calendar);
         setIsSaved(craData.isSaved);
         setClient(craData.client || localStorage.getItem("client"));
@@ -90,9 +92,8 @@ export function CRA({
     setIsSaved(save => !save);
     if (!isSaved) {
       setLoading(true);
-      await db()
-        .collection(`users/${user.uid}/years/${year}/month/${month}/cra`)
-        .doc(String(id))
+      await calendarCol({ user, month, year })
+        .doc(id)
         .set(
           {
             calendar,
@@ -113,12 +114,9 @@ export function CRA({
     type: string;
   }) {
     setFile(fileUploaded);
-    storage()
-      .ref(pathCra + "/" + fileUploaded.name)
-      .put(fileUploaded);
-    db()
-      .collection(pathCra)
-      .doc(String(id))
+    storageCRA({ user, month, year })(fileUploaded.name).put(fileUploaded);
+    calendarCol({ user, month, year })
+      .doc(id)
       .set(
         {
           file: {
@@ -133,9 +131,8 @@ export function CRA({
 
   async function deleteCRA() {
     onDelete(id);
-    await db()
-      .collection(`users/${user.uid}/years/${year}/month/${month}/cra`)
-      .doc(String(id))
+    await calendarCol({ user, month, year })
+      .doc(id)
       .delete();
   }
 
@@ -146,18 +143,15 @@ export function CRA({
   }
 
   async function deleteCRAUpload() {
-    db()
-      .collection(`users/${user.uid}/years/${year}/month/${month}/cra`)
-      .doc(String(id))
+    calendarCol({ user, month, year })
+      .doc(id)
       .set(
         {
           file: {}
         },
         { merge: true }
       );
-    storage()
-      .ref(pathCra + "/" + file.name)
-      .delete();
+    storageCRA({ user, month, year })(file.name).delete();
     setFile({});
   }
 

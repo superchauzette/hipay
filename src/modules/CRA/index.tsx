@@ -11,7 +11,7 @@ import { PageWrapper } from "../CommonUi/PageWrapper";
 export function CRAS() {
   const user = useUserContext();
   const { month, year, date, handleChangeMonth } = useDateChange();
-  const [idsCRA, setIdsCRA] = useState(["1"] as string[]);
+  const [idsCRA, setIdsCRA] = useState([] as string[]);
 
   useEffect(() => {
     if (user) getCraIdsFirebase({ user, year, month }).then(setIdsCRA);

@@ -7,7 +7,7 @@ import {
   getYear
 } from "date-fns";
 import frLocale from "date-fns/locale/fr";
-import { db } from "../App/fire";
+import { appDoc, storageRef } from "../FirebaseHelper";
 import { userType } from "../UserHelper";
 
 async function getJoursFeries(year: number) {
@@ -41,6 +41,12 @@ export async function getCalculatedCalendar(date: Date) {
   });
 }
 
+export function calendarCol({ user, month, year }) {
+  return appDoc()
+    .cra({ user, month, year })
+    .collection("calendar");
+}
+
 export async function getCraFirebase(
   id: string,
   user: userType,
@@ -48,10 +54,10 @@ export async function getCraFirebase(
   year: number
 ) {
   if (user) {
-    const doc = await db()
-      .collection(`users/${user.uid}/years/${year}/month/${month}/cra`)
-      .doc(String(id))
+    const doc = await calendarCol({ user, month, year })
+      .doc(id)
       .get();
+    console.log(doc.data());
     const cra = doc.data();
     return cra;
   }
@@ -59,8 +65,7 @@ export async function getCraFirebase(
 }
 
 export function getCraIdsFirebase({ user, year, month }) {
-  return db()
-    .collection(`users/${user.uid}/years/${year}/month/${month}/cra`)
+  return calendarCol({ user, month, year })
     .get()
     .then(query => {
       const ids = [] as string[];
@@ -73,8 +78,8 @@ export function getCraIdsFirebase({ user, year, month }) {
 
 export async function addNewCalendarFirebase({ date, user, month, year }) {
   const newCalendar = await getCalculatedCalendar(date);
-  const { id } = await db()
-    .collection(`users/${user.uid}/years/${year}/month/${month}/cra`)
-    .add({ calendar: newCalendar });
+  const { id } = await calendarCol({ user, month, year }).add(newCalendar);
   return id;
 }
+
+export const storageCRA = props => storageRef().cra(props);

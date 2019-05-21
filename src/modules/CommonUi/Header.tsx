@@ -8,7 +8,7 @@ type HeaderProps = {
 export function Header({ title }: HeaderProps) {
   return (
     <Flex justifyContent="space-around" width={1}>
-      <Heading fontSize={3} mb={4} color="rgb(72, 72, 72)">
+      <Heading fontSize={3} mb={2} color="black">
         {title}
       </Heading>
     </Flex>

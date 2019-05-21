@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { initFirebase } from "./modules/App/fire";
+import { initFirebase } from "./modules/FirebaseHelper";
 import "./index.css";
 import { App } from "./modules/App/App";
 import * as serviceWorker from "./serviceWorker";
