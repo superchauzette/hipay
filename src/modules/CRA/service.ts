@@ -57,7 +57,6 @@ export async function getCraFirebase(
     const doc = await calendarCol({ user, month, year })
       .doc(id)
       .get();
-    console.log(doc.data());
     const cra = doc.data();
     return cra;
   }

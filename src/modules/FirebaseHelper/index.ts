@@ -23,11 +23,25 @@ export function initFirebase() {
   };
 
   firebase.initializeApp(firebaseConfig);
+  firebase.firestore().enablePersistence();
 }
 
 export const auth = () => firebase.auth();
 export const db = () => firebase.firestore();
 export const storage = () => firebase.storage();
+
+const defaultAdmin = { getIdTokenResult: () => ({ claims: { admin: false } }) };
+
+export async function isAdmin(): Promise<boolean> {
+  try {
+    const idToken = await (
+      auth().currentUser || defaultAdmin
+    ).getIdTokenResult();
+    return idToken.claims.admin;
+  } catch {
+    return false;
+  }
+}
 
 export async function googleAuth() {
   const provider = new firebase.auth.GoogleAuthProvider();

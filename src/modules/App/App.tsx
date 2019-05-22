@@ -34,7 +34,7 @@ function Menu() {
 function HeaderBar({ authUser }) {
   return (
     <AppBar position="static" style={{ backgroundColor: blue }}>
-      <Toolbar>
+      <Toolbar variant="dense">
         <Text fontSize={3}>Hipay</Text>
         <Box m={"auto"} />
         <Avatar src={authUser && authUser.photoURL} m={2} />
