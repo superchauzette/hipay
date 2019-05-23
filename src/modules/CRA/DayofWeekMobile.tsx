@@ -19,9 +19,8 @@ export function DayofWeekMobile({ tabDays }: DayofWeekMobileProps) {
           <Text
             textAlign="center"
             p={"10px"}
-            bg={["sa", "di"].includes(day) ? "grey" : "white"}
-            style={{ borderRadius: "50%", height: "95%" }}
-            width={9 / 10}
+            color={["sa", "di"].includes(day) ? "grey" : "black"}
+            fontWeight={["sa", "di"].includes(day) ? "bold" : "normal"}
           >
             {day}
           </Text>

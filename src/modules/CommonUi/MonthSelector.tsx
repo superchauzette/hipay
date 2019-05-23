@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import format from "date-fns/format";
+import dateFns from "date-fns";
 import addMonths from "date-fns/add_months";
 import frLocale from "date-fns/locale/fr";
 import { Text, Flex } from "rebass";
@@ -14,12 +15,11 @@ export type MonthSelectorProps = {
 const today = new Date();
 const formatDate = (date: Date) =>
   format(date, "MMMM YYYY", { locale: frLocale });
-function formatDateOut(date: Date) {
-  const dateFormatted = format(date, "MM YYYY", { locale: frLocale });
-  const [month, year] = dateFormatted.split(" ");
+
+export function getMonthYear(date: Date) {
   return {
-    month: Number(month),
-    year: Number(year)
+    month: Number(dateFns.getMonth(date) + 1),
+    year: Number(dateFns.getYear(date))
   };
 }
 
@@ -28,7 +28,7 @@ function MonthSelectorComp({ onChange }: MonthSelectorProps) {
   const date = addMonths(today, index);
 
   useEffect(() => {
-    onChange(formatDateOut(date), date);
+    onChange(getMonthYear(date), date);
   }, [index, date, onChange]);
 
   function addMonth() {

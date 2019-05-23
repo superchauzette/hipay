@@ -14,12 +14,12 @@ import { Flex, Box, Text } from "rebass";
 import { AppBar, Button, Toolbar } from "@material-ui/core";
 
 const LinkMenu = props => (
-  <Button variant="outlined" size="small" component={NavLink} {...props} />
+  <Button size="small" component={NavLink} {...props} />
 );
 
 function Menu() {
   return (
-    <Flex flexWrap="wrap" mt={2}>
+    <Flex flexWrap="wrap" mx={-2}>
       <LinkMenu exact to="/">
         Dashboard
       </LinkMenu>
@@ -38,6 +38,9 @@ function HeaderBar({ authUser }) {
         <Text fontSize={3}>Hipay</Text>
         <Box m={"auto"} />
         <Avatar src={authUser && authUser.photoURL} m={2} />
+      </Toolbar>
+      <Toolbar variant="dense">
+        <Menu />
       </Toolbar>
     </AppBar>
   );
@@ -59,14 +62,7 @@ export function App() {
     <UserProvider value={authUser}>
       <Theme>
         <Router>
-          <Flex
-            alignItems="center"
-            justifyContent="space-between"
-            flexWrap="wrap"
-          >
-            <HeaderBar authUser={authUser} />
-            <Menu />
-          </Flex>
+          <HeaderBar authUser={authUser} />
           <main>
             <AuthRoute
               exact
