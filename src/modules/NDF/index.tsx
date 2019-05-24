@@ -29,7 +29,7 @@ type FileType = {
   size: number;
 };
 
-function getMyNotes({ user, month, year }) {
+function getMyNotes({ user, month, year }): Promise<NoteType[]> {
   return ndfCol()
     .where("userid", "==", user.uid)
     .where("month", "==", month)
@@ -61,7 +61,6 @@ export function NoteDeFrais() {
       if (user) {
         setLoading(true);
         const notesDeFrais = await getMyNotes({ user, month, year });
-        console.log(notesDeFrais);
         if (notesDeFrais.length) setNotes(notesDeFrais);
         else setNotes([{ id: "new" }]);
         setLoading(false);
@@ -89,7 +88,7 @@ export function NoteDeFrais() {
   async function handleChange(id: string | undefined, note: NoteType) {
     if (id === "new") {
       const noteCreated = await ndfCol().add({
-        note,
+        ...note,
         userid: user.uid,
         month,
         year,

@@ -5,7 +5,7 @@ import { ikType, FileType } from "./types";
 
 type FormIkProps = {
   ik: ikType;
-  disabled: boolean;
+  disabled?: boolean;
   onChange: (ik: ikType) => void;
   onDelete: (id: string | undefined) => void;
   onUpdateFile: (file: FileType) => void;
