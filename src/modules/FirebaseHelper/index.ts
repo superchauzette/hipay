@@ -52,7 +52,7 @@ export async function googleAuth() {
 
 export const userCol = () => db().collection("users");
 export const craCol = () => db().collection("cra");
-export const ndkCol = () => db().collection("ndf");
+export const ndfCol = () => db().collection("ndf");
 export const ikCol = () => db().collection("ik");
 export const chargesCol = () => db().collection("charges");
 
@@ -70,7 +70,7 @@ export function storageRef() {
 }
 
 export function extractQueries(queries) {
-  const data = [] as string[];
+  const data = [] as any[];
   queries.forEach(doc => {
     data.push({ id: doc.id, ...doc.data() });
   });

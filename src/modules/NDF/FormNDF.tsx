@@ -5,7 +5,7 @@ import { NoteType, FileType } from "./types";
 
 type FormNDFProps = {
   note: NoteType;
-  disabled: boolean;
+  disabled?: boolean;
   onChange: (note: NoteType) => void;
   onDelete: (id: string | undefined) => void;
   onUpdateFile: (file: FileType) => void;
@@ -28,65 +28,64 @@ export function FormNDF({
   }
 
   return (
-    <form
-      noValidate
-      style={{
-        width: "100%",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        flexWrap: "wrap",
-        padding: "0 10px",
-        marginTop: "10px"
-      }}
-    >
-      <TextField
-        id="date"
-        label="Date d'achat"
-        type="date"
-        disabled={disabled}
-        value={note.dateAchat}
-        onChange={e => onChange({ dateAchat: e.target.value })}
-      />
-      <TextField
-        id="Type"
-        label="Type"
-        disabled={disabled}
-        value={note.type}
-        onChange={e => onChange({ type: e.target.value })}
-      />
-      <TextField
-        id="description"
-        label="description"
-        disabled={disabled}
-        value={note.description}
-        onChange={e => onChange({ description: e.target.value })}
-      />
-      <TextField
-        id="description"
-        label="montant"
-        type="number"
-        value={note.montant}
-        onChange={e => onChange({ montant: Number(e.target.value) })}
-      />
-      <TextField
-        id="description"
-        label="TVA"
-        type="number"
-        disabled={disabled}
-        value={note.tva}
-        onChange={e => onChange({ tva: Number(e.target.value) })}
-      />
-      <Flex flexDirection="column" alignItems="center">
-        <BtnUpload
-          id={`btn-ik-upload-${note.id}`}
+    <form noValidate style={{ width: "100%" }}>
+      <Flex
+        flexDirection={["column", "row"]}
+        justifyContent={["center", "space-between", "space-between"]}
+        alignItems={["center"]}
+        flexWrap="wrap"
+        p="0 10px"
+        mt="10px"
+        width={1}
+      >
+        <TextField
+          id="date"
+          label="Date d'achat"
+          type="date"
           disabled={disabled}
-          onChange={e => handleFile(e.target.files)}
+          value={note.dateAchat}
+          onChange={e => onChange({ dateAchat: e.target.value })}
         />
-        <Text mt={2}>{file && file.name}</Text>
-      </Flex>
+        <TextField
+          id="Type"
+          label="Type"
+          disabled={disabled}
+          value={note.type}
+          onChange={e => onChange({ type: e.target.value })}
+        />
+        <TextField
+          id="description"
+          label="description"
+          disabled={disabled}
+          value={note.description}
+          onChange={e => onChange({ description: e.target.value })}
+        />
+        <TextField
+          id="description"
+          label="montant"
+          type="number"
+          value={note.montant}
+          onChange={e => onChange({ montant: Number(e.target.value) })}
+        />
+        <TextField
+          id="description"
+          label="TVA"
+          type="number"
+          disabled={disabled}
+          value={note.tva}
+          onChange={e => onChange({ tva: Number(e.target.value) })}
+        />
+        <Flex flexDirection="column" alignItems={["center"]} mt={1}>
+          <BtnUpload
+            id={`btn-ik-upload-${note.id}`}
+            disabled={disabled}
+            onChange={e => handleFile(e.target.files)}
+          />
+          <Text mt={2}>{file && file.name}</Text>
+        </Flex>
 
-      <BtnDelete onClick={() => onDelete(note.id)} disabled={disabled} />
+        <BtnDelete onClick={() => onDelete(note.id)} disabled={disabled} />
+      </Flex>
     </form>
   );
 }
