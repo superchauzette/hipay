@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Flex, Text } from "rebass";
 import { MonthSelector, useDateChange } from "../CommonUi/MonthSelector";
 import { Header } from "../CommonUi/Header";
@@ -9,9 +9,11 @@ import Divider from "@material-ui/core/Divider";
 import { Card } from "../CommonUi/Card";
 import { useUserContext } from "../UserHelper";
 import { FormNDF } from "./FormNDF";
-import { storageRef, ndfCol, extractQueries, userCol } from "../FirebaseHelper";
+import { storageRef, ndfCol } from "../FirebaseHelper";
 import { CircularProgress } from "@material-ui/core";
 import { BtnAdd } from "../CommonUi/BtnAdd";
+import { useCRUD, useTotal } from "../hooks";
+import { FileType } from "./types";
 
 type NoteType = {
   id?: string;
@@ -20,94 +22,22 @@ type NoteType = {
   description?: string;
   montant?: number;
   tva?: number;
-  file?: any;
+  file?: FileType;
 };
-
-type FileType = {
-  name: string;
-  type: string;
-  size: number;
-};
-
-function getMyNotes({ user, month, year }): Promise<NoteType[]> {
-  return ndfCol()
-    .where("userid", "==", user.uid)
-    .where("month", "==", month)
-    .where("year", "==", year)
-    .get()
-    .then(extractQueries);
-}
-
-function getTotal(notes: NoteType[]) {
-  if (!notes) return 0;
-
-  return Number(
-    notes
-      .map(note => note.montant)
-      .filter(montant => montant !== undefined)
-      .reduce((a, b) => (a || 0) + (b || 0), 0)
-  );
-}
 
 export function NoteDeFrais() {
   const user = useUserContext();
   const { month, year, handleChangeMonth } = useDateChange();
-  const [isLoading, setLoading] = useState(false);
-  const [notes, setNotes] = useState([] as NoteType[]);
-  const total = getTotal(notes);
-
-  useEffect(() => {
-    (async function init() {
-      if (user) {
-        setLoading(true);
-        const notesDeFrais = await getMyNotes({ user, month, year });
-        if (notesDeFrais.length) setNotes(notesDeFrais);
-        else setNotes([{ id: "new" }]);
-        setLoading(false);
-      }
-    })();
-  }, [user, month, year]);
-
-  async function addNote() {
-    const { id } = await ndfCol().add({
-      userid: user.uid,
-      month,
-      year,
-      user: userCol().doc(user.uid)
-    });
-    setNotes(n => [...n, { id }]);
-  }
-
-  function deleteNote(id: string | undefined) {
-    ndfCol()
-      .doc(id)
-      .delete();
-    setNotes(n => n.filter(v => v.id !== id));
-  }
-
-  async function handleChange(id: string | undefined, note: NoteType) {
-    if (id === "new") {
-      const noteCreated = await ndfCol().add({
-        ...note,
-        userid: user.uid,
-        month,
-        year,
-        user: userCol().doc(user.uid)
-      });
-      note.id = noteCreated.id;
-    } else {
-      ndfCol()
-        .doc(id)
-        .update(note);
-    }
-    setNotes(pnotes => pnotes.map(n => (n.id === id ? { ...n, ...note } : n)));
-  }
-
-  function updateFile(file: FileType) {
-    storageRef()
-      .ndf({ user, year, month })(file.name)
-      .put(file);
-  }
+  const deps = { collection: ndfCol, storageRefPath: storageRef().charges };
+  const {
+    data: notes,
+    isLoading,
+    addData: addNote,
+    removeData: deleteNote,
+    handleChange,
+    updateFile
+  } = useCRUD<NoteType>({ user, month, year }, deps);
+  const total = useTotal(notes, note => note.montant || 0);
 
   return (
     <PageWrapper>
@@ -139,7 +69,6 @@ export function NoteDeFrais() {
           ))}
         </List>
       </Card>
-
       <BtnAdd onClick={addNote} />
     </PageWrapper>
   );

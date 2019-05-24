@@ -76,25 +76,3 @@ export function extractQueries(queries) {
   });
   return data;
 }
-
-// TO DELETE
-function appDataCollection({ user, year, month }: AppCollection) {
-  return db()
-    .collection("users")
-    .doc(user.uid)
-    .collection(String(year))
-    .doc(String(month))
-    .collection("appData");
-}
-
-const app = (docId: string) => (p: AppCollection) =>
-  appDataCollection(p).doc(docId);
-
-export function appDoc() {
-  return Object.freeze({
-    ndf: app("ndf"),
-    cra: app("cra"),
-    ik: app("ik"),
-    charges: app("charges")
-  });
-}

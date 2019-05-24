@@ -5,8 +5,8 @@ import { ChargeType, FileType } from "./types";
 
 type FormIkProps = {
   charge: ChargeType;
-  disabled: boolean;
-  onChange: (ik: ChargeType) => void;
+  disabled?: boolean;
+  onChange: (charge: ChargeType) => void;
   onDelete: (id: string | undefined) => void;
   onUpdateFile: (file: FileType) => void;
 };
