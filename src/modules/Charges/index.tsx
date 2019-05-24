@@ -40,7 +40,7 @@ export function Charges() {
                 <FormCharge
                   charge={charge}
                   onChange={n => handleChange(charge.id, n)}
-                  onDelete={addCharge}
+                  onDelete={removeCharge}
                   onUpdateFile={updateFile}
                 />
               </ListItem>
@@ -49,7 +49,7 @@ export function Charges() {
           ))}
         </List>
       </Card>
-      <BtnAdd onClick={removeCharge} />
+      <BtnAdd onClick={addCharge} />
     </PageWrapper>
   );
 }

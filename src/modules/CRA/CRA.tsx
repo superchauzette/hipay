@@ -229,6 +229,11 @@ export function CRA({ cra, showTrash, date, month, year, user }: CRAProps) {
             >
               {isSaved ? "Modifier" : "Sauvegarder"}
             </Button>
+            {!isLoading && !isSaved && (
+              <Text ml={3} style={{ fontStyle: "italic" }} fontSize={"10px"}>
+                Pensez à renseigner votre client
+              </Text>
+            )}
             {isLoading && isSaved && <Text ml={3}>...Loading</Text>}
             {!isLoading && isSaved && (
               <Text ml={3}>Votre CRA a été sauvegardé</Text>
