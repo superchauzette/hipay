@@ -1,27 +1,27 @@
 import React, { useState, useEffect } from "react";
 import { Flex, Box, Text } from "rebass";
 import {
-  getCraFirebase,
   getCalculatedCalendar,
-  calendarCol,
-  storageCRA
+  storageCRA,
+  craCollection,
+  userCol
 } from "./service";
 import { userType } from "../UserHelper";
 import { Card, MyInput, MyBox, BtnDelete } from "../CommonUi";
 import { DayofWeekMobile } from "./DayofWeekMobile";
 import { UploadCRA } from "./UploadCRA";
-import { CalandarType } from "./CalandarType";
+import { CalandarType } from "./types";
 import { WhiteSpace } from "./WhiteSpace";
 import { Button } from "@material-ui/core";
+import { FileType } from "./types";
 
 type CRAProps = {
-  id: string;
+  cra: any;
   date: Date;
   month: number;
   year: number;
   user: userType;
-  showTrash: boolean;
-  onDelete: (id: string) => void;
+  showTrash?: boolean;
 };
 
 export const tabDays = ["lu", "ma", "me", "je", "ve", "sa", "di"];
@@ -36,36 +36,30 @@ function getTotal(calendar: CalandarType[]): number {
   return Number(total);
 }
 
-export function CRA({
-  id,
-  showTrash,
-  date,
-  month,
-  year,
-  user,
-  onDelete
-}: CRAProps) {
+export function CRA({ cra, showTrash, date, month, year, user }: CRAProps) {
   const [calendar, setCalendar] = useState([] as CalandarType[]);
   const [isSaved, setIsSaved] = useState(false);
   const [isLoading, setLoading] = useState(false);
-  const [client, setClient] = useState();
+  const [client, setClient] = useState("");
   const [commentaire, setCommentaire] = useState("");
   const [file, setFile] = useState();
   const total = getTotal(calendar);
+  const id = cra.id ? cra.id : "new";
 
   useEffect(() => {
     (async function init() {
-      const calendarCal = await getCalculatedCalendar(date);
-      setCalendar(calendarCal);
-      const craData = await getCraFirebase(id, user, month, year);
-      if (craData) {
-        if (craData.calendar) setCalendar(craData.calendar);
-        setIsSaved(craData.isSaved);
-        setClient(craData.client || localStorage.getItem("client"));
-        setFile(craData.file);
+      if (cra.calendar) {
+        setCalendar(cra.calendar);
+        setIsSaved(cra.isSaved);
+        setClient(cra.client || localStorage.getItem("client"));
+        setFile(cra.file);
+        setCommentaire(cra.commentaire);
+      } else {
+        const calendarCal = await getCalculatedCalendar(date);
+        setCalendar(calendarCal);
       }
     })();
-  }, [date, month, year, user, id]);
+  }, [date, cra.calendar, cra.isSaved, cra.client, cra.file, cra.commentaire]);
 
   function fillAll() {
     setCalendar(calendar =>
@@ -85,48 +79,31 @@ export function CRA({
     setIsSaved(save => !save);
     if (!isSaved) {
       setLoading(true);
-      await calendarCol({ user, month, year })
-        .doc(id)
-        .set(
-          {
-            calendar,
-            total,
-            isSaved: true,
-            client,
-            commentaire
-          },
-          { merge: true }
-        );
+      const craToSave = {
+        userid: user.uid,
+        month,
+        year,
+        calendar,
+        total,
+        isSaved: true,
+        client,
+        commentaire,
+        user: userCol().doc(user.uid)
+      };
+      await craCollection().createOrUpdate(id, craToSave);
       setLoading(false);
     }
   }
 
-  async function saveFileInfo(fileUploaded: {
-    name: string;
-    size: number;
-    type: string;
-  }) {
+  async function saveFileInfo(fileUploaded: FileType) {
     setFile(fileUploaded);
     storageCRA({ user, month, year })(fileUploaded.name).put(fileUploaded);
-    calendarCol({ user, month, year })
-      .doc(id)
-      .set(
-        {
-          file: {
-            name: fileUploaded.name,
-            size: fileUploaded.size,
-            type: fileUploaded.type
-          }
-        },
-        { merge: true }
-      );
+    craCollection().createOrUpdate(id, { file: fileUploaded });
   }
 
   async function deleteCRA() {
-    onDelete(id);
-    await calendarCol({ user, month, year })
-      .doc(id)
-      .delete();
+    setCalendar([]);
+    craCollection().remove(id);
   }
 
   function saveClient(e) {
@@ -136,17 +113,12 @@ export function CRA({
   }
 
   async function deleteCRAUpload() {
-    calendarCol({ user, month, year })
-      .doc(id)
-      .set(
-        {
-          file: {}
-        },
-        { merge: true }
-      );
+    craCollection().createOrUpdate(id, { file: {} });
     storageCRA({ user, month, year })(file.name).delete();
     setFile({});
   }
+
+  if (!calendar.length) return null;
 
   return (
     <Flex flexDirection="column" width={1}>
@@ -218,7 +190,7 @@ export function CRA({
                   </Text>
                   <Box pt={1}>
                     <MyInput
-                      key={`${id}-${month}-${year}-${c.nbOfday}-${c.dayOfWeek}`}
+                      key={`${month}-${year}-${c.nbOfday}-${c.dayOfWeek}`}
                       type="number"
                       max="1"
                       min="0"

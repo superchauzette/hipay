@@ -1,6 +1,6 @@
 import React from "react";
 import { MyBox } from "../CommonUi/MyBox";
-import { CalandarType } from "./CalandarType";
+import { CalandarType } from "./types";
 
 function bourage(calendar: CalandarType[], tabDays: string[]): number[] {
   if (!calendar.length) return [];

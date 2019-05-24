@@ -6,3 +6,9 @@ export type CalandarType = {
   dayOfWeek: string;
   cra?: number;
 };
+
+export type FileType = {
+  name: string;
+  size: number;
+  type: string;
+};

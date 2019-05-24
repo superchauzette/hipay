@@ -50,6 +50,34 @@ export async function googleAuth() {
   return result;
 }
 
+export const userCol = () => db().collection("users");
+export const craCol = () => db().collection("cra");
+export const ndkCol = () => db().collection("ndf");
+export const ikCol = () => db().collection("ik");
+export const chargesCol = () => db().collection("charges");
+
+const store = (type: string) => ({ user, year, month }: AppCollection) => (
+  filename: string
+) => storage().ref(`users/${user.uid}/${year}/${month}/${type}/${filename}`);
+
+export function storageRef() {
+  return Object.freeze({
+    cra: store("cra"),
+    ndf: store("ndf"),
+    ik: store("ik"),
+    charges: store("charges")
+  });
+}
+
+export function extractQueries(queries) {
+  const data = [] as string[];
+  queries.forEach(doc => {
+    data.push({ id: doc.id, ...doc.data() });
+  });
+  return data;
+}
+
+// TO DELETE
 function appDataCollection({ user, year, month }: AppCollection) {
   return db()
     .collection("users")
@@ -68,18 +96,5 @@ export function appDoc() {
     cra: app("cra"),
     ik: app("ik"),
     charges: app("charges")
-  });
-}
-
-const store = (type: string) => ({ user, year, month }: AppCollection) => (
-  filename: string
-) => storage().ref(`users/${user.uid}/${year}/${month}/${type}/${filename}`);
-
-export function storageRef() {
-  return Object.freeze({
-    cra: store("cra"),
-    ndf: store("ndf"),
-    ik: store("ik"),
-    charges: store("charges")
   });
 }

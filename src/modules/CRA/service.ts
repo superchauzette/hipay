@@ -7,8 +7,25 @@ import {
   getYear
 } from "date-fns";
 import frLocale from "date-fns/locale/fr";
-import { appDoc, storageRef } from "../FirebaseHelper";
-import { userType } from "../UserHelper";
+import {
+  craCol,
+  userCol,
+  storageRef,
+  db,
+  extractQueries
+} from "../FirebaseHelper";
+
+export { userCol };
+
+export function getMyCras({ user, month, year }) {
+  return db()
+    .collection("cra")
+    .where("month", "==", month)
+    .where("year", "==", year)
+    .where("userid", "==", user.uid)
+    .get()
+    .then(extractQueries);
+}
 
 async function getJoursFeries(year: number) {
   try {
@@ -41,46 +58,25 @@ export async function getCalculatedCalendar(date: Date) {
   });
 }
 
-export function calendarCol({ user, month, year }) {
-  return appDoc()
-    .cra({ user, month, year })
-    .collection("calendar");
-}
-
-export async function getCraFirebase(
-  id: string,
-  user: userType,
-  month: number,
-  year: number
-) {
-  if (user) {
-    const doc = await calendarCol({ user, month, year })
-      .doc(id)
-      .get();
-    const cra = doc.data();
-    return cra;
+export function craCollection() {
+  async function createOrUpdate(id, craToSave) {
+    if (id === "new") await craCol().add(craToSave);
+    else
+      await craCol()
+        .doc(id)
+        .set(craToSave, { merge: true });
   }
-  return undefined;
-}
 
-export function getCraIdsFirebase({ user, year, month }) {
-  return calendarCol({ user, month, year })
-    .get()
-    .then(query => {
-      const ids = [] as string[];
-      query.forEach(doc => {
-        ids.push(doc.id);
-      });
-      return ids.length ? ids : ["1"];
-    });
-}
+  function remove(id: string) {
+    return craCol()
+      .doc(id)
+      .delete();
+  }
 
-export async function addNewCalendarFirebase({ date, user, month, year }) {
-  const newCalendar = await getCalculatedCalendar(date);
-  const { id } = await calendarCol({ user, month, year }).add({
-    calendar: newCalendar
-  });
-  return id;
+  return {
+    createOrUpdate,
+    remove
+  };
 }
 
 export const storageCRA = props => storageRef().cra(props);

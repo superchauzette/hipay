@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { addNewCalendarFirebase, getCraIdsFirebase } from "./service";
 import { useUserContext } from "../UserHelper";
 import { CRA } from "./CRA";
 import {
@@ -9,19 +8,24 @@ import {
   MonthSelector,
   useDateChange
 } from "../CommonUi";
+import { getMyCras } from "./service";
 
 export function CRAS() {
   const user = useUserContext();
   const { month, year, date, handleChangeMonth } = useDateChange();
-  const [idsCRA, setIdsCRA] = useState([] as string[]);
+  const [cras, setCras] = useState([] as any[]);
 
   useEffect(() => {
-    if (user) getCraIdsFirebase({ user, year, month }).then(setIdsCRA);
+    if (user) {
+      getMyCras({ user, month, year }).then(myCras => {
+        if (myCras.length) setCras(myCras);
+        else setCras([{}]);
+      });
+    }
   }, [user, year, month]);
 
   async function addNewCRA() {
-    const id = await addNewCalendarFirebase({ date, user, month, year });
-    setIdsCRA(ids => [...ids, id]);
+    setCras(state => [...state, {}]);
   }
 
   return (
@@ -29,18 +33,18 @@ export function CRAS() {
       <Header title="Compte rendu d'Activité" />
       <MonthSelector onChange={handleChangeMonth} />
 
-      {idsCRA.map((idCRA, index) => (
+      {cras.map((cra, index) => (
         <CRA
-          key={idCRA}
+          key={cra.id}
+          cra={cra}
           showTrash={index !== 0}
-          id={idCRA}
           user={user}
           date={date}
           month={month}
           year={year}
-          onDelete={id => setIdsCRA(ids => ids.filter(i => i !== id))}
         />
       ))}
+
       <BtnAdd onClick={addNewCRA} />
     </PageWrapper>
   );
