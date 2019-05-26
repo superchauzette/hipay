@@ -21,7 +21,12 @@ export function BtnUpload({ id, disabled, onChange }: BtnUploadProps) {
         onChange={onChange}
       />
       <label htmlFor={id}>
-        <Button variant="contained" component="span" disabled={disabled}>
+        <Button
+          variant="contained"
+          color="secondary"
+          component="span"
+          disabled={disabled}
+        >
           Upload
           <CloudUploadIcon style={{ marginLeft: "8px" }} />
         </Button>

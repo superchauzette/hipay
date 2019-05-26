@@ -10,6 +10,7 @@ import { NoteDeFrais } from "../NDF";
 import { IK } from "../IK";
 import { Charges } from "../Charges";
 import { Avatar } from "../CommonUi";
+import { Admin } from "../Admin";
 import { Flex, Box, Text } from "rebass";
 import { AppBar, Button, Toolbar } from "@material-ui/core";
 
@@ -27,6 +28,7 @@ function Menu() {
       <LinkMenu to="/ndf">NDF</LinkMenu>
       <LinkMenu to="/ik">IK</LinkMenu>
       <LinkMenu to="/charges">CHARGES</LinkMenu>
+      <LinkMenu to="/admin">ADMIN</LinkMenu>
     </Flex>
   );
 }
@@ -71,7 +73,7 @@ export function App() {
               component={Dashboard}
             />
             <Route path="/login" component={Login} />
-
+            <AuthRoute path="/admin" isLogged={isLogged} component={Admin} />
             <AuthRoute path="/cra" isLogged={isLogged} component={CRAS} />
             <AuthRoute
               path="/ndf"
