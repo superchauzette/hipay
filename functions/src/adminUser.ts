@@ -5,7 +5,7 @@ export function setAdminUser(email: string, isAdmin: boolean) {
   admin
     .auth()
     .getUserByEmail(email)
-    .then((user: any) => {
+    .then(user => {
       if (user.emailVerified) {
         return admin.auth().setCustomUserClaims(user.uid, { admin: isAdmin });
       }
