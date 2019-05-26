@@ -101,6 +101,7 @@ export function Admin() {
       <Flex flexDirection="column" mt={2} width={1}>
         {users.map(user => (
           <Details
+            key={user.id}
             user={user}
             cras={crasByUser[user.id]}
             ndfs={ndfByUser[user.id]}

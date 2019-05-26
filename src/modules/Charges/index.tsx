@@ -35,8 +35,8 @@ export function Charges() {
             </Flex>
           )}
           {charges.map(charge => (
-            <>
-              <ListItem key={charge.id}>
+            <div key={charge.id}>
+              <ListItem>
                 <FormCharge
                   charge={charge}
                   onChange={n => handleChange(charge.id, n)}
@@ -45,7 +45,7 @@ export function Charges() {
                 />
               </ListItem>
               <Divider />
-            </>
+            </div>
           ))}
         </List>
       </Card>

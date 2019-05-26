@@ -55,8 +55,8 @@ export function NoteDeFrais() {
             </Flex>
           )}
           {notes.map(note => (
-            <>
-              <ListItem key={note.id}>
+            <div key={note.id}>
+              <ListItem>
                 <FormNDF
                   note={note}
                   onChange={n => handleChange(note.id, n)}
@@ -65,7 +65,7 @@ export function NoteDeFrais() {
                 />
               </ListItem>
               <Divider />
-            </>
+            </div>
           ))}
         </List>
       </Card>

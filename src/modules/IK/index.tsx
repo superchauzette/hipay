@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Flex, Text } from "rebass";
 import { MonthSelector, useDateChange } from "../CommonUi/MonthSelector";
 import { Card, Header, PageWrapper } from "../CommonUi";
@@ -24,8 +24,6 @@ export function IK() {
   } = useCRUD<ikType>({ user, month, year }, deps);
   const total = useTotal<ikType>(iks, ik => ik.montant || 0);
 
-  console.log({ isAdmin });
-
   return (
     <PageWrapper>
       <Header title="Indemnités Kilométriques" />
@@ -42,8 +40,8 @@ export function IK() {
             </Flex>
           )}
           {iks.map(ik => (
-            <>
-              <ListItem key={ik.id}>
+            <div key={ik.id}>
+              <ListItem>
                 <FormIK
                   ik={ik}
                   onChange={n => handleChange(ik.id, n)}
@@ -52,7 +50,7 @@ export function IK() {
                 />
               </ListItem>
               <Divider />
-            </>
+            </div>
           ))}
         </List>
       </Card>
