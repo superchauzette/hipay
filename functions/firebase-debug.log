@@ -1,0 +1,121 @@
+[debug] [2019-05-26T19:47:29.230Z] ----------------------------------------------------------------------
+[debug] [2019-05-26T19:47:29.232Z] Command:       /Users/kevintillot/.nvm/versions/node/v8.10.0/bin/node /Users/kevintillot/.nvm/versions/node/v8.10.0/bin/firebase deploy --only functions
+[debug] [2019-05-26T19:47:29.232Z] CLI Version:   6.5.0
+[debug] [2019-05-26T19:47:29.232Z] Platform:      darwin
+[debug] [2019-05-26T19:47:29.232Z] Node Version:  v8.10.0
+[debug] [2019-05-26T19:47:29.233Z] Time:          Sun May 26 2019 21:47:29 GMT+0200 (CEST)
+[debug] [2019-05-26T19:47:29.233Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2019-05-26T19:47:29.239Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2019-05-26T19:47:29.239Z] > authorizing via signed-in user
+[debug] [2019-05-26T19:47:29.239Z] [iam] checking project hipay-42 for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]
+[debug] [2019-05-26T19:47:29.241Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/hipay-42:testIamPermissions  
+
+[debug] [2019-05-26T19:47:30.073Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Deploying to 'hipay-42'...
+[info] 
+[info] i  deploying functions
+[info] Running command: npm --prefix "$RESOURCE_DIR" run lint
+[info] Running command: npm --prefix "$RESOURCE_DIR" run build
+[info] ✔  functions: Finished running predeploy script.
+[debug] [2019-05-26T19:47:35.575Z] > [functions] package.json contents: {
+  "name": "functions",
+  "scripts": {
+    "lint": "tslint --project tsconfig.json",
+    "build": "tsc",
+    "serve": "npm run build && firebase serve --only functions",
+    "shell": "npm run build && firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "engines": {
+    "node": "8"
+  },
+  "main": "lib/index.js",
+  "dependencies": {
+    "firebase-admin": "~7.0.0",
+    "firebase-functions": "^2.3.0"
+  },
+  "devDependencies": {
+    "tslint": "^5.12.0",
+    "typescript": "^3.2.2"
+  },
+  "private": true
+}
+[info] i  functions: ensuring necessary APIs are enabled...
+[debug] [2019-05-26T19:47:35.576Z] >>> HTTP REQUEST GET https://servicemanagement.googleapis.com/v1/services/cloudfunctions.googleapis.com/projectSettings/hipay-42?view=CONSUMER_VIEW  
+ 
+[debug] [2019-05-26T19:47:35.577Z] >>> HTTP REQUEST GET https://servicemanagement.googleapis.com/v1/services/runtimeconfig.googleapis.com/projectSettings/hipay-42?view=CONSUMER_VIEW  
+ 
+[debug] [2019-05-26T19:47:36.870Z] <<< HTTP RESPONSE 200
+[debug] [2019-05-26T19:47:36.944Z] <<< HTTP RESPONSE 200
+[info] ✔  functions: all necessary APIs are enabled
+[debug] [2019-05-26T19:47:36.945Z] >>> HTTP REQUEST GET https://cloudresourcemanager.googleapis.com/v1/projects/hipay-42  
+ 
+[debug] [2019-05-26T19:47:37.793Z] <<< HTTP RESPONSE 200
+[debug] [2019-05-26T19:47:37.793Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/923321891171:getServerAppConfig  
+ 
+[debug] [2019-05-26T19:47:37.963Z] <<< HTTP RESPONSE 200
+[info] i  functions: preparing functions directory for uploading...
+[debug] [2019-05-26T19:47:37.967Z] >>> HTTP REQUEST GET https://runtimeconfig.googleapis.com/v1beta1/projects/hipay-42/configs  
+ 
+[debug] [2019-05-26T19:47:39.021Z] <<< HTTP RESPONSE 200
+[debug] [2019-05-26T19:47:39.022Z] >>> HTTP REQUEST GET https://runtimeconfig.googleapis.com/v1beta1/projects/hipay-42/configs/qbconfig/variables  
+ 
+[debug] [2019-05-26T19:47:39.329Z] <<< HTTP RESPONSE 200
+[debug] [2019-05-26T19:47:39.330Z] >>> HTTP REQUEST GET https://runtimeconfig.googleapis.com/v1beta1/projects/hipay-42/configs/qbconfig/variables/clientid  
+ 
+[debug] [2019-05-26T19:47:39.330Z] >>> HTTP REQUEST GET https://runtimeconfig.googleapis.com/v1beta1/projects/hipay-42/configs/qbconfig/variables/clientsecret  
+ 
+[debug] [2019-05-26T19:47:39.330Z] >>> HTTP REQUEST GET https://runtimeconfig.googleapis.com/v1beta1/projects/hipay-42/configs/qbconfig/variables/environement  
+ 
+[debug] [2019-05-26T19:47:39.504Z] <<< HTTP RESPONSE 200
+[debug] [2019-05-26T19:47:39.508Z] <<< HTTP RESPONSE 200
+[debug] [2019-05-26T19:47:39.535Z] <<< HTTP RESPONSE 200
+[info] i  functions: packaged functions (34.77 KB) for uploading
+[debug] [2019-05-26T19:47:39.674Z] >>> HTTP REQUEST POST https://cloudfunctions.googleapis.com/v1/projects/hipay-42/locations/us-central1/functions:generateUploadUrl  
+ 
+[debug] [2019-05-26T19:47:40.068Z] <<< HTTP RESPONSE 200
+[debug] [2019-05-26T19:47:40.068Z] >>> HTTP REQUEST PUT https://storage.googleapis.com/gcf-upload-us-central1-6227e7a5-7f6e-49c3-b206-cbb47cae7c31/cbd9cdb4-47ec-4cb0-a2ac-d8a89fe2c576.zip?GoogleAccessId=service-923321891171@gcf-admin-robot.iam.gserviceaccount.com&Expires=1558901859&Signature=Nf%2FxULfeSUh3K7UfAFoSgEWasqiaHFujorazzk%2FL87emx%2BTvkUvCZ0IuxG9lUPmNJ5VtQKEYARUHaJ6k3BurxqzdPmn4OxopwM4ANo0v%2BjegLu1lJmkHSwu8w42I0FPVsvSWAYrCIaGGGMclKyW5UR0rdPIg2Qu2Frq%2BiAANt8s7kY6bgqRw0nMUPf%2FiUMQCe%2BryPGXDfKph8cmNrGM7OmymNfzESqJBt0kQTauuwHLdIOiWsscw72UVt1YGhRtwHELW7x%2BuIOqevlGXvzetP%2FSYOC0vZDkpTUe1xhgR%2BvDy0M9wW5jJUvwo%2BWnuexMhRag945cSNndnbO98AxS6Cg%3D%3D  
+
+[debug] [2019-05-26T19:47:40.556Z] <<< HTTP RESPONSE 200
+[info] ✔  functions: functions folder uploaded successfully
+[debug] [2019-05-26T19:47:40.559Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/projects/hipay-42/locations/-/functions  
+ 
+[debug] [2019-05-26T19:47:41.170Z] <<< HTTP RESPONSE 200
+[info] i  functions: updating Node.js 8 function setAdminClaims(us-central1)...
+[debug] [2019-05-26T19:47:41.173Z] Trigger is:  {"eventTrigger":{"resource":"projects/hipay-42/databases/(default)/documents/admin/{email}","eventType":"providers/cloud.firestore/eventTypes/document.create","service":"firestore.googleapis.com"}}
+[info] i  functions: updating Node.js 8 function deleteAdminClaims(us-central1)...
+[debug] [2019-05-26T19:47:41.174Z] Trigger is:  {"eventTrigger":{"resource":"projects/hipay-42/databases/(default)/documents/admin/{email}","eventType":"providers/cloud.firestore/eventTypes/document.delete","service":"firestore.googleapis.com"}}
+[debug] [2019-05-26T19:47:41.176Z] >>> HTTP REQUEST PATCH https://cloudfunctions.googleapis.com/v1/projects/hipay-42/locations/us-central1/functions/setAdminClaims {"updateMask":"sourceUploadUrl,name,labels,runtime,eventTrigger.resource,eventTrigger.eventType,eventTrigger.service"} 
+
+[debug] [2019-05-26T19:47:41.177Z] >>> HTTP REQUEST PATCH https://cloudfunctions.googleapis.com/v1/projects/hipay-42/locations/us-central1/functions/deleteAdminClaims {"updateMask":"sourceUploadUrl,name,labels,runtime,eventTrigger.resource,eventTrigger.eventType,eventTrigger.service"} 
+
+[debug] [2019-05-26T19:47:41.785Z] <<< HTTP RESPONSE 200
+[debug] [2019-05-26T19:47:41.788Z] <<< HTTP RESPONSE 200
+[debug] [2019-05-26T19:47:41.789Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/aGlwYXktNDIvdXMtY2VudHJhbDEvc2V0QWRtaW5DbGFpbXMvSjVkOHRmOE85b0k  
+ 
+[debug] [2019-05-26T19:47:41.790Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/aGlwYXktNDIvdXMtY2VudHJhbDEvZGVsZXRlQWRtaW5DbGFpbXMvNzZ1a1N5dTVZNTQ  
+ 
+[debug] [2019-05-26T19:47:42.093Z] <<< HTTP RESPONSE 200
+[debug] [2019-05-26T19:47:42.095Z] <<< HTTP RESPONSE 200
+[debug] [2019-05-26T19:47:44.097Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/aGlwYXktNDIvdXMtY2VudHJhbDEvc2V0QWRtaW5DbGFpbXMvSjVkOHRmOE85b0k  
+ 
+[debug] [2019-05-26T19:47:44.097Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/aGlwYXktNDIvdXMtY2VudHJhbDEvZGVsZXRlQWRtaW5DbGFpbXMvNzZ1a1N5dTVZNTQ  
+ 
+[debug] [2019-05-26T19:47:44.302Z] <<< HTTP RESPONSE 200
+[debug] [2019-05-26T19:47:44.308Z] <<< HTTP RESPONSE 200
+[debug] [2019-05-26T19:47:46.306Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/aGlwYXktNDIvdXMtY2VudHJhbDEvZGVsZXRlQWRtaW5DbGFpbXMvNzZ1a1N5dTVZNTQ  
+ 
+[debug] [2019-05-26T19:47:46.309Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/aGlwYXktNDIvdXMtY2VudHJhbDEvc2V0QWRtaW5DbGFpbXMvSjVkOHRmOE85b0k  
+ 
+[debug] [2019-05-26T19:47:46.701Z] <<< HTTP RESPONSE 200
+[debug] [2019-05-26T19:47:46.702Z] <<< HTTP RESPONSE 200
+[debug] [2019-05-26T19:47:48.704Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/aGlwYXktNDIvdXMtY2VudHJhbDEvZGVsZXRlQWRtaW5DbGFpbXMvNzZ1a1N5dTVZNTQ  
+ 
+[debug] [2019-05-26T19:47:48.705Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/aGlwYXktNDIvdXMtY2VudHJhbDEvc2V0QWRtaW5DbGFpbXMvSjVkOHRmOE85b0k  
+ 
+[debug] [2019-05-26T19:47:49.157Z] <<< HTTP RESPONSE 200
+[debug] [2019-05-26T19:47:49.158Z] <<< HTTP RESPONSE 200

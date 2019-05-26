@@ -4,7 +4,7 @@ import { MonthSelector, useDateChange } from "../CommonUi/MonthSelector";
 import { Card, Header, PageWrapper } from "../CommonUi";
 import { useUserContext } from "../UserHelper";
 import { FormIK } from "./FormIK";
-import { storageRef, ikCol } from "../FirebaseHelper";
+import { storageRef, ikCol, isAdmin } from "../FirebaseHelper";
 import { ikType } from "./types";
 import { BtnAdd } from "../CommonUi/BtnAdd";
 import { Divider, CircularProgress, List, ListItem } from "@material-ui/core";
@@ -23,6 +23,8 @@ export function IK() {
     updateFile
   } = useCRUD<ikType>({ user, month, year }, deps);
   const total = useTotal<ikType>(iks, ik => ik.montant || 0);
+
+  console.log({ isAdmin });
 
   return (
     <PageWrapper>
