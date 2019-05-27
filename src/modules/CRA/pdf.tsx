@@ -40,8 +40,12 @@ function Calendar({ data }) {
 }
 
 export function DocumentCRA({ cra, user }) {
-  const firstQuainzaine = cra.calendar.filter(c => c.nbOfday < 16);
-  const lastQuainzaine = cra.calendar.filter(c => c.nbOfday >= 16);
+  const firstQuainzaine = cra.calendar
+    ? cra.calendar.filter(c => c.nbOfday < 16)
+    : [];
+  const lastQuainzaine = cra.calendar
+    ? cra.calendar.filter(c => c.nbOfday >= 16)
+    : [];
   const mois = monthText[cra.month - 1];
 
   return (
@@ -69,12 +73,12 @@ export function DocumentCRA({ cra, user }) {
           >
             <View style={styles.row} wrap>
               {firstQuainzaine.map(c => (
-                <Calendar data={c} />
+                <Calendar key={c.id} data={c} />
               ))}
             </View>
             <View style={styles.row} wrap>
               {lastQuainzaine.map(c => (
-                <Calendar data={c} />
+                <Calendar key={c.id} data={c} />
               ))}
             </View>
           </View>

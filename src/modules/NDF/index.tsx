@@ -1,8 +1,12 @@
 import React from "react";
 import { Flex, Text } from "rebass";
-import { MonthSelector, useDateChange } from "../CommonUi/MonthSelector";
-import { Header } from "../CommonUi/Header";
-import { PageWrapper } from "../CommonUi/PageWrapper";
+import {
+  MonthSelector,
+  useDateChange,
+  PageWrapper,
+  LinkPdf,
+  Header
+} from "../CommonUi";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import Divider from "@material-ui/core/Divider";
@@ -14,6 +18,7 @@ import { CircularProgress } from "@material-ui/core";
 import { BtnAdd } from "../CommonUi/BtnAdd";
 import { useCRUD, useTotal } from "../hooks";
 import { FileType } from "./types";
+import { DocumentNDF } from "./pdf";
 
 type NoteType = {
   id?: string;
@@ -44,7 +49,21 @@ export function NoteDeFrais() {
       <Header title="Note de Frais" />
       <MonthSelector onChange={handleChangeMonth} />
 
-      <Flex width={1} mb={3} justifyContent="flex-end">
+      <Flex width={1} mb={3} justifyContent="space-between">
+        {notes && notes.length > 0 && user && (
+          <LinkPdf
+            key="note-de-frais"
+            fileName="note-de-frais.pdf"
+            document={
+              <DocumentNDF
+                key="note-de-frais"
+                notes={notes}
+                total={total}
+                user={user}
+              />
+            }
+          />
+        )}
         <Text>Total: {total}€</Text>
       </Flex>
       <Card width={1}>

@@ -5,7 +5,8 @@ import {
   MonthSelector,
   Header,
   useDateChange,
-  Avatar
+  Avatar,
+  LinkPdf
 } from "../CommonUi";
 import {
   ExpansionPanel,
@@ -14,6 +15,20 @@ import {
 } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { getResources, getUsers } from "./getResources";
+import { DocumentCRA } from "../CRA/pdf";
+import { DocumentNDF } from "../NDF/pdf";
+import { getTotal } from "../hooks/useTotal";
+import { DocumentIk } from "../IK/pdf";
+
+function Title({ title, data, fileName, document }) {
+  return (
+    <Flex>
+      {data && data.length > 0 && (
+        <LinkPdf title={title} fileName={fileName} document={document} />
+      )}
+    </Flex>
+  );
+}
 
 function Detail({ title, data, render }) {
   return (
@@ -42,30 +57,72 @@ function Details({ user, cras, ndfs, iks, charges }) {
             title="CRA"
             data={cras}
             render={cra => (
-              <Text>{`a travaillé chez ${cra.client} ${cra.total} jours`}</Text>
+              <LinkPdf
+                title={`a travaillé chez ${cra.client} ${cra.total} jours`}
+                fileName={`cra-${user.info.displayName}-${cra.month}-${
+                  cra.year
+                }.pdf`}
+                document={<DocumentCRA cra={cra} user={user} />}
+              />
             )}
           />
           <Detail
-            title="Note de Frais"
+            title={
+              <Title
+                title="Note de Frais"
+                data={ndfs}
+                fileName={`ndf-${user.info.displayName}.pdf`}
+                document={
+                  <DocumentNDF
+                    notes={ndfs}
+                    total={getTotal(ndfs, (note: any) => note.montant || 0)}
+                    user={user}
+                  />
+                }
+              />
+            }
             data={ndfs}
             render={ndf => (
-              <Text>{`${ndf.dateAchat} ${ndf.type} ${ndf.montant}€`}</Text>
+              <Flex justifyContent="space-between">
+                <Text>{ndf.dateAchat} </Text>
+                <Text>{ndf.type} </Text>
+                <Text>{ndf.montant} €</Text>
+              </Flex>
             )}
           />
 
           <Detail
-            title="Indeminté Kilométriques"
+            title={
+              <Title
+                title="Indeminté Kilométriques"
+                data={iks}
+                fileName={`iks-${user.info.displayName}.pdf`}
+                document={
+                  <DocumentIk
+                    iks={iks}
+                    total={getTotal(iks, (ik: any) => ik.montant || 0)}
+                    user={user}
+                  />
+                }
+              />
+            }
             data={iks}
             render={ik => (
-              <Text>{`${ik.dateIk} - ${ik.kmParcourus}km ${ik.montant}€`}</Text>
+              <Flex justifyContent="space-between" pr={[0, 2]}>
+                <Text>{ik.dateIk}</Text>
+                <Text>{ik.kmParcourus}</Text>
+                <Text>{ik.montant} €</Text>
+              </Flex>
             )}
           />
           <Detail
             title="Charges"
             data={charges}
             render={charge => (
-              <Text>{`${charge.description} - ${charge.file &&
-                charge.file.name}`}</Text>
+              <Flex justifyContent="space-between">
+                <Text>{charge.description}</Text>
+                <Text>{charge.file && charge.file.name}</Text>
+              </Flex>
             )}
           />
         </Flex>

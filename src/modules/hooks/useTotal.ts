@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-function getTotal<T>(data: T[], toMap: (v: T) => number) {
+export function getTotal<T>(data: T[], toMap: (v: T) => number) {
   if (!data) return 0;
 
   return Number(data.map(toMap).reduce((a, b) => (a || 0) + (b || 0), 0));

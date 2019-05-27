@@ -1,7 +1,7 @@
 import React from "react";
 import { Flex, Text } from "rebass";
 import { MonthSelector, useDateChange } from "../CommonUi/MonthSelector";
-import { Card, Header, PageWrapper } from "../CommonUi";
+import { Card, Header, PageWrapper, LinkPdf } from "../CommonUi";
 import { useUserContext } from "../UserHelper";
 import { FormIK } from "./FormIK";
 import { storageRef, ikCol } from "../FirebaseHelper";
@@ -9,6 +9,7 @@ import { ikType } from "./types";
 import { BtnAdd } from "../CommonUi/BtnAdd";
 import { Divider, CircularProgress, List, ListItem } from "@material-ui/core";
 import { useCRUD, useTotal } from "../hooks";
+import { DocumentIk } from "./pdf";
 
 export function IK() {
   const user = useUserContext();
@@ -29,7 +30,16 @@ export function IK() {
       <Header title="Indemnités Kilométriques" />
       <MonthSelector onChange={handleChangeMonth} />
 
-      <Flex width={1} mb={3} justifyContent="flex-end">
+      <Flex width={1} mb={3} justifyContent="space-between">
+        {iks && iks.length > 0 && user && (
+          <LinkPdf
+            key="ik"
+            fileName="ik.pdf"
+            document={
+              <DocumentIk key="ik" iks={iks} total={total} user={user} />
+            }
+          />
+        )}
         <Text>Total: {total}€</Text>
       </Flex>
       <Card width={1}>

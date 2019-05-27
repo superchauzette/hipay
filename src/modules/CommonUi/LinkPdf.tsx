@@ -3,11 +3,16 @@ import { PDFDownloadLink } from "@react-pdf/renderer";
 import Icon from "@material-ui/icons/CloudDownload";
 import { Button } from "@material-ui/core";
 
-export const LinkPdf = props => (
-  <PDFDownloadLink style={{ textDecoration: "none" }} {...props}>
+const LinkPdfComponent = props => (
+  <PDFDownloadLink
+    style={{ textDecoration: props.title ? "underline" : "none" }}
+    {...props}
+  >
     {({ loading }) =>
       loading ? (
         "...Loading"
+      ) : props.title ? (
+        props.title
       ) : (
         <Button variant="outlined">
           <Icon style={{ marginRight: "6px" }} />
@@ -17,3 +22,5 @@ export const LinkPdf = props => (
     }
   </PDFDownloadLink>
 );
+
+export const LinkPdf = React.memo(LinkPdfComponent, () => true);

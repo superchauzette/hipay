@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Text } from "rebass";
+import { Text, Flex } from "rebass";
 import { TextField, BtnUpload, BtnDelete } from "../CommonUi";
 import { ChargeType, FileType } from "./types";
 
@@ -47,12 +47,16 @@ export function FormCharge({
         value={charge.description}
         onChange={e => onChange({ description: e.target.value })}
       />
-      <BtnUpload
-        id={`btn-ik-upload-${charge.id}`}
-        disabled={disabled}
-        onChange={e => handleFile(e.target.files)}
-      />
-      <Text mt={2}>{file && file.name}</Text>
+      <Flex>
+        <BtnUpload
+          id={`btn-ik-upload-${charge.id}`}
+          disabled={disabled}
+          onChange={e => handleFile(e.target.files)}
+        />
+        <Text mt={2} ml={3}>
+          {file && file.name}
+        </Text>
+      </Flex>
       <BtnDelete onClick={() => onDelete(charge.id)} disabled={disabled} />
     </form>
   );
