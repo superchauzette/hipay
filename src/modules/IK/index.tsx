@@ -1,10 +1,10 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Flex, Text } from "rebass";
 import { MonthSelector, useDateChange } from "../CommonUi/MonthSelector";
 import { Card, Header, PageWrapper } from "../CommonUi";
 import { useUserContext } from "../UserHelper";
 import { FormIK } from "./FormIK";
-import { storageRef, ikCol, isAdmin } from "../FirebaseHelper";
+import { storageRef, ikCol } from "../FirebaseHelper";
 import { ikType } from "./types";
 import { BtnAdd } from "../CommonUi/BtnAdd";
 import { Divider, CircularProgress, List, ListItem } from "@material-ui/core";

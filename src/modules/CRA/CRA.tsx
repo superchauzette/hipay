@@ -7,13 +7,14 @@ import {
   userCol
 } from "./service";
 import { userType } from "../UserHelper";
-import { Card, MyInput, MyBox, BtnDelete } from "../CommonUi";
+import { Card, MyInput, MyBox, BtnDelete, LinkPdf } from "../CommonUi";
 import { DayofWeekMobile } from "./DayofWeekMobile";
 import { UploadCRA } from "./UploadCRA";
 import { CalandarType } from "./types";
 import { WhiteSpace } from "./WhiteSpace";
 import { Button } from "@material-ui/core";
 import { FileType } from "./types";
+import { DocumentCRA } from "./pdf";
 
 type CRAProps = {
   cra: any;
@@ -133,6 +134,12 @@ export function CRA({ cra, showTrash, date, month, year, user }: CRAProps) {
       </Text>
       <Card width={1} p={3}>
         <Flex flexDirection="column">
+          {cra && user && (
+            <LinkPdf
+              fileName={`cra-${cra.client}-${cra.month}-${cra.year}.pdf`}
+              document={<DocumentCRA cra={cra} user={user} />}
+            />
+          )}
           <Flex mt={3}>
             <input
               type="text"

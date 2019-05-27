@@ -10,3 +10,4 @@ export { MyInput } from "./MyInput";
 export { NavLink } from "./NavLink";
 export { PageWrapper } from "./PageWrapper";
 export { TextField } from "./TextField";
+export { LinkPdf } from "./LinkPdf";

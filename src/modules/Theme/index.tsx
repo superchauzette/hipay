@@ -8,6 +8,7 @@ type ThemeProp = {
 export const blue = "#07c";
 export const lightgray = "#f6f6ff";
 export const black = "rgb(72, 72, 72)";
+export const red = "rgb(225, 0, 80)";
 
 const theme = {
   fontSizes: [12, 14, 16, 24, 32, 48, 64],
