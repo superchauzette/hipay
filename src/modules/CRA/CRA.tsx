@@ -13,7 +13,6 @@ import { UploadCRA } from "./UploadCRA";
 import { CalandarType } from "./types";
 import { WhiteSpace } from "./WhiteSpace";
 import { Button } from "@material-ui/core";
-import { FileType } from "./types";
 import { DocumentCRA } from "./pdf";
 
 type CRAProps = {
@@ -93,6 +92,8 @@ export function CRA({ cra, showTrash, date, month, year, user }: CRAProps) {
       };
       await craCollection().createOrUpdate(id, craToSave);
       setLoading(false);
+    } else {
+      await craCollection().createOrUpdate(id, { isSaved: !isSaved });
     }
   }
 

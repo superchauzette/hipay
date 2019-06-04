@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Flex, Text } from "rebass";
+import { Box, Flex, Text } from "rebass";
 import {
   PageWrapper,
   MonthSelector,
@@ -19,6 +19,7 @@ import { DocumentCRA } from "../CRA/pdf";
 import { DocumentNDF } from "../NDF/pdf";
 import { getTotal } from "../hooks/useTotal";
 import { DocumentIk } from "../IK/pdf";
+import { Check as CheckIcon, Close as CloseIcon } from "@material-ui/icons";
 
 function Title({ title, data, fileName, document }) {
   return (
@@ -57,13 +58,22 @@ function Details({ user, cras, ndfs, iks, charges }) {
             title="CRA"
             data={cras}
             render={cra => (
-              <LinkPdf
-                title={`a travaillé chez ${cra.client} ${cra.total} jours`}
-                fileName={`cra-${user.info.displayName}-${cra.month}-${
-                  cra.year
-                }.pdf`}
-                document={<DocumentCRA cra={cra} user={user} />}
-              />
+              <Flex>
+                <Box mr={2}>
+                  {cra.isSaved ? (
+                    <CheckIcon style={{ fill: "green" }} />
+                  ) : (
+                    <CloseIcon style={{ fill: "red" }} />
+                  )}
+                </Box>
+                <LinkPdf
+                  title={`a travaillé chez ${cra.client} ${cra.total} jours`}
+                  fileName={`cra-${user.info.displayName}-${cra.month}-${
+                    cra.year
+                  }.pdf`}
+                  document={<DocumentCRA cra={cra} user={user} />}
+                />
+              </Flex>
             )}
           />
           <Detail
