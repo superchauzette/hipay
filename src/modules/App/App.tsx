@@ -54,7 +54,9 @@ function HeaderBar({ authUser }) {
 function AuthRoute({ isLogged, component: Component, ...props }) {
   return (
     <Route
-      render={() => (isLogged ? <Redirect to="/login" /> : <Component />)}
+      render={routeProps =>
+        isLogged ? <Redirect to="/login" /> : <Component {...routeProps} />
+      }
       {...props}
     />
   );
