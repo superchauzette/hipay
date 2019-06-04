@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Flex, Text } from "rebass";
+import { Box, Flex, Text } from "rebass";
 import { BtnUpload, BtnDelete, TextField } from "../CommonUi";
 import { NoteType, FileType } from "./types";
 
@@ -46,8 +46,8 @@ export function FormNDF({
           onChange={e => onChange({ dateAchat: e.target.value })}
         />
         <TextField
-          id="Type"
-          label="Type"
+          id="Categorie"
+          label="Catégorie"
           disabled={disabled}
           value={note.type}
           onChange={e => onChange({ type: e.target.value })}
@@ -60,14 +60,14 @@ export function FormNDF({
           onChange={e => onChange({ description: e.target.value })}
         />
         <TextField
-          id="description"
-          label="montant HT"
+          id="montant"
+          label="Montant HT"
           type="number"
           value={note.montant}
           onChange={e => onChange({ montant: Number(e.target.value) })}
         />
         <TextField
-          id="description"
+          id="tva"
           label="TVA"
           type="number"
           disabled={disabled}
@@ -84,13 +84,14 @@ export function FormNDF({
           <BtnUpload
             id={`btn-ik-upload-${note.id}`}
             label="justificatif"
-            disabled={disabled}
+            disabled={Boolean(file && file.name)}
             onChange={e => handleFile(e.target.files)}
           />
           <Text mt={2}>{file && file.name}</Text>
         </Flex>
-
-        <BtnDelete onClick={() => onDelete(note.id)} disabled={disabled} />
+        <Box>
+          <BtnDelete onClick={() => onDelete(note.id)} disabled={disabled} />
+        </Box>
       </Flex>
     </form>
   );

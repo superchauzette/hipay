@@ -33,7 +33,7 @@ type NoteType = {
 export function NoteDeFrais() {
   const user = useUserContext();
   const { month, year, handleChangeMonth } = useDateChange();
-  const deps = { collection: ndfCol, storageRefPath: storageRef().charges };
+  const deps = { collection: ndfCol, storageRefPath: storageRef().ndf };
   const {
     data: notes,
     isLoading,
