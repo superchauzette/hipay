@@ -9,6 +9,7 @@ export type FileType = {
 
 interface myType {
   id?: string;
+  file?: FileType;
 }
 
 export function useCRUD<T extends myType>(
@@ -50,6 +51,10 @@ export function useCRUD<T extends myType>(
       .doc(id)
       .delete();
     setData(state => state.filter(v => v.id !== id));
+    const myData = data.find(d => d.id === id);
+    if (myData && myData.file && myData.file.name) {
+      storageRefPath({ user, year, month })(myData.file.name).delete();
+    }
   }
 
   async function handleChange(id: string | undefined, value: T) {

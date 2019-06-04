@@ -5,7 +5,6 @@ import { ChargeType, FileType } from "./types";
 
 type FormIkProps = {
   charge: ChargeType;
-  disabled?: boolean;
   onChange: (charge: ChargeType) => void;
   onDelete: (id: string | undefined) => void;
   onUpdateFile: (file: FileType) => void;
@@ -13,7 +12,6 @@ type FormIkProps = {
 
 export function FormCharge({
   charge,
-  disabled,
   onChange,
   onDelete,
   onUpdateFile
@@ -43,21 +41,20 @@ export function FormCharge({
       <TextField
         id="description"
         label="Description"
-        disabled={disabled}
         value={charge.description}
         onChange={e => onChange({ description: e.target.value })}
       />
       <Flex>
         <BtnUpload
           id={`btn-ik-upload-${charge.id}`}
-          disabled={disabled}
+          disabled={Boolean(file && file.name)}
           onChange={e => handleFile(e.target.files)}
         />
         <Text mt={2} ml={3}>
           {file && file.name}
         </Text>
       </Flex>
-      <BtnDelete onClick={() => onDelete(charge.id)} disabled={disabled} />
+      <BtnDelete onClick={() => onDelete(charge.id)} />
     </form>
   );
 }
