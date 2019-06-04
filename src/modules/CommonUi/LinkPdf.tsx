@@ -16,7 +16,7 @@ const LinkPdfComponent = props => (
       ) : (
         <Button variant="outlined">
           <Icon style={{ marginRight: "6px" }} />
-          Download
+          {props.label || "Download"}
         </Button>
       )
     }

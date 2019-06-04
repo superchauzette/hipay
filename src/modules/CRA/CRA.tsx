@@ -96,10 +96,16 @@ export function CRA({ cra, showTrash, date, month, year, user }: CRAProps) {
     }
   }
 
-  async function saveFileInfo(fileUploaded: FileType) {
+  async function saveFileInfo(fileUploaded) {
     setFile(fileUploaded);
     storageCRA({ user, month, year })(fileUploaded.name).put(fileUploaded);
-    craCollection().createOrUpdate(id, { file: fileUploaded });
+    craCollection().createOrUpdate(id, {
+      file: {
+        name: fileUploaded.name,
+        size: fileUploaded.size,
+        type: fileUploaded.type
+      }
+    });
   }
 
   async function deleteCRA() {
@@ -134,12 +140,6 @@ export function CRA({ cra, showTrash, date, month, year, user }: CRAProps) {
       </Text>
       <Card width={1} p={3}>
         <Flex flexDirection="column">
-          {cra && user && (
-            <LinkPdf
-              fileName={`cra-${cra.client}-${cra.month}-${cra.year}.pdf`}
-              document={<DocumentCRA cra={cra} user={user} />}
-            />
-          )}
           <Flex mt={3}>
             <input
               type="text"
@@ -173,6 +173,12 @@ export function CRA({ cra, showTrash, date, month, year, user }: CRAProps) {
                 {total}
               </Text>
             </Flex>
+          </Flex>
+          <Flex mt={3} alignItems="center">
+            <Text style={{ fontStyle: "italic" }} fontSize={"11px"}>
+              Cocher Fill all si vous avez travaillé tous les jours ouvrés du
+              mois Saisir 1 pour 1 journée complète et 0,5 pour une demi-journée
+            </Text>
           </Flex>
 
           <Box width={["100%"]} mt={2}>
@@ -227,23 +233,33 @@ export function CRA({ cra, showTrash, date, month, year, user }: CRAProps) {
               disabled={isSaved}
             />
           </Flex>
-          <Flex alignItems="center" mt={2}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={saveCRA}
-              disabled={!Boolean(client)}
-            >
-              {isSaved ? "Modifier" : "Sauvegarder"}
-            </Button>
-            {!isLoading && !isSaved && (
-              <Text ml={3} style={{ fontStyle: "italic" }} fontSize={"10px"}>
-                Pensez à renseigner votre client
-              </Text>
-            )}
-            {isLoading && isSaved && <Text ml={3}>...Loading</Text>}
-            {!isLoading && isSaved && (
-              <Text ml={3}>Votre CRA a été sauvegardé</Text>
+          <Flex alignItems="center" mt={2} flexWrap="wrap">
+            <Flex mb={2} alignItems="center">
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={saveCRA}
+                disabled={!Boolean(client)}
+              >
+                {isSaved ? "Modifier" : "Sauvegarder"}
+              </Button>
+              {!isLoading && !isSaved && (
+                <Text ml={3} style={{ fontStyle: "italic" }} fontSize={"10px"}>
+                  Pensez à renseigner votre client
+                </Text>
+              )}
+              {isLoading && isSaved && <Text ml={3}>...Loading</Text>}
+              {!isLoading && isSaved && (
+                <Text ml={3}>Votre CRA a été sauvegardé</Text>
+              )}
+            </Flex>
+            <Box mx="auto" />
+            {cra && user && (
+              <LinkPdf
+                label="imprimer"
+                fileName={`cra-${cra.client}-${cra.month}-${cra.year}.pdf`}
+                document={<DocumentCRA cra={cra} user={user} />}
+              />
             )}
           </Flex>
         </Flex>

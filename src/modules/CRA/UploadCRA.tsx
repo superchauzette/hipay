@@ -19,6 +19,7 @@ export function UploadCRA({ file, key, onFile, onDelete }) {
         <Flex width={"300px"} justifyContent="space-around" alignItems="center">
           <BtnUpload
             id={key || "btn- cra-update"}
+            disabled={file && file.name}
             onChange={e => handleFile(e.target.files)}
           />
           {file && file.name && (

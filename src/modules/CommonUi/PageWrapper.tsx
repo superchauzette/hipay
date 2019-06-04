@@ -3,6 +3,13 @@ import { Flex } from "rebass";
 
 export function PageWrapper(props) {
   return (
-    <Flex p={[3, 3]} flexDirection="column" alignItems="center" {...props} />
+    <Flex
+      px={3}
+      pt={3}
+      pb={3}
+      flexDirection="column"
+      alignItems="center"
+      {...props}
+    />
   );
 }
