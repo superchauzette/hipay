@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { Flex, Text } from "rebass";
-import { TextField, BtnUpload, BtnDelete } from "../CommonUi";
+import { TextField, BtnDelete } from "../CommonUi";
 import { ikType, FileType } from "./types";
 
 type FormIkProps = {
