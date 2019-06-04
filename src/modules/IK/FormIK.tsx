@@ -80,20 +80,12 @@ export function FormIK({
       />
       <TextField
         id="montant"
-        label="Montant"
+        label="Montant HT"
         type="number"
         disabled={disabled}
         value={ik.montant}
         onChange={e => onChange({ montant: Number(e.target.value) })}
       />
-      <Flex flexDirection="column" alignItems="center">
-        <BtnUpload
-          id={`btn-ik-upload-${ik.id}`}
-          disabled={disabled}
-          onChange={e => handleFile(e.target.files)}
-        />
-        <Text mt={2}>{file && file.name}</Text>
-      </Flex>
 
       <BtnDelete onClick={() => onDelete(ik.id)} disabled={disabled} />
     </form>

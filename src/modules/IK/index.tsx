@@ -30,7 +30,13 @@ export function IK() {
       <Header title="Indemnités Kilométriques" />
       <MonthSelector onChange={handleChangeMonth} />
 
-      <Flex width={1} mb={3} justifyContent="space-between">
+      <Flex
+        width={1}
+        mb={3}
+        px={2}
+        justifyContent="space-between"
+        alignItems="center"
+      >
         {iks && iks.length > 0 && user && (
           <LinkPdf
             key="ik"
@@ -40,7 +46,9 @@ export function IK() {
             }
           />
         )}
-        <Text>Total: {total}€</Text>
+        <Text fontWeight="bold" fontSize="18px">
+          Total: {total}€
+        </Text>
       </Flex>
       <Card width={1}>
         <List>
