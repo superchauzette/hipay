@@ -1,31 +1,15 @@
-import React, { useState } from "react";
+import React from "react";
 import { TextField, BtnDelete } from "../CommonUi";
-import { ikType, FileType } from "./types";
+import { ikType } from "./types";
 
 type FormIkProps = {
   ik: ikType;
   disabled?: boolean;
   onChange: (ik: ikType) => void;
   onDelete: (id: string | undefined) => void;
-  onUpdateFile: (file: FileType) => void;
 };
 
-export function FormIK({
-  ik,
-  disabled,
-  onChange,
-  onDelete,
-  onUpdateFile
-}: FormIkProps) {
-  const [file, setFile] = useState(ik.file);
-
-  function handleFile(files) {
-    const file: FileType = files[0];
-    setFile(file);
-    onChange({ file: { name: file.name, size: file.size, type: file.type } });
-    onUpdateFile(file);
-  }
-
+export function FormIK({ ik, disabled, onChange, onDelete }: FormIkProps) {
   return (
     <form
       noValidate

@@ -20,8 +20,7 @@ export function IK() {
     isLoading,
     addData: addIk,
     removeData: deleteIk,
-    handleChange,
-    updateFile
+    handleChange
   } = useCRUD<ikType>({ user, month, year }, deps);
   const total = useTotal<ikType>(iks, ik => ik.montant || 0);
 
@@ -64,7 +63,6 @@ export function IK() {
                   ik={ik}
                   onChange={n => handleChange(ik.id, n)}
                   onDelete={deleteIk}
-                  onUpdateFile={updateFile}
                 />
               </ListItem>
               <Divider />
