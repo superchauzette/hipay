@@ -32,7 +32,6 @@ export function FormNDF({
       <Flex
         flexDirection={["column", "row"]}
         justifyContent={["center", "space-between", "space-between"]}
-        alignItems={["center"]}
         flexWrap="wrap"
         p="0 10px"
         mt="10px"
@@ -62,7 +61,7 @@ export function FormNDF({
         />
         <TextField
           id="description"
-          label="montant"
+          label="montant HT"
           type="number"
           value={note.montant}
           onChange={e => onChange({ montant: Number(e.target.value) })}
@@ -75,9 +74,16 @@ export function FormNDF({
           value={note.tva}
           onChange={e => onChange({ tva: Number(e.target.value) })}
         />
+        <Flex flexDirection="column" justifyContent="space-between">
+          <Text>Total TTC</Text>
+          <Text fontWeight="bold" pb="10px">
+            {Number(note.tva || 0) + Number(note.montant || 0)} €
+          </Text>
+        </Flex>
         <Flex flexDirection="column" alignItems={["center"]} mt={1}>
           <BtnUpload
             id={`btn-ik-upload-${note.id}`}
+            label="justificatif"
             disabled={disabled}
             onChange={e => handleFile(e.target.files)}
           />

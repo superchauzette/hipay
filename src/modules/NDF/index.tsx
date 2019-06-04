@@ -49,7 +49,13 @@ export function NoteDeFrais() {
       <Header title="Note de Frais" />
       <MonthSelector onChange={handleChangeMonth} />
 
-      <Flex width={1} mb={3} justifyContent="space-between">
+      <Flex
+        width={1}
+        mb={3}
+        px={2}
+        justifyContent="space-between"
+        alignItems="center"
+      >
         {notes && notes.length > 0 && user && (
           <LinkPdf
             key="note-de-frais"
@@ -64,7 +70,9 @@ export function NoteDeFrais() {
             }
           />
         )}
-        <Text>Total: {total}€</Text>
+        <Text fontWeight="bold" fontSize="18px">
+          Total: {total}€
+        </Text>
       </Flex>
       <Card width={1}>
         <List>

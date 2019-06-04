@@ -4,11 +4,17 @@ import { Button } from "@material-ui/core";
 
 type BtnUploadProps = {
   id?: string;
+  label?: string;
   disabled?: boolean;
   onChange: (e: any) => void;
 };
 
-export function BtnUpload({ id, disabled, onChange }: BtnUploadProps) {
+export function BtnUpload({
+  id,
+  label = "Upload",
+  disabled,
+  onChange
+}: BtnUploadProps) {
   return (
     <>
       <input
@@ -27,7 +33,7 @@ export function BtnUpload({ id, disabled, onChange }: BtnUploadProps) {
           component="span"
           disabled={disabled}
         >
-          Upload
+          {label}
           <CloudUploadIcon style={{ marginLeft: "8px" }} />
         </Button>
       </label>
