@@ -7,7 +7,7 @@ import { QUICKBOOK_AUTH, QUICKBOOK_COMPANY } from "../constants";
 
 async function quickBookLogin() {
   const data = await fetch(QUICKBOOK_AUTH).then(res => res.json());
-  return data.url;
+  return data.authUri;
 }
 
 function storeToken(search, quickbookStorage, setQuickbookObj) {
@@ -17,7 +17,8 @@ function storeToken(search, quickbookStorage, setQuickbookObj) {
     expireAt: parseInt(params.get("expireAt") || "0"),
     refreshToken: params.get("refreshToken"),
     refreshExpireAt: parseInt(params.get("refreshExpireAt") || "0"),
-    createdAt: parseInt(params.get("createdAt") || "0")
+    createdAt: parseInt(params.get("createdAt") || "0"),
+    realmId: params.get("realmId")
   };
   if (quickbookObj.createdAt > (quickbookStorage.createdAt || 0)) {
     setQuickbookObj(quickbookObj);
@@ -51,12 +52,9 @@ export function Dashboard({ location }) {
   }, [quickookObj, user]);
   useEffect(() => {
     if (quickookObj.token) {
-      fetch(QUICKBOOK_COMPANY(quickookObj.token, quickookObj.realmId), {
-        headers: { authorization: `Bearer ${quickookObj.token}` }
-      });
+      fetch(QUICKBOOK_COMPANY(quickookObj.token, quickookObj.realmId));
     }
   }, [quickookObj]);
-  console.log(quickBooksUri);
   return (
     <React.Fragment>
       {quickBooksLogged && <DisplayData />}
