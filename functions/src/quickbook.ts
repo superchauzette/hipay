@@ -72,8 +72,9 @@ app.get("/callback", (req, res) => {
 });
 
 app.get("/refreshAccessToken", (req, res) => {
+  const { refreshAccessToken } = req.query;
   oauthClient
-    .refresh()
+    .refreshUsingToken(refreshAccessToken)
     .then((authResponse: any) => {
       console.log(
         "The Refresh Token is  " + JSON.stringify(authResponse.getJson())

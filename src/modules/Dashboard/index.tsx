@@ -29,35 +29,59 @@ function storeToken(search, quickbookStorage, setQuickbookObj) {
 export function Dashboard({ location }) {
   const [quickBooksUri, setQuickBooksUri] = useState(null);
   const [quickBooksLogged, setQuickBooksLogged] = useState(false);
-  const [quickookObj, setQuickbookObj] = useState<{
-    token?: string;
-    realmId?: string;
-  }>({});
+  const [quickBooksData, setQuickBooksData] = useState(false);
+  const [quickbookObj, setQuickbookObj] = useState<{
+    token: string;
+    realmId: string;
+    expireAt: number;
+  } | null>(null);
   const user = useUserContext();
   const quickbookStorage = JSON.parse(
     localStorage.getItem("quickbook") || "{}"
   );
-  if (quickbookStorage && quickbookStorage.token !== quickookObj.token) {
+  if (quickbookStorage && !quickbookObj) {
     setQuickbookObj(quickbookStorage);
   }
   if (location.search) {
     storeToken(location.search, quickbookStorage, setQuickbookObj);
   }
   useEffect(() => {
-    if (user && quickookObj && quickookObj.token) {
+    if (user && quickbookObj && quickbookObj.token) {
       setQuickBooksLogged(true);
     } else {
       quickBookLogin().then(uri => setQuickBooksUri(uri));
     }
-  }, [quickookObj, user]);
+  }, [quickbookObj, user]);
   useEffect(() => {
-    if (quickookObj.token) {
-      fetch(QUICKBOOK_COMPANY(quickookObj.token, quickookObj.realmId));
+    if (
+      quickbookObj &&
+      quickbookObj.token &&
+      new Date(quickbookObj.expireAt) < new Date()
+    ) {
+      var form_data = new FormData();
+
+      const formContent = {
+        quickbooks_token: quickbookObj.token,
+        realm_id: quickbookObj.realmId
+      };
+      for (var key in formContent) {
+        form_data.append(key, formContent[key]);
+      }
+      fetch(
+        "https://hiwayapi-demo.herokuapp.com/index.php/api/quickbooksdata",
+        {
+          method: "POST",
+
+          body: form_data
+        }
+      )
+        .then(res => res.json())
+        .then(data => console.log(data));
     }
-  }, [quickookObj]);
+  }, [quickbookObj]);
   return (
     <React.Fragment>
-      {quickBooksLogged && <DisplayData />}
+      {quickBooksLogged && <DisplayData quickbookObj={quickbookObj} />}
       {!quickBooksLogged && quickBooksUri && (
         <Button>
           <a href={quickBooksUri}>Connect to quickbook</a>
