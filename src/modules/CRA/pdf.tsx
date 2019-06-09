@@ -72,13 +72,13 @@ export function DocumentCRA({ cra, user }) {
             }}
           >
             <View style={styles.row} wrap>
-              {firstQuainzaine.map(c => (
-                <Calendar key={c.id} data={c} />
+              {firstQuainzaine.map((c, index) => (
+                <Calendar key={c.id || index} data={c} />
               ))}
             </View>
             <View style={styles.row} wrap>
-              {lastQuainzaine.map(c => (
-                <Calendar key={c.id} data={c} />
+              {lastQuainzaine.map((c, index) => (
+                <Calendar key={c.id || index} data={c} />
               ))}
             </View>
           </View>

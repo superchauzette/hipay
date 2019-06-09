@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Box, Flex, Text } from "rebass";
-import { BtnUpload, BtnDelete, TextField } from "../CommonUi";
+import { BtnUpload, BtnDelete, TextField, DownloadLink } from "../CommonUi";
 import { NoteType, FileType } from "./types";
 
 type FormNDFProps = {
@@ -87,7 +87,15 @@ export function FormNDF({
             disabled={Boolean(file && file.name)}
             onChange={e => handleFile(e.target.files)}
           />
-          <Text mt={2}>{file && file.name}</Text>
+          {file && (
+            <DownloadLink
+              mt={2}
+              type="ndf"
+              month={note.month}
+              year={note.year}
+              fileName={file.name}
+            />
+          )}
         </Flex>
         <Box>
           <BtnDelete onClick={() => onDelete(note.id)} disabled={disabled} />

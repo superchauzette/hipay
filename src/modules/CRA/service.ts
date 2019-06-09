@@ -7,13 +7,7 @@ import {
   getYear
 } from "date-fns";
 import frLocale from "date-fns/locale/fr";
-import {
-  craCol,
-  userCol,
-  storageRef,
-  db,
-  extractQueries
-} from "../FirebaseHelper";
+import { craCol, userCol, db, extractQueries } from "../FirebaseHelper";
 
 export { userCol };
 
@@ -78,5 +72,3 @@ export function craCollection() {
     remove
   };
 }
-
-export const storageCRA = props => storageRef().cra(props);

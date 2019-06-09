@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Text, Flex } from "rebass";
-import { TextField, BtnUpload, BtnDelete } from "../CommonUi";
+import { Flex } from "rebass";
+import { TextField, BtnUpload, BtnDelete, DownloadLink } from "../CommonUi";
 import { ChargeType, FileType } from "./types";
 
 type FormIkProps = {
@@ -50,9 +50,16 @@ export function FormCharge({
           disabled={Boolean(file && file.name)}
           onChange={e => handleFile(e.target.files)}
         />
-        <Text mt={2} ml={3}>
-          {file && file.name}
-        </Text>
+        {file && (
+          <DownloadLink
+            type="charges"
+            month={charge.month}
+            year={charge.year}
+            fileName={file.name}
+            mt={2}
+            ml={3}
+          />
+        )}
       </Flex>
       <BtnDelete onClick={() => onDelete(charge.id)} />
     </form>

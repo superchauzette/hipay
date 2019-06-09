@@ -6,6 +6,8 @@ export type NoteType = {
   montant?: number;
   tva?: number;
   file?: any;
+  month?: number;
+  year?: number;
 };
 
 export type FileType = {

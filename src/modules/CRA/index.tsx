@@ -9,11 +9,13 @@ import {
   useDateChange
 } from "../CommonUi";
 import { getMyCras } from "./service";
+import { CircularProgress } from "@material-ui/core";
+import { Flex } from "rebass";
 
 export function CRAS() {
   const user = useUserContext();
   const { month, year, date, handleChangeMonth } = useDateChange();
-  const [cras, setCras] = useState([{ id: 0 }] as any[]);
+  const [cras, setCras] = useState([] as any[]);
 
   useEffect(() => {
     if (user) {
@@ -33,9 +35,15 @@ export function CRAS() {
       <Header title="Compte rendu d'Activité" />
       <MonthSelector onChange={handleChangeMonth} />
 
+      {cras && !cras.length && (
+        <Flex>
+          <CircularProgress />
+        </Flex>
+      )}
+
       {cras.map((cra, index) => (
         <CRA
-          key={cra.id}
+          key={cra.id || index}
           cra={cra}
           showTrash={index !== 0}
           user={user}

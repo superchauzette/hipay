@@ -81,7 +81,7 @@ export function NoteDeFrais() {
               <CircularProgress />
             </Flex>
           )}
-          {notes.map(note => (
+          {notes.map((note, index) => (
             <div key={note.id}>
               <ListItem>
                 <FormNDF
@@ -91,7 +91,7 @@ export function NoteDeFrais() {
                   onUpdateFile={updateFile}
                 />
               </ListItem>
-              <Divider />
+              {notes.length - 1 !== index && <Divider />}
             </div>
           ))}
         </List>

@@ -38,7 +38,7 @@ export async function isAdmin(): Promise<boolean> {
       auth().currentUser || defaultAdmin
     ).getIdTokenResult();
     return idToken.claims.admin;
-  } catch {
+  } catch (err) {
     return false;
   }
 }

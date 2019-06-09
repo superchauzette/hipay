@@ -59,14 +59,15 @@ export function useCRUD<T extends myType>(
 
   async function handleChange(id: string | undefined, value: T) {
     if (id === "new") {
-      const noteCreated = await collection().add({
+      const dataCreated = await collection().add({
         ...value,
         userid: user.uid,
         month,
         year,
-        user: userCol().doc(user.uid)
+        user: userCol().doc(user.uid),
+        createdAt: new Date()
       });
-      value.id = noteCreated.id;
+      value.id = dataCreated.id;
     } else {
       collection()
         .doc(id)

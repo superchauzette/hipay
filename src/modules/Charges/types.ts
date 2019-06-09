@@ -8,4 +8,6 @@ export type ChargeType = {
   id?: string;
   description?: string;
   file?: FileType;
+  month?: number;
+  year?: number;
 };

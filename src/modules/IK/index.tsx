@@ -56,7 +56,7 @@ export function IK() {
               <CircularProgress />
             </Flex>
           )}
-          {iks.map(ik => (
+          {iks.map((ik, index) => (
             <div key={ik.id}>
               <ListItem>
                 <FormIK
@@ -65,7 +65,7 @@ export function IK() {
                   onDelete={deleteIk}
                 />
               </ListItem>
-              <Divider />
+              {iks.length - 1 !== index && <Divider />}
             </div>
           ))}
         </List>

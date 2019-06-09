@@ -1,19 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { Flex, Box, Text } from "rebass";
-import {
-  getCalculatedCalendar,
-  storageCRA,
-  craCollection,
-  userCol
-} from "./service";
+import { getCalculatedCalendar, craCollection, userCol } from "./service";
 import { userType } from "../UserHelper";
-import { Card, MyInput, MyBox, BtnDelete, LinkPdf } from "../CommonUi";
+import {
+  Card,
+  MyInput,
+  MyBox,
+  BtnDelete,
+  LinkPdf,
+  DownloadLink
+} from "../CommonUi";
 import { DayofWeekMobile } from "./DayofWeekMobile";
 import { UploadCRA } from "./UploadCRA";
 import { CalandarType } from "./types";
 import { WhiteSpace } from "./WhiteSpace";
 import { Button } from "@material-ui/core";
 import { DocumentCRA } from "./pdf";
+import { storageRef } from "../FirebaseHelper";
 
 type CRAProps = {
   cra: any;
@@ -99,7 +102,9 @@ export function CRA({ cra, showTrash, date, month, year, user }: CRAProps) {
 
   async function saveFileInfo(fileUploaded) {
     setFile(fileUploaded);
-    storageCRA({ user, month, year })(fileUploaded.name).put(fileUploaded);
+    storageRef()
+      .cra({ user, month, year })(fileUploaded.name)
+      .put(fileUploaded);
     craCollection().createOrUpdate(id, {
       file: {
         name: fileUploaded.name,
@@ -122,7 +127,9 @@ export function CRA({ cra, showTrash, date, month, year, user }: CRAProps) {
 
   async function deleteCRAUpload() {
     craCollection().createOrUpdate(id, { file: {} });
-    storageCRA({ user, month, year })(file.name).delete();
+    storageRef()
+      .cra({ user, month, year })(file.name)
+      .delete();
     setFile({});
   }
 
@@ -131,7 +138,18 @@ export function CRA({ cra, showTrash, date, month, year, user }: CRAProps) {
   return (
     <Flex flexDirection="column" width={1}>
       <UploadCRA
-        key={`${id}-${month}-${year}`}
+        mkey={`${id}-${month}-${year}` || "0"}
+        link={
+          file && (
+            <DownloadLink
+              mt={2}
+              type="cra"
+              month={month}
+              year={year}
+              fileName={file.name}
+            />
+          )
+        }
         file={file}
         onFile={saveFileInfo}
         onDelete={deleteCRAUpload}

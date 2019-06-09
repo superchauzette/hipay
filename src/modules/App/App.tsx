@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 import { useAuth, UserProvider } from "../UserHelper";
 import { Theme, blue } from "../Theme";
@@ -13,12 +13,18 @@ import { Avatar } from "../CommonUi";
 import { Admin } from "../Admin";
 import { Flex, Box, Text } from "rebass";
 import { AppBar, Button, Toolbar } from "@material-ui/core";
+import { isAdmin } from "../FirebaseHelper";
 
 const LinkMenu = props => (
   <Button size="small" component={NavLink} {...props} />
 );
 
 function Menu() {
+  const [admin, setAdmin] = useState(false);
+  useEffect(() => {
+    isAdmin().then(setAdmin);
+  }, []);
+
   return (
     <Flex flexWrap="wrap" mx={-2}>
       <LinkMenu exact to="/">
@@ -28,7 +34,7 @@ function Menu() {
       <LinkMenu to="/ndf">NDF</LinkMenu>
       <LinkMenu to="/ik">IK</LinkMenu>
       <LinkMenu to="/charges">CHARGES</LinkMenu>
-      <LinkMenu to="/admin">ADMIN</LinkMenu>
+      {admin && <LinkMenu to="/admin">ADMIN</LinkMenu>}
     </Flex>
   );
 }

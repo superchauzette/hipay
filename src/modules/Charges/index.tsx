@@ -34,7 +34,7 @@ export function Charges() {
               <CircularProgress />
             </Flex>
           )}
-          {charges.map(charge => (
+          {charges.map((charge, index) => (
             <div key={charge.id}>
               <ListItem>
                 <FormCharge
@@ -44,7 +44,7 @@ export function Charges() {
                   onUpdateFile={updateFile}
                 />
               </ListItem>
-              <Divider />
+              {charges.length - 1 !== index && <Divider />}
             </div>
           ))}
         </List>

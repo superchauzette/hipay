@@ -11,7 +11,8 @@ import {
 import {
   ExpansionPanel,
   ExpansionPanelSummary,
-  ExpansionPanelDetails
+  ExpansionPanelDetails,
+  CircularProgress
 } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { getResources, getUsers } from "./getResources";
@@ -166,6 +167,11 @@ export function Admin() {
       <Header title="Admin" />
       <MonthSelector onChange={handleChangeMonth} />
       <Flex flexDirection="column" mt={2} width={1}>
+        {users && !users.length && (
+          <Flex justifyContent="center" width={1}>
+            <CircularProgress />
+          </Flex>
+        )}
         {users.map(user => (
           <Details
             key={user.id}
