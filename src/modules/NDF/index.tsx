@@ -51,7 +51,7 @@ export function NoteDeFrais() {
 
       <Flex
         width={1}
-        mb={3}
+        mb={2}
         px={2}
         justifyContent="space-between"
         alignItems="center"
@@ -81,19 +81,20 @@ export function NoteDeFrais() {
               <CircularProgress />
             </Flex>
           )}
-          {notes.map((note, index) => (
-            <div key={note.id}>
-              <ListItem>
-                <FormNDF
-                  note={note}
-                  onChange={n => handleChange(note.id, n)}
-                  onDelete={deleteNote}
-                  onUpdateFile={updateFile}
-                />
-              </ListItem>
-              {notes.length - 1 !== index && <Divider />}
-            </div>
-          ))}
+          {!isLoading &&
+            notes.map((note, index) => (
+              <div key={note.id}>
+                <ListItem>
+                  <FormNDF
+                    note={note}
+                    onChange={n => handleChange(note.id, n)}
+                    onDelete={deleteNote}
+                    onUpdateFile={updateFile}
+                  />
+                </ListItem>
+                {notes.length - 1 !== index && <Divider />}
+              </div>
+            ))}
         </List>
       </Card>
       <BtnAdd onClick={addNote} />

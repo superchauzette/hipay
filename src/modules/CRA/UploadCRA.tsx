@@ -11,8 +11,8 @@ export function UploadCRA({ link, file, mkey, onFile, onDelete }) {
   }
 
   return (
-    <Flex my={3} flexDirection="column" key={mkey}>
-      <Text mb={4} color="black" textAlign="center" fontWeight="bold">
+    <Flex my={2} flexDirection="column" key={mkey}>
+      <Text mb={3} color="black" textAlign="center" fontWeight="bold">
         Vous pouvez uploader votre CRA
       </Text>
       <Flex alignItems="center" flexDirection="column">

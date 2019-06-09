@@ -31,7 +31,7 @@ export function IK() {
 
       <Flex
         width={1}
-        mb={3}
+        mb={2}
         px={2}
         justifyContent="space-between"
         alignItems="center"
@@ -56,18 +56,19 @@ export function IK() {
               <CircularProgress />
             </Flex>
           )}
-          {iks.map((ik, index) => (
-            <div key={ik.id}>
-              <ListItem>
-                <FormIK
-                  ik={ik}
-                  onChange={n => handleChange(ik.id, n)}
-                  onDelete={deleteIk}
-                />
-              </ListItem>
-              {iks.length - 1 !== index && <Divider />}
-            </div>
-          ))}
+          {!isLoading &&
+            iks.map((ik, index) => (
+              <div key={ik.id}>
+                <ListItem>
+                  <FormIK
+                    ik={ik}
+                    onChange={n => handleChange(ik.id, n)}
+                    onDelete={deleteIk}
+                  />
+                </ListItem>
+                {iks.length - 1 !== index && <Divider />}
+              </div>
+            ))}
         </List>
       </Card>
       <Flex width={1} mt={3} />

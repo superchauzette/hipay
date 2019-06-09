@@ -41,6 +41,7 @@ export function FormCharge({
       <TextField
         id="description"
         label="Description"
+        width={["100%", "450px"]}
         value={charge.description}
         onChange={e => onChange({ description: e.target.value })}
       />

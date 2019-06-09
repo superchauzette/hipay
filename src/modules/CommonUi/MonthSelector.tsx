@@ -40,7 +40,7 @@ function MonthSelectorComp({ onChange }: MonthSelectorProps) {
   }
 
   return (
-    <Flex alignItems="center" color="black">
+    <Flex alignItems="center" color="black" mb={1}>
       <IconButton onClick={subMonth} style={{ outline: "none" }}>
         <LeftIcon style={{ fontSize: "27px" }} />
       </IconButton>
