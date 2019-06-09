@@ -13,7 +13,7 @@ import { getMyCras } from "./service";
 export function CRAS() {
   const user = useUserContext();
   const { month, year, date, handleChangeMonth } = useDateChange();
-  const [cras, setCras] = useState([] as any[]);
+  const [cras, setCras] = useState([{ id: 0 }] as any[]);
 
   useEffect(() => {
     if (user) {
