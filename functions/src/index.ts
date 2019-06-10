@@ -7,4 +7,8 @@
 //  response.send("Hello from Firebase!");
 // });
 
+import * as admin from "firebase-admin";
+
+admin.initializeApp();
+export { quickbooksApi } from "./quickbook";
 export { setAdminClaims, deleteAdminClaims } from "./adminUser";

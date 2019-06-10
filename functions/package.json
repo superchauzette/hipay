@@ -14,10 +14,17 @@
   },
   "main": "lib/index.js",
   "dependencies": {
+    "@types/node-fetch": "^2.3.4",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
     "firebase-admin": "~7.0.0",
-    "firebase-functions": "^2.3.0"
+    "firebase-functions": "^2.3.0",
+    "intuit-oauth": "^1.2.0",
+    "node-fetch": "^2.6.0"
   },
   "devDependencies": {
+    "firebase-functions-test": "^0.1.6",
     "tslint": "^5.12.0",
     "typescript": "^3.2.2"
   },
