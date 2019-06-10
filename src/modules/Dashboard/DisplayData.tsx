@@ -1,35 +1,21 @@
-import React, { useEffect, useState } from "react";
-import { Card } from "../CommonUi";
-import { CardHeader, CardContent } from "@material-ui/core";
+import React, { useEffect, useState, Fragment } from "react";
+import { Card, CardHeader, CardContent } from "@material-ui/core";
+import { Box, Flex } from "rebass";
+import { Chart } from "./Chart";
 
-export interface CaOverMonthe {
-  janvier: number;
-  février: number;
-  mars: number;
-  avril: number;
-  mai: number;
-  juin: number;
-  juillet: number;
-  août: number;
-  septembre: number;
-  octobre: number;
-  novembre: number;
-  décembre: number;
-}
-
-export interface SalaryOverMonthe {
-  janvier: number;
-  février: number;
-  mars: number;
-  avril: number;
-  mai: number;
-  juin: number;
-  juillet: number;
-  août: number;
-  septembre: number;
-  octobre: number;
-  novembre: number;
-  décembre: number;
+export interface NumberOverMonths {
+  Janvier: number;
+  Février: number;
+  Mars: number;
+  Avril: number;
+  Mai: number;
+  Juin: number;
+  Juillet: number;
+  Août: number;
+  Septembre: number;
+  Octobre: number;
+  Novembre: number;
+  Décembre: number;
 }
 
 export type QuickbookData = {
@@ -39,8 +25,8 @@ export type QuickbookData = {
   EXPENSES: number;
   TREASURY: number;
   TVA_OUTSTANDING: number;
-  aOverMonthes: CaOverMonthe;
-  salaryOverMonthes: SalaryOverMonthe;
+  caOverMonthes: NumberOverMonths;
+  salaryOverMonthes: NumberOverMonths;
 };
 
 type QuickBookResponse = {
@@ -73,14 +59,52 @@ export function DisplayData({ quickbookObj }) {
       .finally(() => setLoading(false));
   }, [quickbookObj]);
   return (
-    <div>
+    <div style={{ padding: "10px" }}>
       {quickBooksData && (
-        <Card>
-          <div>
-            Rémunération
-            {quickBooksData.INCOMES}
-          </div>
-        </Card>
+        <Flex wrap="wrap" flexDirection={["column", "column"]}>
+          <Box wrap="wrap" p={3} width={[1, 1, 1]}>
+            <Card raised color="#FFF">
+              <CardHeader
+                style={{ textAlign: "center" }}
+                subheader="Juin"
+                title="Rémunération"
+              />
+              <CardContent style={{ textAlign: "center" }}>
+                <h3>{quickBooksData.INCOMES} €</h3>
+              </CardContent>
+            </Card>
+          </Box>
+          <Flex wrap="wrap" flexDirection={["column", "row"]}>
+            <Box wrap="wrap" p={3} width={[1, 1, 1 / 2]}>
+              <Card raised color="#FFF">
+                <CardHeader
+                  style={{ textAlign: "center" }}
+                  subheader="2019"
+                  title="Chiffre d'affaire"
+                />
+                <CardContent style={{ textAlign: "center" }}>
+                  <h3>{quickBooksData.CA} €</h3>
+                </CardContent>
+              </Card>
+            </Box>
+            <Box wrap="wrap" p={3} width={[1, 1, 1 / 2]}>
+              <Card raised color="#FFF">
+                <CardHeader
+                  style={{ textAlign: "center" }}
+                  subheader="Aujourd'hui"
+                  title="Trésorie"
+                />
+                <CardContent style={{ textAlign: "center" }}>
+                  <h3>{quickBooksData.TREASURY} €</h3>
+                </CardContent>
+              </Card>
+            </Box>
+          </Flex>
+          <Chart
+            ca={Object.values(quickBooksData.caOverMonthes)}
+            salaries={Object.values(quickBooksData.salaryOverMonthes)}
+          />
+        </Flex>
       )}
     </div>
   );
