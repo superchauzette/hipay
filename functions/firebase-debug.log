@@ -1,120 +1,30 @@
-[debug] [2019-06-10T17:01:31.525Z] ----------------------------------------------------------------------
-[debug] [2019-06-10T17:01:31.527Z] Command:       /Users/antoineguillemoto/.nvm/versions/node/v10.16.0/bin/node /Users/antoineguillemoto/.nvm/versions/node/v10.16.0/bin/firebase serve --only functions
-[debug] [2019-06-10T17:01:31.527Z] CLI Version:   6.11.0
-[debug] [2019-06-10T17:01:31.527Z] Platform:      darwin
-[debug] [2019-06-10T17:01:31.527Z] Node Version:  v10.16.0
-[debug] [2019-06-10T17:01:31.528Z] Time:          Mon Jun 10 2019 19:01:31 GMT+0200 (GMT+02:00)
-[debug] [2019-06-10T17:01:31.528Z] ----------------------------------------------------------------------
+[debug] [2019-06-10T20:10:17.971Z] ----------------------------------------------------------------------
+[debug] [2019-06-10T20:10:17.973Z] Command:       /Users/antoineguillemoto/.nvm/versions/node/v10.16.0/bin/node /Users/antoineguillemoto/.nvm/versions/node/v10.16.0/bin/firebase serve --only functions
+[debug] [2019-06-10T20:10:17.973Z] CLI Version:   6.11.0
+[debug] [2019-06-10T20:10:17.973Z] Platform:      darwin
+[debug] [2019-06-10T20:10:17.973Z] Node Version:  v10.16.0
+[debug] [2019-06-10T20:10:17.974Z] Time:          Mon Jun 10 2019 22:10:17 GMT+0200 (GMT+02:00)
+[debug] [2019-06-10T20:10:17.974Z] ----------------------------------------------------------------------
 [debug] 
-[debug] [2019-06-10T17:01:31.538Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
-[debug] [2019-06-10T17:01:31.538Z] > authorizing via signed-in user
-[debug] [2019-06-10T17:01:31.538Z] [iam] checking project hipay-42 for permissions ["firebase.projects.get"]
-[debug] [2019-06-10T17:01:31.540Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/hipay-42:testIamPermissions  
+[debug] [2019-06-10T20:10:17.980Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2019-06-10T20:10:17.980Z] > authorizing via signed-in user
+[debug] [2019-06-10T20:10:17.980Z] [iam] checking project hipay-42 for permissions ["firebase.projects.get"]
+[debug] [2019-06-10T20:10:17.982Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/hipay-42:testIamPermissions  
 
-[debug] [2019-06-10T17:01:32.265Z] <<< HTTP RESPONSE 200
-[debug] [2019-06-10T17:01:32.267Z] >>> HTTP REQUEST GET https://cloudresourcemanager.googleapis.com/v1/projects/hipay-42  
+[debug] [2019-06-10T20:10:18.833Z] <<< HTTP RESPONSE 200
+[debug] [2019-06-10T20:10:18.836Z] >>> HTTP REQUEST GET https://cloudresourcemanager.googleapis.com/v1/projects/hipay-42  
  
-[debug] [2019-06-10T17:01:32.955Z] <<< HTTP RESPONSE 200
+[debug] [2019-06-10T20:10:19.646Z] <<< HTTP RESPONSE 200
 [warn] ⚠  Your requested "node" version "8" doesn't match your global version "10"
-[debug] [2019-06-10T17:01:32.967Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/923321891171:getServerAppConfig  
+[debug] [2019-06-10T20:10:19.659Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/923321891171:getServerAppConfig  
  
-[debug] [2019-06-10T17:01:33.121Z] <<< HTTP RESPONSE 200
+[debug] [2019-06-10T20:10:19.854Z] <<< HTTP RESPONSE 200
 [info] ✔  functions: Emulator started at http://localhost:5000
 [info] i  functions: Watching "/Users/antoineguillemoto/repos/hipay/functions" for Cloud Functions...
-[debug] [2019-06-10T17:01:33.376Z] Functions runtime initialized.
-[debug] [2019-06-10T17:01:33.376Z] Disabled runtime features: {"functions_config_helper":true,"network_filtering":true,"timeout":true,"memory_limiting":true,"protect_env":true,"admin_stubs":true}
-[debug] [2019-06-10T17:01:33.886Z] firebase-admin has been stubbed.
+[debug] [2019-06-10T20:10:20.090Z] Functions runtime initialized.
+[debug] [2019-06-10T20:10:20.090Z] Disabled runtime features: {"functions_config_helper":true,"network_filtering":true,"timeout":true,"memory_limiting":true,"protect_env":true,"admin_stubs":true}
+[debug] [2019-06-10T20:10:20.568Z] firebase-admin has been stubbed.
 [info] i  Your code has been provided a "firebase-admin" instance.
 [info] i  functions: HTTP trigger initialized at http://localhost:5000/hipay-42/us-central1/quickbooksApi
 [info] Ignoring trigger "setAdminClaims" because the Cloud Firestore emulator is not running.
 [info] Ignoring trigger "deleteAdminClaims" because the Cloud Firestore emulator is not running.
-[debug] [2019-06-10T17:01:40.603Z] Accepted request GET /hipay-42/us-central1/quickbooksApi/authUri --> quickbooksApi
-[debug] [2019-06-10T17:01:40.899Z] Functions runtime initialized.
-[info] i  functions: Beginning execution of "quickbooksApi"
-[debug] [2019-06-10T17:01:40.900Z] Disabled runtime features: {"functions_config_helper":true,"network_filtering":true,"timeout":true,"memory_limiting":true,"protect_env":true,"admin_stubs":true}
-[debug] [2019-06-10T17:01:41.560Z] firebase-admin has been stubbed.
-[info] i  Your code has been provided a "firebase-admin" instance.
-[debug] [2019-06-10T17:01:41.751Z] Trigger "quickbooksApi" has been found, beginning invocation!
-[debug] [2019-06-10T17:01:41.751Z] 
-[debug] [2019-06-10T17:01:41.751Z] Running quickbooksApi in mode HTTPS
-[debug] [2019-06-10T17:01:41.756Z] {"socketPath":"/var/folders/kz/l2ssgzyn6jd8n79zwyjdz3ym0000gn/T/firebase_emulator_invocation_7041.sock"}
-[debug] [2019-06-10T17:01:41.758Z] [functions] Runtime ready! Sending request! {"socketPath":"/var/folders/kz/l2ssgzyn6jd8n79zwyjdz3ym0000gn/T/firebase_emulator_invocation_7041.sock"}
-[debug] [2019-06-10T17:01:41.764Z] Ephemeral server used!
-[info] >  authUri => https://appcenter.intuit.com/connect/oauth2?client_id=L0C1TgBlqNFF6ICxcVZa7IEZJtWEwW0pDMiLtnYuRvz9CORO06&redirect_uri=http%3A%2F%2Flocalhost%3A5000%2Fhipay-42%2Fus-central1%2FquickbooksApi%2Fcallback&response_type=code&scope=com.intuit.quickbooks.accounting%20openid&state=testState
-[debug] [2019-06-10T17:01:41.770Z] Ephemeral server survived.
-[info] i  functions: Finished "quickbooksApi" in ~1s
-[debug] [2019-06-10T17:02:25.258Z] Accepted request GET /hipay-42/us-central1/quickbooksApi/authUri --> quickbooksApi
-[debug] [2019-06-10T17:02:25.493Z] Functions runtime initialized.
-[info] i  functions: Beginning execution of "quickbooksApi"
-[debug] [2019-06-10T17:02:25.494Z] Disabled runtime features: {"functions_config_helper":true,"network_filtering":true,"timeout":true,"memory_limiting":true,"protect_env":true,"admin_stubs":true}
-[debug] [2019-06-10T17:02:26.024Z] firebase-admin has been stubbed.
-[info] i  Your code has been provided a "firebase-admin" instance.
-[debug] [2019-06-10T17:02:26.187Z] Trigger "quickbooksApi" has been found, beginning invocation!
-[debug] [2019-06-10T17:02:26.187Z] 
-[debug] [2019-06-10T17:02:26.187Z] Running quickbooksApi in mode HTTPS
-[debug] [2019-06-10T17:02:26.192Z] {"socketPath":"/var/folders/kz/l2ssgzyn6jd8n79zwyjdz3ym0000gn/T/firebase_emulator_invocation_7052.sock"}
-[debug] [2019-06-10T17:02:26.193Z] [functions] Runtime ready! Sending request! {"socketPath":"/var/folders/kz/l2ssgzyn6jd8n79zwyjdz3ym0000gn/T/firebase_emulator_invocation_7052.sock"}
-[debug] [2019-06-10T17:02:26.198Z] Ephemeral server used!
-[info] >  authUri => https://appcenter.intuit.com/connect/oauth2?client_id=L0C1TgBlqNFF6ICxcVZa7IEZJtWEwW0pDMiLtnYuRvz9CORO06&redirect_uri=http%3A%2F%2Flocalhost%3A5000%2Fhipay-42%2Fus-central1%2FquickbooksApi%2Fcallback&response_type=code&scope=com.intuit.quickbooks.accounting%20openid&state=testState
-[debug] [2019-06-10T17:02:26.205Z] Ephemeral server survived.
-[info] i  functions: Finished "quickbooksApi" in ~1s
-[debug] [2019-06-10T17:03:28.090Z] Accepted request GET /hipay-42/us-central1/quickbooksApi/authUri --> quickbooksApi
-[debug] [2019-06-10T17:03:28.351Z] Functions runtime initialized.
-[info] i  functions: Beginning execution of "quickbooksApi"
-[debug] [2019-06-10T17:03:28.352Z] Disabled runtime features: {"functions_config_helper":true,"network_filtering":true,"timeout":true,"memory_limiting":true,"protect_env":true,"admin_stubs":true}
-[debug] [2019-06-10T17:03:28.946Z] firebase-admin has been stubbed.
-[info] i  Your code has been provided a "firebase-admin" instance.
-[debug] [2019-06-10T17:03:29.117Z] Trigger "quickbooksApi" has been found, beginning invocation!
-[debug] [2019-06-10T17:03:29.117Z] 
-[debug] [2019-06-10T17:03:29.117Z] Running quickbooksApi in mode HTTPS
-[debug] [2019-06-10T17:03:29.122Z] {"socketPath":"/var/folders/kz/l2ssgzyn6jd8n79zwyjdz3ym0000gn/T/firebase_emulator_invocation_7078.sock"}
-[debug] [2019-06-10T17:03:29.123Z] [functions] Runtime ready! Sending request! {"socketPath":"/var/folders/kz/l2ssgzyn6jd8n79zwyjdz3ym0000gn/T/firebase_emulator_invocation_7078.sock"}
-[debug] [2019-06-10T17:03:29.128Z] Ephemeral server used!
-[info] >  authUri => https://appcenter.intuit.com/connect/oauth2?client_id=L0C1TgBlqNFF6ICxcVZa7IEZJtWEwW0pDMiLtnYuRvz9CORO06&redirect_uri=http%3A%2F%2Flocalhost%3A5000%2Fhipay-42%2Fus-central1%2FquickbooksApi%2Fcallback&response_type=code&scope=com.intuit.quickbooks.accounting%20openid&state=testState
-[debug] [2019-06-10T17:03:29.135Z] Ephemeral server survived.
-[info] i  functions: Finished "quickbooksApi" in ~1s
-[debug] [2019-06-10T17:03:46.861Z] Accepted request GET /hipay-42/us-central1/quickbooksApi/authUri --> quickbooksApi
-[debug] [2019-06-10T17:03:47.115Z] Functions runtime initialized.
-[info] i  functions: Beginning execution of "quickbooksApi"
-[debug] [2019-06-10T17:03:47.116Z] Disabled runtime features: {"functions_config_helper":true,"network_filtering":true,"timeout":true,"memory_limiting":true,"protect_env":true,"admin_stubs":true}
-[debug] [2019-06-10T17:03:47.762Z] firebase-admin has been stubbed.
-[info] i  Your code has been provided a "firebase-admin" instance.
-[debug] [2019-06-10T17:03:47.956Z] Trigger "quickbooksApi" has been found, beginning invocation!
-[debug] [2019-06-10T17:03:47.956Z] 
-[debug] [2019-06-10T17:03:47.956Z] Running quickbooksApi in mode HTTPS
-[debug] [2019-06-10T17:03:47.961Z] {"socketPath":"/var/folders/kz/l2ssgzyn6jd8n79zwyjdz3ym0000gn/T/firebase_emulator_invocation_7093.sock"}
-[debug] [2019-06-10T17:03:47.961Z] [functions] Runtime ready! Sending request! {"socketPath":"/var/folders/kz/l2ssgzyn6jd8n79zwyjdz3ym0000gn/T/firebase_emulator_invocation_7093.sock"}
-[debug] [2019-06-10T17:03:47.966Z] Ephemeral server used!
-[info] >  authUri => https://appcenter.intuit.com/connect/oauth2?client_id=L0C1TgBlqNFF6ICxcVZa7IEZJtWEwW0pDMiLtnYuRvz9CORO06&redirect_uri=http%3A%2F%2Flocalhost%3A5000%2Fhipay-42%2Fus-central1%2FquickbooksApi%2Fcallback&response_type=code&scope=com.intuit.quickbooks.accounting%20openid&state=testState
-[debug] [2019-06-10T17:03:47.973Z] Ephemeral server survived.
-[info] i  functions: Finished "quickbooksApi" in ~1s
-[debug] [2019-06-10T17:05:03.423Z] Accepted request GET /hipay-42/us-central1/quickbooksApi/authUri --> quickbooksApi
-[debug] [2019-06-10T17:05:03.724Z] Functions runtime initialized.
-[info] i  functions: Beginning execution of "quickbooksApi"
-[debug] [2019-06-10T17:05:03.725Z] Disabled runtime features: {"functions_config_helper":true,"network_filtering":true,"timeout":true,"memory_limiting":true,"protect_env":true,"admin_stubs":true}
-[debug] [2019-06-10T17:05:04.346Z] firebase-admin has been stubbed.
-[info] i  Your code has been provided a "firebase-admin" instance.
-[debug] [2019-06-10T17:05:04.517Z] Trigger "quickbooksApi" has been found, beginning invocation!
-[debug] [2019-06-10T17:05:04.517Z] 
-[debug] [2019-06-10T17:05:04.517Z] Running quickbooksApi in mode HTTPS
-[debug] [2019-06-10T17:05:04.522Z] {"socketPath":"/var/folders/kz/l2ssgzyn6jd8n79zwyjdz3ym0000gn/T/firebase_emulator_invocation_7109.sock"}
-[debug] [2019-06-10T17:05:04.522Z] [functions] Runtime ready! Sending request! {"socketPath":"/var/folders/kz/l2ssgzyn6jd8n79zwyjdz3ym0000gn/T/firebase_emulator_invocation_7109.sock"}
-[debug] [2019-06-10T17:05:04.527Z] Ephemeral server used!
-[info] >  authUri => https://appcenter.intuit.com/connect/oauth2?client_id=L0C1TgBlqNFF6ICxcVZa7IEZJtWEwW0pDMiLtnYuRvz9CORO06&redirect_uri=http%3A%2F%2Flocalhost%3A5000%2Fhipay-42%2Fus-central1%2FquickbooksApi%2Fcallback&response_type=code&scope=com.intuit.quickbooks.accounting%20openid&state=testState
-[debug] [2019-06-10T17:05:04.534Z] Ephemeral server survived.
-[info] i  functions: Finished "quickbooksApi" in ~1s
-[debug] [2019-06-10T17:06:57.361Z] Accepted request GET /hipay-42/us-central1/quickbooksApi/authUri --> quickbooksApi
-[debug] [2019-06-10T17:06:57.624Z] Functions runtime initialized.
-[info] i  functions: Beginning execution of "quickbooksApi"
-[debug] [2019-06-10T17:06:57.626Z] Disabled runtime features: {"functions_config_helper":true,"network_filtering":true,"timeout":true,"memory_limiting":true,"protect_env":true,"admin_stubs":true}
-[debug] [2019-06-10T17:06:58.216Z] firebase-admin has been stubbed.
-[info] i  Your code has been provided a "firebase-admin" instance.
-[debug] [2019-06-10T17:06:58.423Z] Trigger "quickbooksApi" has been found, beginning invocation!
-[debug] [2019-06-10T17:06:58.423Z] 
-[debug] [2019-06-10T17:06:58.423Z] Running quickbooksApi in mode HTTPS
-[debug] [2019-06-10T17:06:58.429Z] {"socketPath":"/var/folders/kz/l2ssgzyn6jd8n79zwyjdz3ym0000gn/T/firebase_emulator_invocation_7123.sock"}
-[debug] [2019-06-10T17:06:58.429Z] [functions] Runtime ready! Sending request! {"socketPath":"/var/folders/kz/l2ssgzyn6jd8n79zwyjdz3ym0000gn/T/firebase_emulator_invocation_7123.sock"}
-[debug] [2019-06-10T17:06:58.435Z] Ephemeral server used!
-[info] >  authUri => https://appcenter.intuit.com/connect/oauth2?client_id=L0C1TgBlqNFF6ICxcVZa7IEZJtWEwW0pDMiLtnYuRvz9CORO06&redirect_uri=http%3A%2F%2Flocalhost%3A5000%2Fhipay-42%2Fus-central1%2FquickbooksApi%2Fcallback&response_type=code&scope=com.intuit.quickbooks.accounting%20openid&state=testState
-[debug] [2019-06-10T17:06:58.442Z] Ephemeral server survived.
-[info] i  functions: Finished "quickbooksApi" in ~1s

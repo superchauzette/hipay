@@ -60,6 +60,9 @@ export function DisplayData({ quickbookObj }) {
   }, [quickbookObj]);
   return (
     <div style={{ padding: "10px" }}>
+      {/* {loading && 
+      <Spinnger
+      } */}
       {quickBooksData && (
         <Flex wrap="wrap" flexDirection={["column", "column"]}>
           <Box wrap="wrap" p={3} width={[1, 1, 1]}>

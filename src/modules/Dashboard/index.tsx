@@ -4,6 +4,7 @@ import { Button } from "@material-ui/core";
 import { DisplayData } from "./DisplayData";
 import { useUserContext } from "../UserHelper";
 import { QUICKBOOK_AUTH, QUICKBOOK_COMPANY } from "../constants";
+import quickbooksLogo from "./qbLogo.png";
 
 async function quickBookLogin() {
   const data = await fetch(QUICKBOOK_AUTH).then(res => res.json());
@@ -26,10 +27,9 @@ function storeToken(search, quickbookStorage, setQuickbookObj) {
   }
 }
 
-export function Dashboard({ location }) {
+export function Dashboard({ location, history }) {
   const [quickBooksUri, setQuickBooksUri] = useState(null);
   const [quickBooksLogged, setQuickBooksLogged] = useState(false);
-  const [quickBooksData, setQuickBooksData] = useState(false);
   const [quickbookObj, setQuickbookObj] = useState<{
     token: string;
     realmId: string;
@@ -44,6 +44,7 @@ export function Dashboard({ location }) {
   }
   if (location.search) {
     storeToken(location.search, quickbookStorage, setQuickbookObj);
+    history.replace("/");
   }
   useEffect(() => {
     if (user && quickbookObj && quickbookObj.token) {
@@ -71,7 +72,6 @@ export function Dashboard({ location }) {
         "https://hiwayapi-demo.herokuapp.com/index.php/api/quickbooksdata",
         {
           method: "POST",
-
           body: form_data
         }
       )
@@ -83,9 +83,21 @@ export function Dashboard({ location }) {
     <React.Fragment>
       {quickBooksLogged && <DisplayData quickbookObj={quickbookObj} />}
       {!quickBooksLogged && quickBooksUri && (
-        <Button>
-          <a href={quickBooksUri}>Connect to quickbook</a>
-        </Button>
+        <div style={{ marginTop: "70px", textAlign: "center" }}>
+          <Button>
+            <a style={{ textDecoration: "none" }} href={quickBooksUri}>
+              <Button variant="raised">
+                <img
+                  style={{ display: "inline-block", marginRight: "10px" }}
+                  width="15px"
+                  src={quickbooksLogo}
+                  alt="quickbooks logo"
+                />
+                {"   "}Se connecter a quickbooks
+              </Button>
+            </a>
+          </Button>
+        </div>
       )}
     </React.Fragment>
   );

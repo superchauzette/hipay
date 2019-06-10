@@ -12,17 +12,18 @@ app.use(bodyParser.json());
 
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
 
-const oauthClient = new OAuthClient({
-  clientId: "L0C1TgBlqNFF6ICxcVZa7IEZJtWEwW0pDMiLtnYuRvz9CORO06",
-  clientSecret: "fxihXLLPEOYg8Ekon0YJLOJFdGdPfWCrKFmHvjdR",
-  redirectUri:
-    "http://localhost:5000/hipay-42/us-central1/quickbooksApi/callback"
-});
+const oauthClient = () =>
+  new OAuthClient({
+    clientId: "L0begC9hX3ZLc518PZcr4vP2wFSPl1dDbAYvi3tpsqO1oKAcC7",
+    clientSecret: "9Lb0xc1J4oUCRb29w4arGoclqYFXFrXd9gYUlXxe",
+    redirectUri:
+      "https://us-central1-hipay-42.cloudfunctions.net/quickbooksApi/callback"
+  });
 
 app.get("/authUri", urlencodedParser, (_req, res) => {
-  const authUri = oauthClient.authorizeUri({
-    scope: [OAuthClient.scopes.Accounting, OAuthClient.scopes.OpenId],
-    state: "testState"
+  const authUri = oauthClient().authorizeUri({
+    scope: [OAuthClient.scopes.Accounting],
+    state: "OHHFA"
   });
   console.log("authUri", "=>", authUri);
   const respUri = { authUri: authUri };
@@ -43,17 +44,21 @@ app.get("/company", async (req, res) => {
 
 app.get("/callback", (req, res) => {
   console.log(req.params);
-  oauthClient
+  console.log(req.url);
+  console.log(req.query);
+  const instanceOauthClient = oauthClient();
+  instanceOauthClient
     .createToken(req.url)
     .then((authResponse: any) => {
+      console.log("authResponse", authResponse);
       const access_token = authResponse.access_token;
       console.log("access_token", "=>", access_token);
       const oauth2_token_json = authResponse.getJson();
       console.log("oauth2_token_json", "=>", oauth2_token_json);
-      const companyID = oauthClient.getToken().realmId;
+      const companyID = instanceOauthClient.getToken().realmId;
 
       res.redirect(
-        `http://localhost:3000?token=${
+        `https://hipay-42.firebaseapp.com?token=${
           oauth2_token_json.access_token
         }&refreshToken=${
           oauth2_token_json.refresh_token
@@ -73,7 +78,7 @@ app.get("/callback", (req, res) => {
 
 app.get("/refreshAccessToken", (req, res) => {
   const { refreshAccessToken } = req.query;
-  oauthClient
+  oauthClient()
     .refreshUsingToken(refreshAccessToken)
     .then((authResponse: any) => {
       console.log(
@@ -90,9 +95,9 @@ app.get("/refreshAccessToken", (req, res) => {
 });
 
 app.get("/getCompanyInfo", (req, res) => {
-  const companyID = oauthClient.getToken().realmId;
+  const companyID = oauthClient().getToken().realmId;
   console.log("companyID", "=>", companyID);
-  oauthClient
+  oauthClient()
     .makeApiCall({
       url: `${
         functions.config().qbconfig.apiuri
@@ -111,12 +116,12 @@ app.get("/getCompanyInfo", (req, res) => {
 });
 
 app.get("/getCustomer", (req, res) => {
-  const companyID = oauthClient.getToken().realmId;
+  const companyID = oauthClient().getToken().realmId;
   console.log("companyID", "=>", companyID);
   const id = req.query.id;
   console.log("/getCustomer", "=>", id);
   if (id) {
-    oauthClient
+    oauthClient()
       .makeApiCall({
         url: `${functions.config().qbconfig.apiuri}${companyID}/customer/${id}`
       })
@@ -136,7 +141,7 @@ app.get("/getCustomer", (req, res) => {
 });
 
 app.post("/createCustomer", (req, res) => {
-  const companyID = oauthClient.getToken().realmId;
+  const companyID = oauthClient().getToken().realmId;
   console.log("companyID", "=>", companyID);
   const payload = req.body;
   console.log("/createCustomer", "=>", payload);
