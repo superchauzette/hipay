@@ -2,10 +2,11 @@ import React from "react";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import Icon from "@material-ui/icons/CloudDownload";
 import { Button } from "@material-ui/core";
+import { blue } from "../Theme";
 
 const LinkPdfComponent = props => (
   <PDFDownloadLink
-    style={{ textDecoration: props.title ? "underline" : "none" }}
+    style={{ textDecoration: props.title ? "underline" : "none", color: blue }}
     {...props}
   >
     {({ loading }) =>

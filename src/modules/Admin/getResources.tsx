@@ -1,5 +1,6 @@
 import { db, extractQueries } from "../FirebaseHelper";
 import groupBy from "lodash/fp/groupBy";
+
 export const getResources = ({ month, year }) => ressourceName =>
   db()
     .collection(ressourceName)
@@ -8,6 +9,7 @@ export const getResources = ({ month, year }) => ressourceName =>
     .get()
     .then(extractQueries)
     .then(groupBy("userid"));
+
 export const getUsers = () =>
   db()
     .collection("users")

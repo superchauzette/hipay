@@ -1,7 +1,9 @@
+import { useState, useEffect } from "react";
 import * as firebase from "firebase/app";
 import "firebase/firestore";
 import "firebase/storage";
 import "firebase/auth";
+import { useUserContext } from "../UserHelper";
 
 type AppCollection = {
   user: {
@@ -30,17 +32,23 @@ export const auth = () => firebase.auth();
 export const db = () => firebase.firestore();
 export const storage = () => firebase.storage();
 
-const defaultAdmin = { getIdTokenResult: () => ({ claims: { admin: false } }) };
+export function useIsAdmin(): boolean {
+  const user = useUserContext();
+  const [isAdmin, setAdmin] = useState(false);
 
-export async function isAdmin(): Promise<boolean> {
-  try {
-    const idToken = await (
-      auth().currentUser || defaultAdmin
-    ).getIdTokenResult();
-    return idToken.claims.admin;
-  } catch (err) {
-    return false;
-  }
+  useEffect(() => {
+    if (user) {
+      db()
+        .collection("admin")
+        .where("email", "==", user.email)
+        .get()
+        .then(extractQueries)
+        .then(tab => tab[0])
+        .then(adminDoc => setAdmin(adminDoc ? Boolean(adminDoc.id) : false));
+    }
+  }, [user]);
+
+  return isAdmin;
 }
 
 export async function googleAuth() {

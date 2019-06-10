@@ -6,7 +6,8 @@ import {
   Header,
   useDateChange,
   Avatar,
-  LinkPdf
+  LinkPdf,
+  DownloadLink
 } from "../CommonUi";
 import {
   ExpansionPanel,
@@ -56,10 +57,11 @@ function Details({ user, cras, ndfs, iks, charges }) {
       <ExpansionPanelDetails>
         <Flex flexWrap="wrap" width={1}>
           <Detail
+            key={user.id + "CRA"}
             title="CRA"
             data={cras}
             render={cra => (
-              <Flex>
+              <Flex key={cra.id}>
                 <Box mr={2}>
                   {cra.isSaved ? (
                     <CheckIcon style={{ fill: "green" }} />
@@ -78,6 +80,7 @@ function Details({ user, cras, ndfs, iks, charges }) {
             )}
           />
           <Detail
+            key={user.id + "ndf"}
             title={
               <Title
                 title="Note de Frais"
@@ -94,7 +97,7 @@ function Details({ user, cras, ndfs, iks, charges }) {
             }
             data={ndfs}
             render={ndf => (
-              <Flex justifyContent="space-between">
+              <Flex key={ndf.id} justifyContent="space-between">
                 <Text>{ndf.dateAchat} </Text>
                 <Text>{ndf.type} </Text>
                 <Text>{ndf.montant} €</Text>
@@ -103,6 +106,7 @@ function Details({ user, cras, ndfs, iks, charges }) {
           />
 
           <Detail
+            key={user.id + "ik"}
             title={
               <Title
                 title="Indeminté Kilométriques"
@@ -119,7 +123,7 @@ function Details({ user, cras, ndfs, iks, charges }) {
             }
             data={iks}
             render={ik => (
-              <Flex justifyContent="space-between" pr={[0, 2]}>
+              <Flex key={ik.id} justifyContent="space-between" pr={[0, 2]}>
                 <Text>{ik.dateIk}</Text>
                 <Text>{ik.kmParcourus}</Text>
                 <Text>{ik.montant} €</Text>
@@ -127,12 +131,20 @@ function Details({ user, cras, ndfs, iks, charges }) {
             )}
           />
           <Detail
+            key={user.id + "Charges"}
             title="Charges"
             data={charges}
             render={charge => (
-              <Flex justifyContent="space-between">
+              <Flex key={charge.id} justifyContent="space-between">
                 <Text>{charge.description}</Text>
-                <Text>{charge.file && charge.file.name}</Text>
+                {charge.file && (
+                  <DownloadLink
+                    type="charges"
+                    month={charge.month}
+                    year={charge.year}
+                    fileName={charge.file.name}
+                  />
+                )}
               </Flex>
             )}
           />

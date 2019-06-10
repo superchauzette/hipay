@@ -26,7 +26,7 @@ export function DownloadLink({ type, month, year, fileName, ...props }) {
   const url = useDownloadLink({ type, month, year, fileName });
 
   return (
-    <Link href={url} {...props}>
+    <Link href={url} color="blue" {...props}>
       {fileName}
     </Link>
   );
