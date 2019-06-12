@@ -26,8 +26,7 @@ app.get("/authUri", urlencodedParser, (_req, res) => {
     state: "OHHFA"
   });
   console.log("authUri", "=>", authUri);
-  const respUri = { authUri: authUri };
-  res.send(respUri);
+  res.redirect(authUri);
 });
 
 app.get("/company", async (req, res) => {
