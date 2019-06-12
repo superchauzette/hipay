@@ -6,11 +6,6 @@ import { useUserContext } from "../UserHelper";
 import { QUICKBOOK_AUTH, QUICKBOOK_COMPANY } from "../constants";
 import quickbooksLogo from "./qbLogo.png";
 
-async function quickBookLogin() {
-  const data = await fetch(QUICKBOOK_AUTH).then(res => res.json());
-  return data.authUri;
-}
-
 function storeToken(search, quickbookStorage, setQuickbookObj) {
   const params = new URLSearchParams(search);
   const quickbookObj = {
@@ -49,8 +44,6 @@ export function Dashboard({ location, history }) {
   useEffect(() => {
     if (user && quickbookObj && quickbookObj.token) {
       setQuickBooksLogged(true);
-    } else {
-      quickBookLogin().then(uri => setQuickBooksUri(uri));
     }
   }, [quickbookObj, user]);
   useEffect(() => {
@@ -82,7 +75,7 @@ export function Dashboard({ location, history }) {
   return (
     <React.Fragment>
       {quickBooksLogged && <DisplayData quickbookObj={quickbookObj} />}
-      {!quickBooksLogged && quickBooksUri && (
+      {!quickBooksLogged && (
         <div style={{ marginTop: "70px", textAlign: "center" }}>
           <Button>
             <a
