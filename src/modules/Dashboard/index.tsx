@@ -37,7 +37,7 @@ export function Dashboard({ location, history }) {
     if (quickbookStorage.expireAt < new Date().getTime()) {
       fetch(
         `https://us-central1-hipay-42.cloudfunctions.net/quickbooksApi/refreshAccessToken?refreshAccessToken=${
-          quickbookStorage.refreshAccessToken
+          quickbookStorage.refreshToken
         }`
       )
         .then(res => res.json())
