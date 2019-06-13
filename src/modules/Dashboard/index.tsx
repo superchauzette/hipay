@@ -80,7 +80,8 @@ export function Dashboard({ location, history }) {
           <Button>
             <a
               style={{ textDecoration: "none" }}
-              href="https://us-central1-hipay-42.cloudfunctions.net/quickbooksApi/authUri">
+              href="https://us-central1-hipay-42.cloudfunctions.net/quickbooksApi/authUri"
+            >
               <Button variant="raised">
                 <img
                   style={{ display: "inline-block", marginRight: "10px" }}
