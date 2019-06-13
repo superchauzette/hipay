@@ -34,7 +34,7 @@ export function Dashboard({ location, history }) {
     localStorage.getItem("quickbook") || "{}"
   );
   if (quickbookStorage && !quickbookObj) {
-    if (quickbookStorage.expireAt > new Date().getTime()) {
+    if (quickbookStorage.expireAt < new Date().getTime()) {
       fetch(
         `https://us-central1-hipay-42.cloudfunctions.net/quickbooksApi/refreshAccessToken?refreshAccessToken=${
           quickbookStorage.refreshAccessToken
