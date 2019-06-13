@@ -23,7 +23,6 @@ function storeToken(search, quickbookStorage, setQuickbookObj) {
 }
 
 export function Dashboard({ location, history }) {
-  const [quickBooksUri, setQuickBooksUri] = useState(null);
   const [quickBooksLogged, setQuickBooksLogged] = useState(false);
   const [quickbookObj, setQuickbookObj] = useState<{
     token: string;
@@ -35,7 +34,18 @@ export function Dashboard({ location, history }) {
     localStorage.getItem("quickbook") || "{}"
   );
   if (quickbookStorage && !quickbookObj) {
-    setQuickbookObj(quickbookStorage);
+    if (quickbookStorage.expireAt > new Date().getTime()) {
+      fetch(
+        `https://us-central1-hipay-42.cloudfunctions.net/quickbooksApi/refreshAccessToken?refreshAccessToken=${
+          quickbookStorage.refreshAccessToken
+        }`
+      )
+        .then(res => res.json())
+        .then(newTokenObj => setQuickbookObj(newTokenObj))
+        .catch(() => localStorage.removeItem("quickbook"));
+    } else {
+      setQuickbookObj(quickbookStorage);
+    }
   }
   if (location.search) {
     storeToken(location.search, quickbookStorage, setQuickbookObj);
@@ -46,37 +56,15 @@ export function Dashboard({ location, history }) {
       setQuickBooksLogged(true);
     }
   }, [quickbookObj, user]);
-  useEffect(() => {
-    if (
-      quickbookObj &&
-      quickbookObj.token &&
-      new Date(quickbookObj.expireAt) < new Date()
-    ) {
-      var form_data = new FormData();
-
-      const formContent = {
-        quickbooks_token: quickbookObj.token,
-        realm_id: quickbookObj.realmId
-      };
-      for (var key in formContent) {
-        form_data.append(key, formContent[key]);
-      }
-      fetch(
-        "https://hiwayapi-demo.herokuapp.com/index.php/api/quickbooksdata",
-        {
-          method: "POST",
-          body: form_data
-        }
-      )
-        .then(res => res.json())
-        .then(data => console.log(data));
-    }
-  }, [quickbookObj]);
   return (
     <React.Fragment>
       {quickBooksLogged && <DisplayData quickbookObj={quickbookObj} />}
       {!quickBooksLogged && (
         <div style={{ marginTop: "70px", textAlign: "center" }}>
+          <div style={{ marginBottom: "20px" }}>
+            Afin de récupérer vos informations bancaires vous devez vous
+            connecter avec les compte donnés par Hiway sur Quickbooks
+          </div>
           <Button>
             <a
               style={{ textDecoration: "none" }}

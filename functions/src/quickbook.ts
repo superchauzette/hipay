@@ -42,18 +42,11 @@ app.get("/company", async (req, res) => {
 });
 
 app.get("/callback", (req, res) => {
-  console.log(req.params);
-  console.log(req.url);
-  console.log(req.query);
   const instanceOauthClient = oauthClient();
   instanceOauthClient
     .createToken(req.url)
     .then((authResponse: any) => {
-      console.log("authResponse", authResponse);
-      const access_token = authResponse.access_token;
-      console.log("access_token", "=>", access_token);
       const oauth2_token_json = authResponse.getJson();
-      console.log("oauth2_token_json", "=>", oauth2_token_json);
       const companyID = instanceOauthClient.getToken().realmId;
 
       res.redirect(
@@ -83,9 +76,16 @@ app.get("/refreshAccessToken", (req, res) => {
       console.log(
         "The Refresh Token is  " + JSON.stringify(authResponse.getJson())
       );
-      const oauth2_token_json = JSON.stringify(authResponse.getJson(), null, 2);
+      const oauth2_token_json = authResponse.getJson();
       console.log("oauth2_token_json", "=>", oauth2_token_json);
-      res.send(oauth2_token_json);
+      res.send({
+        token: oauth2_token_json.access_token,
+        expireAt: new Date().getTime() + parseInt(oauth2_token_json.expires_in),
+        refreshToken: oauth2_token_json.refresh_token,
+        refreshExpireAt:
+          new Date().getTime() +
+          parseInt(oauth2_token_json.x_refresh_token_expires_in)
+      });
     })
     .catch((e: any) => {
       console.error(e);
