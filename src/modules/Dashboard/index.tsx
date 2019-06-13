@@ -31,10 +31,13 @@ export function Dashboard({ location, history }) {
   } | null>(null);
   const user = useUserContext();
   const quickbookStorage = JSON.parse(
-    localStorage.getItem("quickbook") || "{}"
+    localStorage.getItem("quickbook") || "null"
   );
   if (quickbookStorage && !quickbookObj) {
-    if (quickbookStorage.expireAt < new Date().getTime()) {
+    if (
+      quickbookStorage.expireAt < new Date().getTime() &&
+      quickbookStorage.refreshExpireAt < new Date().getTime()
+    ) {
       fetch(
         `https://us-central1-hipay-42.cloudfunctions.net/quickbooksApi/refreshAccessToken?refreshAccessToken=${
           quickbookStorage.refreshToken

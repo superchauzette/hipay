@@ -80,11 +80,12 @@ app.get("/refreshAccessToken", (req, res) => {
       console.log("oauth2_token_json", "=>", oauth2_token_json);
       res.send({
         token: oauth2_token_json.access_token,
-        expireAt: new Date().getTime() + parseInt(oauth2_token_json.expires_in),
+        expireAt:
+          new Date().getTime() + parseInt(oauth2_token_json.expires_in) * 1000,
         refreshToken: oauth2_token_json.refresh_token,
         refreshExpireAt:
           new Date().getTime() +
-          parseInt(oauth2_token_json.x_refresh_token_expires_in)
+          parseInt(oauth2_token_json.x_refresh_token_expires_in) * 1000
       });
     })
     .catch((e: any) => {
