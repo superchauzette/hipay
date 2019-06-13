@@ -16,7 +16,9 @@ function storeToken(search, quickbookStorage, setQuickbookObj) {
     createdAt: parseInt(params.get("createdAt") || "0"),
     realmId: params.get("realmId")
   };
-  if (quickbookObj.createdAt > (quickbookStorage.createdAt || 0)) {
+  if (
+    quickbookObj.createdAt > (quickbookStorage ? quickbookStorage.createdAt : 0)
+  ) {
     setQuickbookObj(quickbookObj);
     localStorage.setItem("quickbook", JSON.stringify(quickbookObj));
   }
