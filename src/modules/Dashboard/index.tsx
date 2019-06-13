@@ -41,7 +41,15 @@ export function Dashboard({ location, history }) {
         }`
       )
         .then(res => res.json())
-        .then(newTokenObj => setQuickbookObj(newTokenObj))
+        .then(newTokenObj => {
+          const newTokenStorage = {
+            ...quickbookStorage,
+            ...newTokenObj
+          };
+          setQuickbookObj(newTokenStorage);
+          localStorage.setItem("quickbook", JSON.stringify(newTokenStorage));
+          console.log(newTokenStorage);
+        })
         .catch(() => localStorage.removeItem("quickbook"));
     } else {
       setQuickbookObj(quickbookStorage);
