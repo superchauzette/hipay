@@ -1,15 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Flex, Box, Text } from "rebass";
-import { getCalculatedCalendar, craCollection, userCol } from "./service";
+import { craCollection, userCol } from "./service";
 import { userType } from "../UserHelper";
-import {
-  Card,
-  MyInput,
-  MyBox,
-  BtnDelete,
-  LinkPdf,
-  DownloadLink
-} from "../CommonUi";
+import { Card, MyBox, BtnDelete, LinkPdf, DownloadLink } from "../CommonUi";
 import { DayofWeekMobile } from "./DayofWeekMobile";
 import { UploadCRA } from "./UploadCRA";
 import { CalandarType } from "./types";
@@ -51,31 +44,33 @@ export function CRA({ cra, showTrash, date, month, year, user }: CRAProps) {
 
   useEffect(() => {
     (async function init() {
-      if (cra.calendar) {
-        setCalendar(cra.calendar);
-        setIsSaved(cra.isSaved);
-        setClient(cra.client || localStorage.getItem("client"));
-        setFile(cra.file);
-        setCommentaire(cra.commentaire);
-      } else {
-        const calendarCal = await getCalculatedCalendar(date);
-        setCalendar(calendarCal);
-      }
+      setCalendar(cra.calendar);
+      setIsSaved(cra.isSaved);
+      setClient(cra.client || localStorage.getItem("client"));
+      setFile(cra.file);
+      setCommentaire(cra.commentaire);
     })();
   }, [date, cra.calendar, cra.isSaved, cra.client, cra.file, cra.commentaire]);
 
   function fillAll() {
-    setCalendar(calendar =>
-      calendar.map(c => (!c.isWeekend && !c.isJourFerie ? { ...c, cra: 1 } : c))
+    const calendarToSave = calendar.map(c =>
+      !c.isWeekend && !c.isJourFerie ? { ...c, cra: 1 } : c
     );
+    setCalendar(calendarToSave);
+    craCollection().createOrUpdate(id, { calendar: calendarToSave });
   }
 
-  function updateCRA(nbOfday: number, value: string) {
-    setCalendar(calendar =>
-      calendar.map(c =>
-        c.nbOfday === nbOfday ? { ...c, cra: Number(value) } : c
-      )
+  function updateCRA(nbOfday: number) {
+    const calendarToSave = calendar.map(c =>
+      c.nbOfday === nbOfday
+        ? {
+            ...c,
+            cra: { "0": 0.5, "0.5": 1, "1": 0 }[String(c.cra)] || 0
+          }
+        : c
     );
+    setCalendar(calendarToSave);
+    craCollection().createOrUpdate(id, { calendar: calendarToSave });
   }
 
   async function saveCRA() {
@@ -90,7 +85,7 @@ export function CRA({ cra, showTrash, date, month, year, user }: CRAProps) {
         total,
         isSaved: true,
         client,
-        commentaire,
+        commentaire: Boolean(commentaire) ? commentaire : "",
         user: userCol().doc(user.uid)
       };
       await craCollection().createOrUpdate(id, craToSave);
@@ -100,7 +95,7 @@ export function CRA({ cra, showTrash, date, month, year, user }: CRAProps) {
     }
   }
 
-  async function saveFileInfo(fileUploaded) {
+  function saveFileInfo(fileUploaded) {
     setFile(fileUploaded);
     storageRef()
       .cra({ user, month, year })(fileUploaded.name)
@@ -114,15 +109,17 @@ export function CRA({ cra, showTrash, date, month, year, user }: CRAProps) {
     });
   }
 
-  async function deleteCRA() {
-    setCalendar([]);
-    craCollection().remove(id);
-  }
-
   function saveClient(e) {
     const value = e.target.value;
     setClient(value);
     localStorage.setItem(`client`, value);
+    craCollection().createOrUpdate(id, { client: value });
+  }
+
+  function saveCommentaire(e) {
+    const value = e.target.value;
+    setCommentaire(value);
+    craCollection().createOrUpdate(id, { commentaire: value });
   }
 
   async function deleteCRAUpload() {
@@ -133,7 +130,10 @@ export function CRA({ cra, showTrash, date, month, year, user }: CRAProps) {
     setFile({});
   }
 
-  if (!calendar.length) return null;
+  async function deleteCRA() {
+    setCalendar([]);
+    craCollection().remove(id);
+  }
 
   return (
     <Flex flexDirection="column" width={1}>
@@ -221,17 +221,22 @@ export function CRA({ cra, showTrash, date, month, year, user }: CRAProps) {
                     {c.nbOfday}
                   </Text>
                   <Box pt={1}>
-                    <MyInput
-                      key={`${month}-${year}-${c.nbOfday}-${c.dayOfWeek}`}
-                      type="number"
-                      max="1"
-                      min="0"
-                      step="0.5"
-                      name="craValue"
-                      value={c.cra}
-                      onChange={e => updateCRA(c.nbOfday, e.target.value)}
-                      disabled={c.isWeekend || c.isJourFerie || isSaved}
-                    />
+                    <div
+                      style={{
+                        cursor: "pointer",
+                        color: "rgb(225, 0, 80)",
+                        fontWeight: "bold",
+                        display: "flex",
+                        justifyContent: "center",
+                        height: "18px"
+                      }}
+                      onClick={() =>
+                        !(c.isWeekend || c.isJourFerie || isSaved) &&
+                        updateCRA(c.nbOfday)
+                      }
+                    >
+                      {c.cra}
+                    </div>
                   </Box>
                 </Box>
               ))}
@@ -248,7 +253,7 @@ export function CRA({ cra, showTrash, date, month, year, user }: CRAProps) {
                 marginTop: "8px"
               }}
               value={commentaire}
-              onChange={e => setCommentaire(e.target.value)}
+              onChange={saveCommentaire}
               disabled={isSaved}
             />
           </Flex>
@@ -260,7 +265,7 @@ export function CRA({ cra, showTrash, date, month, year, user }: CRAProps) {
                 onClick={saveCRA}
                 disabled={!Boolean(client)}
               >
-                {isSaved ? "Modifier" : "Sauvegarder"}
+                {isSaved ? "Modifier" : "Valider"}
               </Button>
               {!isLoading && !isSaved && (
                 <Text ml={3} style={{ fontStyle: "italic" }} fontSize={"10px"}>
