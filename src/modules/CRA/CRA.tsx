@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Flex, Box, Text } from "rebass";
-import { craCollection, userCol } from "./service";
+import { craCollection } from "./service";
 import { userType } from "../UserHelper";
 import { Card, MyBox, BtnDelete, LinkPdf, DownloadLink } from "../CommonUi";
 import { DayofWeekMobile } from "./DayofWeekMobile";
@@ -10,6 +10,7 @@ import { WhiteSpace } from "./WhiteSpace";
 import { Button } from "@material-ui/core";
 import { DocumentCRA } from "./pdf";
 import { storageRef } from "../FirebaseHelper";
+import { Dot } from "./Dot";
 
 type CRAProps = {
   cra: any;
@@ -18,12 +19,13 @@ type CRAProps = {
   year: number;
   user: userType;
   showTrash?: boolean;
+  onDelete: () => void;
 };
 
 export const tabDays = ["lu", "ma", "me", "je", "ve", "sa", "di"];
 
 function getTotal(calendar: CalandarType[]): number {
-  if (calendar.length === 0) return 0;
+  if (!calendar || !calendar.length) return 0;
 
   const total = calendar
     .map(c => c.cra || 0)
@@ -32,15 +34,22 @@ function getTotal(calendar: CalandarType[]): number {
   return Number(total);
 }
 
-export function CRA({ cra, showTrash, date, month, year, user }: CRAProps) {
+export function CRA({
+  cra,
+  showTrash,
+  date,
+  month,
+  year,
+  user,
+  onDelete
+}: CRAProps) {
   const [calendar, setCalendar] = useState([] as CalandarType[]);
   const [isSaved, setIsSaved] = useState(false);
-  const [isLoading, setLoading] = useState(false);
   const [client, setClient] = useState("");
   const [commentaire, setCommentaire] = useState("");
   const [file, setFile] = useState();
   const total = getTotal(calendar);
-  const id = cra.id ? cra.id : "new";
+  const id = cra.id;
 
   useEffect(() => {
     (async function init() {
@@ -50,49 +59,42 @@ export function CRA({ cra, showTrash, date, month, year, user }: CRAProps) {
       setFile(cra.file);
       setCommentaire(cra.commentaire);
     })();
-  }, [date, cra.calendar, cra.isSaved, cra.client, cra.file, cra.commentaire]);
+  }, [date, cra]);
+
+  function save(mid, value) {
+    craCollection().save(mid, value);
+  }
 
   function fillAll() {
     const calendarToSave = calendar.map(c =>
       !c.isWeekend && !c.isJourFerie ? { ...c, cra: 1 } : c
     );
     setCalendar(calendarToSave);
-    craCollection().createOrUpdate(id, { calendar: calendarToSave });
+    save(id, { calendar: calendarToSave, client });
   }
 
-  function updateCRA(nbOfday: number) {
+  async function updateCRA(nbOfday: number) {
+    function calcul(c) {
+      if (c.cra === 0) return 0.5;
+      if (c.cra === 0.5) return 1;
+      if (c.cra === 1) return 0;
+      return 0.5;
+    }
     const calendarToSave = calendar.map(c =>
       c.nbOfday === nbOfday
         ? {
             ...c,
-            cra: { "0": 0.5, "0.5": 1, "1": 0 }[String(c.cra)] || 0
+            cra: calcul(c)
           }
         : c
     );
     setCalendar(calendarToSave);
-    craCollection().createOrUpdate(id, { calendar: calendarToSave });
+    save(id, { calendar: calendarToSave, client });
   }
 
   async function saveCRA() {
     setIsSaved(save => !save);
-    if (!isSaved) {
-      setLoading(true);
-      const craToSave = {
-        userid: user.uid,
-        month,
-        year,
-        calendar,
-        total,
-        isSaved: true,
-        client,
-        commentaire: Boolean(commentaire) ? commentaire : "",
-        user: userCol().doc(user.uid)
-      };
-      await craCollection().createOrUpdate(id, craToSave);
-      setLoading(false);
-    } else {
-      await craCollection().createOrUpdate(id, { isSaved: !isSaved });
-    }
+    save(id, { isSaved: !isSaved, client });
   }
 
   function saveFileInfo(fileUploaded) {
@@ -100,7 +102,7 @@ export function CRA({ cra, showTrash, date, month, year, user }: CRAProps) {
     storageRef()
       .cra({ user, month, year })(fileUploaded.name)
       .put(fileUploaded);
-    craCollection().createOrUpdate(id, {
+    save(id, {
       file: {
         name: fileUploaded.name,
         size: fileUploaded.size,
@@ -113,17 +115,17 @@ export function CRA({ cra, showTrash, date, month, year, user }: CRAProps) {
     const value = e.target.value;
     setClient(value);
     localStorage.setItem(`client`, value);
-    craCollection().createOrUpdate(id, { client: value });
+    save(id, { client: value });
   }
 
   function saveCommentaire(e) {
     const value = e.target.value;
     setCommentaire(value);
-    craCollection().createOrUpdate(id, { commentaire: value });
+    save(id, { commentaire: value, client });
   }
 
   async function deleteCRAUpload() {
-    craCollection().createOrUpdate(id, { file: {} });
+    save(id, { file: {} });
     storageRef()
       .cra({ user, month, year })(file.name)
       .delete();
@@ -131,8 +133,8 @@ export function CRA({ cra, showTrash, date, month, year, user }: CRAProps) {
   }
 
   async function deleteCRA() {
-    setCalendar([]);
     craCollection().remove(id);
+    onDelete();
   }
 
   return (
@@ -140,7 +142,8 @@ export function CRA({ cra, showTrash, date, month, year, user }: CRAProps) {
       <UploadCRA
         mkey={`${id}-${month}-${year}` || "0"}
         link={
-          file && (
+          file &&
+          file.name && (
             <DownloadLink
               mt={2}
               type="cra"
@@ -171,10 +174,11 @@ export function CRA({ cra, showTrash, date, month, year, user }: CRAProps) {
                 fontSize: "18px",
                 fontWeight: "bold"
               }}
-              value={client}
+              value={client || ""}
               onChange={saveClient}
               disabled={isSaved}
             />
+
             <Box m="auto" />
             {showTrash && <BtnDelete onClick={deleteCRA} />}
           </Flex>
@@ -200,44 +204,37 @@ export function CRA({ cra, showTrash, date, month, year, user }: CRAProps) {
             </Text>
           </Flex>
 
-          <Box width={["100%"]} mt={2}>
+          <Box width="100%" mt={2}>
             <Flex
               justifyContent={["flex-start", "flex-start", "space-between"]}
-              flexWrap={["wrap", "wrap", "nowrap"]}
+              flexWrap={["wrap", "wrap", "wrap"]}
             >
               <DayofWeekMobile tabDays={tabDays} />
               <WhiteSpace calendar={calendar} tabDays={tabDays} />
-
               {calendar.map(c => (
                 <Box
                   key={`${id}-${month}-${year}-${c.nbOfday}`}
-                  width={[1 / 7, "40px", 1]}
+                  width={[1 / 7, "40px", "40px"]}
                   color={c.isWeekend || c.isJourFerie ? "grey" : "black"}
                 >
                   <MyBox display={["none", "block"]}>
                     <Text textAlign="center">{c.dayOfWeek}</Text>
                   </MyBox>
-                  <Text textAlign="center" p={1}>
-                    {c.nbOfday}
-                  </Text>
-                  <Box pt={1}>
-                    <div
-                      style={{
-                        cursor: "pointer",
-                        color: "rgb(225, 0, 80)",
-                        fontWeight: "bold",
-                        display: "flex",
-                        justifyContent: "center",
-                        height: "18px"
-                      }}
-                      onClick={() =>
-                        !(c.isWeekend || c.isJourFerie || isSaved) &&
-                        updateCRA(c.nbOfday)
+                  <Dot
+                    type={
+                      { "1": "circle", "0.5": "demi-circle", "0": "none" }[
+                        String(c.cra)
+                      ]
+                    }
+                    disabled={isSaved}
+                    onClick={() => {
+                      if (!c.isWeekend && !c.isJourFerie && !isSaved) {
+                        updateCRA(c.nbOfday);
                       }
-                    >
-                      {c.cra}
-                    </div>
-                  </Box>
+                    }}
+                  >
+                    {c.nbOfday}
+                  </Dot>
                 </Box>
               ))}
             </Flex>
@@ -252,7 +249,7 @@ export function CRA({ cra, showTrash, date, month, year, user }: CRAProps) {
                 borderRadius: "10px",
                 marginTop: "8px"
               }}
-              value={commentaire}
+              value={commentaire || ""}
               onChange={saveCommentaire}
               disabled={isSaved}
             />
@@ -267,15 +264,12 @@ export function CRA({ cra, showTrash, date, month, year, user }: CRAProps) {
               >
                 {isSaved ? "Modifier" : "Valider"}
               </Button>
-              {!isLoading && !isSaved && (
+              {!isSaved && (
                 <Text ml={3} style={{ fontStyle: "italic" }} fontSize={"10px"}>
                   Pensez à renseigner votre client
                 </Text>
               )}
-              {isLoading && isSaved && <Text ml={3}>...Loading</Text>}
-              {!isLoading && isSaved && (
-                <Text ml={3}>Votre CRA a été sauvegardé</Text>
-              )}
+              {isSaved && <Text ml={3}>Votre CRA est validé</Text>}
             </Flex>
             <Box mx="auto" />
             {cra && user && (

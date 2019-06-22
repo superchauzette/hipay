@@ -53,12 +53,10 @@ export async function getCalculatedCalendar(date: Date) {
 }
 
 export function craCollection() {
-  async function createOrUpdate(id, craToSave) {
-    if (id === "new") await craCol().add(craToSave);
-    else
-      await craCol()
-        .doc(id)
-        .set(craToSave, { merge: true });
+  async function save(id, craToSave) {
+    await craCol()
+      .doc(id)
+      .set(craToSave, { merge: true });
   }
 
   function remove(id: string) {
@@ -68,7 +66,7 @@ export function craCollection() {
   }
 
   return {
-    createOrUpdate,
+    save,
     remove
   };
 }

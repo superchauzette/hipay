@@ -8,9 +8,23 @@ import {
   MonthSelector,
   useDateChange
 } from "../CommonUi";
+import { craCol, userCol } from "../FirebaseHelper";
 import { getMyCras, getCalculatedCalendar } from "./service";
 import { CircularProgress } from "@material-ui/core";
 import { Flex } from "rebass";
+
+async function createNewCRA({ date, month, year, user }) {
+  const calendar = await getCalculatedCalendar(date);
+  const craData = {
+    calendar,
+    month,
+    year,
+    userid: user.uid,
+    user: userCol().doc(user.uid)
+  };
+  const dataCreated = await craCol().add(craData);
+  return { id: dataCreated.id, ...craData };
+}
 
 export function CRAS() {
   const user = useUserContext();
@@ -20,22 +34,23 @@ export function CRAS() {
 
   useEffect(() => {
     (async function init() {
-      if (user) {
+      if (user && month && year) {
         setLoading(true);
         const myCras = await getMyCras({ user, month, year });
         if (myCras.length) {
           setCras(myCras);
         } else {
-          const calendar = await getCalculatedCalendar(date);
-          setCras([{ id: "new", calendar }]);
+          const newCra = await createNewCRA({ date, month, year, user });
+          setCras(state => [...state, newCra]);
         }
         setLoading(false);
       }
     })();
-  }, [user, year, month, date]);
+  }, [user, month, year, date]);
 
   async function addNewCRA() {
-    setCras(state => [...state, {}]);
+    const newCra = await createNewCRA({ date, month, year, user });
+    setCras(state => [...state, newCra]);
   }
 
   return (
@@ -52,13 +67,16 @@ export function CRAS() {
       {!isLoading &&
         cras.map((cra, index) => (
           <CRA
-            key={cra.id || index}
+            key={cra.id}
             cra={cra}
             showTrash={index !== 0}
             user={user}
             date={date}
             month={month}
             year={year}
+            onDelete={() => {
+              getMyCras({ user, month, year }).then(setCras);
+            }}
           />
         ))}
 
