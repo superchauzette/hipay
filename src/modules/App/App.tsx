@@ -53,7 +53,7 @@ function MenuMobile() {
       justifyContent="space-around"
       bg={blue}
     >
-      <LinkIcon exact to="/" icon={<Home />} text="Dashboard" />
+      <LinkIcon exact to="/" icon={<Home />} text="HOME" />
       <LinkIcon to="/cra" icon={<CalendarToday />} text="CRA" />
       <LinkIcon to="/ndf" icon={<Restaurant />} text="NDF" />
       <LinkIcon to="/ik" icon={<DirectionsCar />} text="IK" />
