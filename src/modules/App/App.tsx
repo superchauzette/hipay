@@ -9,15 +9,59 @@ import { Dashboard } from "../Dashboard";
 import { NoteDeFrais } from "../NDF";
 import { IK } from "../IK";
 import { Charges } from "../Charges";
-import { Avatar } from "../CommonUi";
+import { Avatar, Mobile, Desktop } from "../CommonUi";
 import { Admin } from "../Admin";
 import { Flex, Box, Text } from "rebass";
 import { AppBar, Button, Toolbar } from "@material-ui/core";
+import {
+  Home,
+  Restaurant,
+  CalendarToday,
+  MonetizationOn,
+  DirectionsCar,
+  Face
+} from "@material-ui/icons";
 import { useIsAdmin } from "../FirebaseHelper";
 
 const LinkMenu = props => (
   <Button size="small" component={NavLink} {...props} />
 );
+
+const LinkIcon = ({ icon, text, ...props }) => (
+  <NavLink {...props}>
+    <Flex flexDirection="column" alignItems="center" color="white">
+      {icon}
+      <Text color="white" fontSize="10px" fontWeight="bold" mt="2px">
+        {text}
+      </Text>
+    </Flex>
+  </NavLink>
+);
+
+function MenuMobile() {
+  const isAdmin = useIsAdmin();
+
+  return (
+    <Flex
+      width="100%"
+      style={{
+        position: "fixed",
+        bottom: 0,
+        boxShadow: "0 2px 16px rgba(0, 0, 0, 0.25)"
+      }}
+      p={2}
+      justifyContent="space-around"
+      bg={blue}
+    >
+      <LinkIcon exact to="/" icon={<Home />} text="Dashboard" />
+      <LinkIcon to="/cra" icon={<CalendarToday />} text="CRA" />
+      <LinkIcon to="/ndf" icon={<Restaurant />} text="NDF" />
+      <LinkIcon to="/ik" icon={<DirectionsCar />} text="IK" />
+      <LinkIcon to="/CHARGES" icon={<MonetizationOn />} text="CHARGES" />
+      {isAdmin && <LinkIcon to="/admin" icon={<Face />} text="ADMIN" />}
+    </Flex>
+  );
+}
 
 function Menu() {
   const isAdmin = useIsAdmin();
@@ -69,7 +113,9 @@ export function App() {
     <UserProvider value={authUser}>
       <Theme>
         <Router>
-          <HeaderBar authUser={authUser} />
+          <Desktop>
+            <HeaderBar authUser={authUser} />
+          </Desktop>
           <main>
             <AuthRoute
               exact
@@ -92,6 +138,9 @@ export function App() {
               component={Charges}
             />
           </main>
+          <Mobile>
+            <MenuMobile />
+          </Mobile>
         </Router>
       </Theme>
     </UserProvider>

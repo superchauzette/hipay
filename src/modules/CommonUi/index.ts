@@ -5,7 +5,7 @@ export { BtnDelete } from "./BtnDelete";
 export { Card } from "./Card";
 export { Header } from "./Header";
 export { MonthSelector, useDateChange } from "./MonthSelector";
-export { MyBox } from "./MyBox";
+export { MyBox, Mobile, Desktop } from "./MyBox";
 export { MyInput } from "./MyInput";
 export { NavLink } from "./NavLink";
 export { PageWrapper } from "./PageWrapper";
