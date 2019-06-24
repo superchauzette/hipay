@@ -49,9 +49,19 @@ function Details({ user, cras, ndfs, iks, charges }) {
         expandIcon={<ExpandMoreIcon />}
         aria-controls="panel1a-content"
       >
-        <Flex alignItems="center">
-          <Avatar src={user.info.photoURL} />
-          <Text ml={2}>{user.info.displayName}</Text>
+        <Flex alignItems="center" justifyContent="space-between" width="100%">
+          <Flex alignItems="center">
+            <Avatar src={user.info.photoURL} />
+            <Text ml={2}>{user.info.displayName}</Text>
+          </Flex>
+          <Text>
+            {cras &&
+              cras
+                .map(cra =>
+                  cra.isSaved ? `${cra.total} jours travaillés` : ""
+                )
+                .join(", ")}
+          </Text>
         </Flex>
       </ExpansionPanelSummary>
       <ExpansionPanelDetails>

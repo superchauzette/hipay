@@ -2,7 +2,14 @@ import React, { useState, useEffect } from "react";
 import { Flex, Box, Text } from "rebass";
 import { craCollection } from "./service";
 import { userType } from "../UserHelper";
-import { Card, MyBox, BtnDelete, LinkPdf, DownloadLink } from "../CommonUi";
+import {
+  Card,
+  MyBox,
+  BtnDelete,
+  LinkPdf,
+  DownloadLink,
+  MyInput
+} from "../CommonUi";
 import { DayofWeekMobile } from "./DayofWeekMobile";
 import { UploadCRA } from "./UploadCRA";
 import { CalandarType } from "./types";
@@ -62,7 +69,7 @@ export function CRA({
   }, [date, cra]);
 
   function save(mid, value) {
-    craCollection().save(mid, value);
+    craCollection().save(mid, { ...value, total, client });
   }
 
   function fillAll() {
@@ -70,7 +77,7 @@ export function CRA({
       !c.isWeekend && !c.isJourFerie ? { ...c, cra: 1 } : c
     );
     setCalendar(calendarToSave);
-    save(id, { calendar: calendarToSave, client });
+    save(id, { calendar: calendarToSave });
   }
 
   async function updateCRA(nbOfday: number) {
@@ -89,12 +96,12 @@ export function CRA({
         : c
     );
     setCalendar(calendarToSave);
-    save(id, { calendar: calendarToSave, client });
+    save(id, { calendar: calendarToSave });
   }
 
   async function saveCRA() {
     setIsSaved(save => !save);
-    save(id, { isSaved: !isSaved, client });
+    save(id, { isSaved: !isSaved });
   }
 
   function saveFileInfo(fileUploaded) {
@@ -121,7 +128,7 @@ export function CRA({
   function saveCommentaire(e) {
     const value = e.target.value;
     setCommentaire(value);
-    save(id, { commentaire: value, client });
+    save(id, { commentaire: value });
   }
 
   async function deleteCRAUpload() {
@@ -163,17 +170,9 @@ export function CRA({
       <Card width={1} p={3}>
         <Flex flexDirection="column">
           <Flex mt={3}>
-            <input
+            <MyInput
               type="text"
               placeholder="Nom du client"
-              style={{
-                border: "none",
-                borderBottom: "1px solid #80808063",
-                outline: "none",
-                backgroundColor: "transparent",
-                fontSize: "18px",
-                fontWeight: "bold"
-              }}
               value={client || ""}
               onChange={saveClient}
               disabled={isSaved}

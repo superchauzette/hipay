@@ -1,15 +1,13 @@
 import styled from "styled-components";
 
 export const MyInput = styled.input`
-  width: 100%;
-  height: 30px;
   border: none;
+  border-bottom: 1px solid #80808063;
   outline: none;
+  background-color: transparent;
+  font-size: 18px;
   font-weight: bold;
-  text-align: center;
-  border: none;
-  color: rgb(225, 0, 80);
   :disabled {
-    color: #e1005099;
+    border-bottom: 0px;
   }
 `;
