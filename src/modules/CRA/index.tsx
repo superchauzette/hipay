@@ -54,7 +54,7 @@ export function CRAS() {
   }
 
   return (
-    <PageWrapper pb="75px">
+    <PageWrapper>
       <Header title="Compte rendu d'Activité" />
       <MonthSelector onChange={handleChangeMonth} />
 

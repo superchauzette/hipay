@@ -6,7 +6,7 @@ export function PageWrapper(props) {
     <Flex
       px={3}
       pt={3}
-      pb={3}
+      pb="100px"
       flexDirection="column"
       alignItems="center"
       {...props}

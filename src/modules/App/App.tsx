@@ -47,7 +47,7 @@ function MenuMobile() {
       style={{
         position: "fixed",
         bottom: 0,
-        boxShadow: "0 2px 16px rgba(0, 0, 0, 0.25)"
+        boxShadow: "rgba(0, 0, 0, 0.25) 0px -5px 16px"
       }}
       p={2}
       justifyContent="space-around"
