@@ -29,6 +29,7 @@ async function createNewCRA({ date, month, year, user }) {
 export function CRAS() {
   const user = useUserContext();
   const [isLoading, setLoading] = useState(false);
+  const [isLoadingAdd, setLoadingAdd] = useState(false);
   const { month, year, date, handleChangeMonth } = useDateChange();
   const [cras, setCras] = useState([] as any[]);
 
@@ -49,8 +50,15 @@ export function CRAS() {
   }, [user, month, year, date]);
 
   async function addNewCRA() {
-    const newCra = await createNewCRA({ date, month, year, user });
-    setCras(state => [...state, newCra]);
+    try {
+      setLoadingAdd(true);
+      const newCra = await createNewCRA({ date, month, year, user });
+      setCras(state => [...state, newCra]);
+    } catch (err) {
+      console.error("add cra ", err);
+    } finally {
+      setLoadingAdd(false);
+    }
   }
 
   return (
@@ -80,7 +88,7 @@ export function CRAS() {
           />
         ))}
 
-      <BtnAdd onClick={addNewCRA} />
+      <BtnAdd loading={isLoadingAdd} onClick={addNewCRA} />
     </PageWrapper>
   );
 }

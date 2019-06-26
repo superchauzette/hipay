@@ -1,6 +1,15 @@
 import React from "react";
 import { TextField, BtnDelete } from "../CommonUi";
 import { ikType } from "./types";
+import { MenuItem } from "@material-ui/core";
+
+const puisanceFiscalOptions = [
+  { pf: "3 cv et moins", kp: 0.41 },
+  { pf: "4 cv", kp: 0.493 },
+  { pf: "5 cv", kp: 0.543 },
+  { pf: "6 cv", kp: 0.568 },
+  { pf: "7 cv et moins", kp: 0.595 }
+];
 
 type FormIkProps = {
   ik: ikType;
@@ -54,13 +63,18 @@ export function FormIK({ ik, disabled, onChange, onDelete }: FormIkProps) {
         onChange={e => onChange({ kmParcourus: Number(e.target.value) })}
       />
       <TextField
+        select
         id="puissanceFiscale"
         label="Puissance Fiscale"
         type="number"
         disabled={disabled}
         value={ik.puissanceFiscale}
-        onChange={e => onChange({ puissanceFiscale: Number(e.target.value) })}
-      />
+        onChange={e => onChange({ puissanceFiscale: e.target.value })}
+      >
+        {puisanceFiscalOptions.map(option => (
+          <MenuItem value={option.pf}>{option.pf}</MenuItem>
+        ))}
+      </TextField>
       <TextField
         id="montant"
         label="Montant HT"
