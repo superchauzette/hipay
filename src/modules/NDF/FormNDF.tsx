@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Box, Flex, Text } from "rebass";
 import { BtnUpload, BtnDelete, TextField, DownloadLink } from "../CommonUi";
 import { NoteType, FileType } from "./types";
+import { MenuItem } from "@material-ui/core";
 
 type FormNDFProps = {
   note: NoteType;
@@ -27,6 +28,8 @@ export function FormNDF({
     onUpdateFile(file);
   }
 
+  console.log({ note });
+
   return (
     <form noValidate style={{ width: "100%" }}>
       <Flex
@@ -46,12 +49,23 @@ export function FormNDF({
           onChange={e => onChange({ dateAchat: e.target.value })}
         />
         <TextField
+          select
           id="Categorie"
           label="Catégorie"
           disabled={disabled}
           value={note.type}
           onChange={e => onChange({ type: e.target.value })}
-        />
+        >
+          {[
+            "matériel",
+            "restauration",
+            "déplacement",
+            "hébergement",
+            "autre"
+          ].map(cat => (
+            <MenuItem value={cat}>{cat}</MenuItem>
+          ))}
+        </TextField>
         <TextField
           id="description"
           label="description"
@@ -93,7 +107,7 @@ export function FormNDF({
               type="ndf"
               month={note.month}
               year={note.year}
-              fileName={file.name}
+              fileName={"justificatif"}
             />
           )}
         </Flex>

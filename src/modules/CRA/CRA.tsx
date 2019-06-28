@@ -26,7 +26,7 @@ type CRAProps = {
   year: number;
   user: userType;
   showTrash?: boolean;
-  onDelete: () => void;
+  onRefresh: () => void;
 };
 
 export const tabDays = ["lu", "ma", "me", "je", "ve", "sa", "di"];
@@ -48,7 +48,7 @@ export function CRA({
   month,
   year,
   user,
-  onDelete
+  onRefresh
 }: CRAProps) {
   const [calendar, setCalendar] = useState([] as CalandarType[]);
   const [isSaved, setIsSaved] = useState(false);
@@ -141,7 +141,7 @@ export function CRA({
 
   async function deleteCRA() {
     craCollection().remove(id);
-    onDelete();
+    onRefresh();
   }
 
   return (
@@ -243,7 +243,7 @@ export function CRA({
               placeholder="Commentaire, astreintes"
               style={{
                 width: "100%",
-                height: "120px",
+                height: "50px",
                 padding: "5px",
                 borderRadius: "10px",
                 marginTop: "8px"
@@ -271,8 +271,10 @@ export function CRA({
               {isSaved && <Text ml={3}>Votre CRA est validé</Text>}
             </Flex>
             <Box mx="auto" />
+            {console.log({ isSaved })}
             {cra && user && (
               <LinkPdf
+                disabled={!isSaved}
                 label="imprimer"
                 fileName={`cra-${cra.client}-${cra.month}-${cra.year}.pdf`}
                 document={<DocumentCRA cra={cra} user={user} />}

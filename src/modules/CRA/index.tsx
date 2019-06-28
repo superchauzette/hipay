@@ -82,7 +82,7 @@ export function CRAS() {
             date={date}
             month={month}
             year={year}
-            onDelete={() => {
+            onRefresh={() => {
               getMyCras({ user, month, year }).then(setCras);
             }}
           />

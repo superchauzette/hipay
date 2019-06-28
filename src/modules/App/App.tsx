@@ -27,14 +27,18 @@ const LinkMenu = props => (
   <Button size="small" component={NavLink} {...props} />
 );
 
-const LinkIcon = ({ icon, text, ...props }) => (
+export const IconText = ({ icon, text, color = "white", ...props }) => (
+  <Flex flexDirection="column" alignItems="center" color={color} {...props}>
+    {icon}
+    <Text color={color} fontSize="10px" fontWeight="bold" mt="2px">
+      {text}
+    </Text>
+  </Flex>
+);
+
+export const LinkIcon = ({ icon, text, ...props }) => (
   <NavLink {...props}>
-    <Flex flexDirection="column" alignItems="center" color="white">
-      {icon}
-      <Text color="white" fontSize="10px" fontWeight="bold" mt="2px">
-        {text}
-      </Text>
-    </Flex>
+    <IconText icon={icon} text={text} />
   </NavLink>
 );
 

@@ -1,4 +1,5 @@
 import React from "react";
+import { Flex, Text } from "rebass";
 import { TextField, BtnDelete } from "../CommonUi";
 import { ikType } from "./types";
 import { MenuItem } from "@material-ui/core";
@@ -10,6 +11,15 @@ const puisanceFiscalOptions = [
   { pf: "6 cv", kp: 0.568 },
   { pf: "7 cv et moins", kp: 0.595 }
 ];
+
+const getKp = puissanceFiscale => {
+  const value = puisanceFiscalOptions.find(i => i.pf === puissanceFiscale);
+  return value ? value.kp : 0;
+};
+
+function getMotant(ik: ikType) {
+  return Number(getKp(ik.puissanceFiscale) * (ik.kmParcourus || 0)).toFixed(2);
+}
 
 type FormIkProps = {
   ik: ikType;
@@ -75,14 +85,10 @@ export function FormIK({ ik, disabled, onChange, onDelete }: FormIkProps) {
           <MenuItem value={option.pf}>{option.pf}</MenuItem>
         ))}
       </TextField>
-      <TextField
-        id="montant"
-        label="Montant HT"
-        type="number"
-        disabled={disabled}
-        value={ik.montant}
-        onChange={e => onChange({ montant: Number(e.target.value) })}
-      />
+      <Flex flexDirection="column" style={{ height: "57px" }}>
+        <Text mb="8px">Montant</Text>
+        <Text fontWeight="bold">{getMotant(ik)}</Text>
+      </Flex>
 
       <BtnDelete onClick={() => onDelete(ik.id)} disabled={disabled} />
     </form>

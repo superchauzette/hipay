@@ -42,7 +42,10 @@ export function NoteDeFrais() {
     handleChange,
     updateFile
   } = useCRUD<NoteType>({ user, month, year }, deps);
-  const total = useTotal(notes, note => note.montant || 0);
+  const total = useTotal(
+    notes,
+    note => Number(note.montant) + Number(note.tva)
+  );
 
   return (
     <PageWrapper>

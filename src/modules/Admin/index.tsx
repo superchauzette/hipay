@@ -15,6 +15,7 @@ import {
   ExpansionPanelDetails,
   CircularProgress
 } from "@material-ui/core";
+import { Restaurant, DirectionsCar } from "@material-ui/icons";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { getResources, getUsers } from "./getResources";
 import { DocumentCRA } from "../CRA/pdf";
@@ -22,6 +23,7 @@ import { DocumentNDF } from "../NDF/pdf";
 import { getTotal } from "../hooks/useTotal";
 import { DocumentIk } from "../IK/pdf";
 import { Check as CheckIcon, Close as CloseIcon } from "@material-ui/icons";
+import { IconText } from "../App/App";
 
 function Title({ title, data, fileName, document }) {
   return (
@@ -42,6 +44,14 @@ function Detail({ title, data, render }) {
   );
 }
 
+function hasNdk(ndfs) {
+  return ndfs ? ndfs.length > 0 : false;
+}
+
+function hasIks(iks) {
+  return iks ? iks.length > 0 : false;
+}
+
 function Details({ user, cras, ndfs, iks, charges }) {
   return (
     <ExpansionPanel>
@@ -54,14 +64,25 @@ function Details({ user, cras, ndfs, iks, charges }) {
             <Avatar src={user.info.photoURL} />
             <Text ml={2}>{user.info.displayName}</Text>
           </Flex>
-          <Text>
-            {cras &&
-              cras
-                .map(cra =>
-                  cra.isSaved ? `${cra.total} jours travaillés` : ""
-                )
-                .join(", ")}
-          </Text>
+          <Flex alignItems="center">
+            {hasNdk(ndfs) && (
+              <IconText color="blue" icon={<Restaurant />} text="NDF" mr={1} />
+            )}
+            {hasIks(iks) && (
+              <IconText
+                color="blue"
+                icon={<DirectionsCar />}
+                text="IK"
+                mr={1}
+              />
+            )}
+            <Text>
+              {cras &&
+                cras
+                  .map(cra => (cra.isSaved ? `${cra.total}j` : ""))
+                  .join(", ")}
+            </Text>
+          </Flex>
         </Flex>
       </ExpansionPanelSummary>
       <ExpansionPanelDetails>

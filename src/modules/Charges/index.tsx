@@ -44,24 +44,6 @@ export function Charges() {
 
       <Card width={1}>
         <List>
-          <Flex px={3} pt={3} pb={1}>
-            <input
-              type="text"
-              placeholder="Nom de ma Société"
-              style={{
-                border: "none",
-                borderBottom: "1px solid #80808063",
-                outline: "none",
-                backgroundColor: "transparent",
-                fontSize: "18px",
-                fontWeight: "bold",
-                width: "300px",
-                maxWidth: "100%"
-              }}
-              value={mySociete}
-              onChange={handleSociete}
-            />
-          </Flex>
           {isLoading && (
             <Flex width={1} justifyContent="center">
               <CircularProgress />

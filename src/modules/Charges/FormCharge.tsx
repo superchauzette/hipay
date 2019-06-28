@@ -45,18 +45,20 @@ export function FormCharge({
         value={charge.description}
         onChange={e => onChange({ description: e.target.value })}
       />
-      <Flex>
+      <Flex width={["100%", "10%"]}>
         <BtnUpload
           id={`btn-ik-upload-${charge.id}`}
           disabled={Boolean(file && file.name)}
           onChange={e => handleFile(e.target.files)}
         />
+      </Flex>
+      <Flex>
         {file && (
           <DownloadLink
             type="charges"
             month={charge.month}
             year={charge.year}
-            fileName={file.name}
+            fileName={"charge"}
             mt={2}
             ml={3}
           />
