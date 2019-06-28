@@ -22,13 +22,20 @@ const Link = styled.a`
   ${color}
 `;
 
-export function DownloadLink({ type, month, year, fileName, ...props }) {
+export function DownloadLink({
+  type,
+  month,
+  year,
+  fileName,
+  label = "",
+  ...props
+}) {
   const url = useDownloadLink({ type, month, year, fileName });
   console.log({ url, type, month, year, fileName });
 
   return (
     <Link href={url} color="blue" {...props}>
-      {fileName}
+      {label || fileName}
     </Link>
   );
 }

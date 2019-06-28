@@ -1,4 +1,4 @@
-import React, { ReactNode, Children } from "react";
+import React, { ReactNode } from "react";
 import { CardContent, Card, CardHeader, Typography } from "@material-ui/core";
 
 type CardDisplayNumberProps = {

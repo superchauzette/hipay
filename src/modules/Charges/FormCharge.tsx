@@ -58,7 +58,8 @@ export function FormCharge({
             type="charges"
             month={charge.month}
             year={charge.year}
-            fileName={"charge"}
+            fileName={file.name}
+            label={"charge"}
             mt={2}
             ml={3}
           />

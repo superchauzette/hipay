@@ -107,7 +107,8 @@ export function FormNDF({
               type="ndf"
               month={note.month}
               year={note.year}
-              fileName={"justificatif"}
+              fileName={file.name}
+              label={"justificatif"}
             />
           )}
         </Flex>
