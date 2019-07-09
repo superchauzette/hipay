@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import { Button } from "@material-ui/core";
 import { DisplayData } from "./DisplayData";
 import { useUserContext } from "../UserHelper";
-import { QUICKBOOK_AUTH, QUICKBOOK_COMPANY } from "../constants";
 import quickbooksLogo from "./qbLogo.png";
 
 function storeToken(search, quickbookStorage, setQuickbookObj) {
@@ -32,6 +31,7 @@ export function Dashboard({ location, history }) {
     expireAt: number;
   } | null>(null);
   const user = useUserContext();
+
   const quickbookStorage = JSON.parse(
     localStorage.getItem("quickbook") || "null"
   );
@@ -51,7 +51,6 @@ export function Dashboard({ location, history }) {
             };
             setQuickbookObj(newTokenStorage);
             localStorage.setItem("quickbook", JSON.stringify(newTokenStorage));
-            console.log(newTokenStorage);
           })
           .catch(() => localStorage.removeItem("quickbook"));
       } else {
@@ -82,8 +81,7 @@ export function Dashboard({ location, history }) {
           <Button>
             <a
               style={{ textDecoration: "none" }}
-              href="https://us-central1-hipay-42.cloudfunctions.net/quickbooksApi/authUri"
-            >
+              href="https://us-central1-hipay-42.cloudfunctions.net/quickbooksApi/authUri">
               <Button variant="raised">
                 <img
                   style={{ display: "inline-block", marginRight: "10px" }}

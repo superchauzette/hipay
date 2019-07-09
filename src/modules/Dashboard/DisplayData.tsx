@@ -1,14 +1,7 @@
-import React, { useEffect, useState, Fragment } from "react";
-import {
-  Card,
-  CardHeader,
-  CardContent,
-  Typography,
-  Divider
-} from "@material-ui/core";
+import React, { useEffect, useState } from "react";
+import { Card, CardHeader, CardContent, Typography } from "@material-ui/core";
 import { Box, Flex } from "rebass";
 import { Chart } from "./Chart";
-import { paddingTop } from "styled-system";
 import { CardDisplayNumber } from "../CommonUi/CardDisplayNumber";
 
 export interface NumberOverMonths {
@@ -54,8 +47,8 @@ type QuickBookResponse = {
 //     Mars: 9000.0,
 //     Avril: 9500.0,
 //     Mai: 9000.0,
-//     Juin: 0,
-//     Juillet: 0,
+//     Juin: 2000,
+//     Juillet: 4440,
 //     Août: 0,
 //     Septembre: 0,
 //     Octobre: 0,
@@ -83,7 +76,9 @@ export function DisplayData({ quickbookObj }) {
     null
   );
   const [loading, setLoading] = useState(false);
-
+  const currentMonth = new Date().getMonth();
+  const currentYear = new Date().getFullYear();
+  console.log(quickBooksData);
   useEffect(() => {
     const form_data = new FormData();
 
@@ -105,18 +100,15 @@ export function DisplayData({ quickbookObj }) {
   }, [quickbookObj]);
   return (
     <div style={{ padding: "10px" }}>
-      {/* {loading && 
-      <Spinnger
-      } */}
       {quickBooksData && (
         <Flex wrap="wrap" flexDirection={["column", "column"]}>
           <Box wrap="wrap" p={3} width={[1, 1, 1]}>
             <CardDisplayNumber title="Rémunération" subTitle="Juin">
-              {quickBooksData.INCOMES} €
+              {Object.values(quickBooksData.salaryOverMonthes)[currentMonth]} €
             </CardDisplayNumber>
           </Box>
           <Typography style={{ textAlign: "center" }} variant="h5">
-            Exercice 2019
+            Exercice {currentYear}
           </Typography>
 
           <Flex wrap="wrap" flexDirection={["column", "row"]}>
@@ -126,7 +118,7 @@ export function DisplayData({ quickbookObj }) {
                 <CardContent>
                   <Flex wrap="wrap" flexDirection={["column", "row"]}>
                     <Box wrap="wrap" p={3} width={[1, 1, 1 / 2]}>
-                      <CardDisplayNumber title="Chiffre d'affaire">
+                      <CardDisplayNumber title="Chiffre d'affaires">
                         {quickBooksData.CA} €
                       </CardDisplayNumber>
                     </Box>
@@ -138,8 +130,12 @@ export function DisplayData({ quickbookObj }) {
                   </Flex>
                   <Box wrap="wrap" p={3} width={[1]}>
                     <Chart
-                      ca={Object.values(quickBooksData.caOverMonthes)}
-                      salaries={Object.values(quickBooksData.salaryOverMonthes)}
+                      ca={Object.values(quickBooksData.caOverMonthes).filter(
+                        f => f > 0
+                      )}
+                      salaries={Object.values(
+                        quickBooksData.salaryOverMonthes
+                      ).filter(f => f > 0)}
                     />
                   </Box>
                 </CardContent>
