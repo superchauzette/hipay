@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Card, CardHeader, CardContent, Typography } from "@material-ui/core";
 import { Box, Flex } from "rebass";
 import { Chart } from "./Chart";
+import format from "date-fns/format";
+import frLocale from "date-fns/locale/fr";
 import { CardDisplayNumber } from "../CommonUi/CardDisplayNumber";
 
 export interface NumberOverMonths {
@@ -78,6 +80,7 @@ export function DisplayData({ quickbookObj }) {
   const [loading, setLoading] = useState(false);
   const currentMonth = new Date().getMonth();
   const currentYear = new Date().getFullYear();
+  const currentMonthLiteral = format(new Date(), "MMMM", { locale: frLocale });
   console.log(quickBooksData);
   useEffect(() => {
     const form_data = new FormData();
@@ -103,7 +106,9 @@ export function DisplayData({ quickbookObj }) {
       {quickBooksData && (
         <Flex wrap="wrap" flexDirection={["column", "column"]}>
           <Box wrap="wrap" p={3} width={[1, 1, 1]}>
-            <CardDisplayNumber title="Rémunération" subTitle="Juin">
+            <CardDisplayNumber
+              title="Rémunération"
+              subTitle={currentMonthLiteral}>
               {Object.values(quickBooksData.salaryOverMonthes)[currentMonth]} €
             </CardDisplayNumber>
           </Box>
