@@ -112,7 +112,7 @@ app.get("/callback", async (req, res) => {
   }
 });
 
-app.get("/refreshAccessToken", (req, res: any) => {
+app.get("/refreshAccessToken", userMiddleWare, (req, res: any) => {
   const { refreshAccessToken } = req.query;
   const user = res.user;
   oauthClient(user.quickbook.clientId, user.quickbook.clientSecret)

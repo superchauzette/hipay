@@ -32,43 +32,45 @@ export function Dashboard({ location, history }) {
   } | null>(null);
   const user = useUserContext();
   useEffect(() => {
-    const quickbookStorage = JSON.parse(
-      localStorage.getItem("quickbook") || "null"
-    );
-    if (quickbookStorage && !quickbookObj) {
-      if (quickbookStorage.expireAt < new Date().getTime()) {
-        if (quickbookStorage.refreshExpireAt > new Date().getTime()) {
-          fetch(
-            `https://us-central1-hipay-42.cloudfunctions.net/quickbooksApi/refreshAccessToken?refreshAccessToken=${
-              quickbookStorage.refreshToken
-            }&userId=${user.uid}`
-          )
-            .then(res => res.json())
-            .then(newTokenObj => {
-              const newTokenStorage = {
-                ...quickbookStorage,
-                ...newTokenObj
-              };
-              setQuickbookObj(newTokenStorage);
-              localStorage.setItem(
-                "quickbook",
-                JSON.stringify(newTokenStorage)
-              );
-              console.log(newTokenStorage);
-            })
-            .catch(() => localStorage.removeItem("quickbook"));
+    if (user) {
+      const quickbookStorage = JSON.parse(
+        localStorage.getItem("quickbook") || "null"
+      );
+      if (quickbookStorage && !quickbookObj) {
+        if (quickbookStorage.expireAt < new Date().getTime()) {
+          if (quickbookStorage.refreshExpireAt > new Date().getTime()) {
+            fetch(
+              `https://us-central1-hipay-42.cloudfunctions.net/quickbooksApi/refreshAccessToken?refreshAccessToken=${
+                quickbookStorage.refreshToken
+              }&userId=${user.uid}`
+            )
+              .then(res => res.json())
+              .then(newTokenObj => {
+                const newTokenStorage = {
+                  ...quickbookStorage,
+                  ...newTokenObj
+                };
+                setQuickbookObj(newTokenStorage);
+                localStorage.setItem(
+                  "quickbook",
+                  JSON.stringify(newTokenStorage)
+                );
+                console.log(newTokenStorage);
+              })
+              .catch(() => localStorage.removeItem("quickbook"));
+          } else {
+            localStorage.removeItem("quickbook");
+          }
         } else {
-          localStorage.removeItem("quickbook");
+          setQuickbookObj(quickbookStorage);
         }
-      } else {
-        setQuickbookObj(quickbookStorage);
+      }
+      if (location.search) {
+        storeToken(location.search, quickbookStorage, setQuickbookObj);
+        history.replace("/");
       }
     }
-    if (location.search) {
-      storeToken(location.search, quickbookStorage, setQuickbookObj);
-      history.replace("/");
-    }
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     if (user && quickbookObj && quickbookObj.token) {
