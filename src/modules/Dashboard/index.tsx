@@ -31,39 +31,45 @@ export function Dashboard({ location, history }) {
     expireAt: number;
   } | null>(null);
   const user = useUserContext();
-
-  const quickbookStorage = JSON.parse(
-    localStorage.getItem("quickbook") || "null"
-  );
-  if (quickbookStorage && !quickbookObj) {
-    if (quickbookStorage.expireAt < new Date().getTime()) {
-      if (quickbookStorage.refreshExpireAt > new Date().getTime()) {
-        fetch(
-          `https://us-central1-hipay-42.cloudfunctions.net/quickbooksApi/refreshAccessToken?refreshAccessToken=${
-            quickbookStorage.refreshToken
-          }`
-        )
-          .then(res => res.json())
-          .then(newTokenObj => {
-            const newTokenStorage = {
-              ...quickbookStorage,
-              ...newTokenObj
-            };
-            setQuickbookObj(newTokenStorage);
-            localStorage.setItem("quickbook", JSON.stringify(newTokenStorage));
-          })
-          .catch(() => localStorage.removeItem("quickbook"));
+  useEffect(() => {
+    const quickbookStorage = JSON.parse(
+      localStorage.getItem("quickbook") || "null"
+    );
+    if (quickbookStorage && !quickbookObj) {
+      if (quickbookStorage.expireAt < new Date().getTime()) {
+        if (quickbookStorage.refreshExpireAt > new Date().getTime()) {
+          fetch(
+            `https://us-central1-hipay-42.cloudfunctions.net/quickbooksApi/refreshAccessToken?refreshAccessToken=${
+              quickbookStorage.refreshToken
+            }&userId=${user.uid}`
+          )
+            .then(res => res.json())
+            .then(newTokenObj => {
+              const newTokenStorage = {
+                ...quickbookStorage,
+                ...newTokenObj
+              };
+              setQuickbookObj(newTokenStorage);
+              localStorage.setItem(
+                "quickbook",
+                JSON.stringify(newTokenStorage)
+              );
+              console.log(newTokenStorage);
+            })
+            .catch(() => localStorage.removeItem("quickbook"));
+        } else {
+          localStorage.removeItem("quickbook");
+        }
       } else {
-        localStorage.removeItem("quickbook");
+        setQuickbookObj(quickbookStorage);
       }
-    } else {
-      setQuickbookObj(quickbookStorage);
     }
-  }
-  if (location.search) {
-    storeToken(location.search, quickbookStorage, setQuickbookObj);
-    history.replace("/");
-  }
+    if (location.search) {
+      storeToken(location.search, quickbookStorage, setQuickbookObj);
+      history.replace("/");
+    }
+  }, []);
+
   useEffect(() => {
     if (user && quickbookObj && quickbookObj.token) {
       setQuickBooksLogged(true);
@@ -72,7 +78,7 @@ export function Dashboard({ location, history }) {
   return (
     <React.Fragment>
       {quickBooksLogged && <DisplayData quickbookObj={quickbookObj} />}
-      {!quickBooksLogged && (
+      {!quickBooksLogged && user && (
         <div style={{ marginTop: "70px", textAlign: "center" }}>
           <div style={{ marginBottom: "20px" }}>
             Afin de récupérer vos informations bancaires vous devez vous
@@ -81,7 +87,10 @@ export function Dashboard({ location, history }) {
           <Button>
             <a
               style={{ textDecoration: "none" }}
-              href="https://us-central1-hipay-42.cloudfunctions.net/quickbooksApi/authUri">
+              href={`https://us-central1-hipay-42.cloudfunctions.net/quickbooksApi/authUri?userId=${
+                user.uid
+              }`}
+            >
               <Button variant="raised">
                 <img
                   style={{ display: "inline-block", marginRight: "10px" }}

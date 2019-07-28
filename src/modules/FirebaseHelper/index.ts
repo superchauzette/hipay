@@ -80,7 +80,11 @@ export function storageRef() {
 export function extractQueries(queries) {
   const data = [] as any[];
   queries.forEach(doc => {
-    data.push({ id: doc.id, ...doc.data() });
+    data.push(extractQuery(doc));
   });
   return data;
+}
+
+export function extractQuery(doc) {
+  return { id: doc.id, ...doc.data() };
 }

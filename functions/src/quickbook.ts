@@ -1,76 +1,121 @@
 import * as express from "express";
-import fetch from "node-fetch";
 import * as functions from "firebase-functions";
 import * as bodyParser from "body-parser";
 import * as OAuthClient from "intuit-oauth";
+import * as admin from "firebase-admin";
+
 import * as cors from "cors";
+const db = admin.firestore();
 
 const app = express();
 app.use(cors({ origin: true }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+const getUser = async (userId: string) => {
+  return await db
+    .collection("users")
+    .doc(userId)
+    .get()
+    .then(doc => doc.data());
+};
+
+const userMiddleWare = async (req: any, res: any, next: any) => {
+  const { userId } = req.query;
+  if (!userId) {
+    res.redirect(`https://hipay-42.firebaseapp.com?error=nouser`);
+  }
+  const user = await db
+    .collection("users")
+    .doc(userId)
+    .get()
+    .then(doc => doc.data());
+  if (user && user.quickbook) {
+    res.user = user;
+    next();
+  } else {
+    res.redirect(`https://hipay-42.firebaseapp.com?error=nouser`);
+  }
+};
+
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
 
-const oauthClient = () =>
+const oauthClient = (clientId: string, clientSecret: string) =>
   new OAuthClient({
-    clientId: "L0begC9hX3ZLc518PZcr4vP2wFSPl1dDbAYvi3tpsqO1oKAcC7",
-    clientSecret: "9Lb0xc1J4oUCRb29w4arGoclqYFXFrXd9gYUlXxe",
+    clientId,
+    clientSecret,
+    environment: "production",
     redirectUri:
       "https://us-central1-hipay-42.cloudfunctions.net/quickbooksApi/callback"
   });
 
-app.get("/authUri", urlencodedParser, (_req, res) => {
-  const authUri = oauthClient().authorizeUri({
-    scope: [OAuthClient.scopes.Accounting],
-    state: "OHHFA"
-  });
-  console.log("authUri", "=>", authUri);
-  res.redirect(authUri);
-});
+app.get("/authUri", urlencodedParser, userMiddleWare, async (req, res: any) => {
+  console.log("res user", res.user);
 
-app.get("/company", async (req, res) => {
-  const token = req.headers.authorization;
-  console.log(token);
-  const response = await fetch(
-    "https://sandbox-quickbooks.api.intuit.com/v3/company/123146386786444/",
-    { headers: { Authorization: `${token}` } }
-  );
-  const json = await response.text();
-  console.log(json);
-  res.send(json);
-});
-
-app.get("/callback", (req, res) => {
-  const instanceOauthClient = oauthClient();
-  instanceOauthClient
-    .createToken(req.url)
-    .then((authResponse: any) => {
-      const oauth2_token_json = authResponse.getJson();
-      const companyID = instanceOauthClient.getToken().realmId;
-
-      res.redirect(
-        `https://hipay-42.firebaseapp.com?token=${
-          oauth2_token_json.access_token
-        }&refreshToken=${
-          oauth2_token_json.refresh_token
-        }&expireAt=${new Date().getTime() +
-          parseInt(
-            oauth2_token_json.expires_in
-          )}&refreshExpireAt=${new Date().getTime() +
-          parseInt(oauth2_token_json.x_refresh_token_expires_in)}
-        &createdAt=${new Date().getTime()}&realmId=${companyID}`
-      );
-    })
-    .catch((e: any) => {
-      console.error(e);
-      res.status(500).send(e);
+  const user = res.user;
+  if (user || user.quickbook) {
+    console.log(user);
+    const authUri = oauthClient(
+      user.quickbook.clientId,
+      user.quickbook.clientSecret
+    ).authorizeUri({
+      scope: [OAuthClient.scopes.Accounting],
+      state: user.info.uid
     });
+    console.log("authUri", "=>", authUri);
+    res.redirect(authUri);
+  } else {
+    res.redirect(`https://hipay-42.firebaseapp.com?error=noquickbook`);
+  }
 });
 
-app.get("/refreshAccessToken", (req, res) => {
+app.get("/callback", async (req, res) => {
+  console.log("req", req);
+  console.log("req", req.query.state);
+  console.log("req.url", req.url);
+  const user = await getUser(req.query.state);
+  console.log("callback user", user);
+  if (!user || !user.quickbook) {
+    console.error(
+      `${user ? "No user in callback" : "users quickbook conf not present"}`
+    );
+    res.redirect(`https://hipay-42.firebaseapp.com?error=noquickbook`);
+  } else {
+    const instanceOauthClient = oauthClient(
+      user.quickbook.clientId,
+      user.quickbook.clientSecret
+    );
+    instanceOauthClient
+      .createToken(req.url)
+      .then((authResponse: any) => {
+        const oauth2_token_json = authResponse.getJson();
+        const companyID = instanceOauthClient.getToken().realmId;
+
+        res.redirect(
+          `https://hipay-42.firebaseapp.com?token=${
+            oauth2_token_json.access_token
+          }&refreshToken=${
+            oauth2_token_json.refresh_token
+          }&expireAt=${new Date().getTime() +
+            parseInt(
+              oauth2_token_json.expires_in
+            )}&refreshExpireAt=${new Date().getTime() +
+            parseInt(oauth2_token_json.x_refresh_token_expires_in)}
+        &createdAt=${new Date().getTime()}&realmId=${companyID}`
+        );
+      })
+      .catch((e: any) => {
+        console.error(e);
+        // res.status(500).send(e);
+        res.redirect(`https://hipay-42.firebaseapp.com?error=true`);
+      });
+  }
+});
+
+app.get("/refreshAccessToken", (req, res: any) => {
   const { refreshAccessToken } = req.query;
-  oauthClient()
+  const user = res.user;
+  oauthClient(user.quickbook.clientId, user.quickbook.clientSecret)
     .refreshUsingToken(refreshAccessToken)
     .then((authResponse: any) => {
       console.log(
@@ -94,64 +139,4 @@ app.get("/refreshAccessToken", (req, res) => {
     });
 });
 
-app.get("/getCompanyInfo", (req, res) => {
-  const companyID = oauthClient().getToken().realmId;
-  console.log("companyID", "=>", companyID);
-  oauthClient()
-    .makeApiCall({
-      url: `${
-        functions.config().qbconfig.apiuri
-      }${companyID}/companyinfo/${companyID}`
-    })
-    .then((apiResponse: any) => {
-      console.log(
-        "The response for API call is :" + JSON.stringify(apiResponse)
-      );
-      res.send(JSON.parse(apiResponse.text()));
-    })
-    .catch((e: any) => {
-      console.error(e);
-      res.status(500).send(e);
-    });
-});
-
-app.get("/getCustomer", (req, res) => {
-  const companyID = oauthClient().getToken().realmId;
-  console.log("companyID", "=>", companyID);
-  const id = req.query.id;
-  console.log("/getCustomer", "=>", id);
-  if (id) {
-    oauthClient()
-      .makeApiCall({
-        url: `${functions.config().qbconfig.apiuri}${companyID}/customer/${id}`
-      })
-      .then((apiResponse: any) => {
-        console.log(
-          "The response for API call is :" + JSON.stringify(apiResponse)
-        );
-        res.send(JSON.parse(apiResponse.text()));
-      })
-      .catch((e: any) => {
-        console.error(e);
-        res.status(500).send(e);
-      });
-  } else {
-    res.status(204).send({ message: "query string :id is required" });
-  }
-});
-
-app.post("/createCustomer", (req, res) => {
-  const companyID = oauthClient().getToken().realmId;
-  console.log("companyID", "=>", companyID);
-  const payload = req.body;
-  console.log("/createCustomer", "=>", payload);
-  // const options = {
-  //   method: "POST",
-  //   uri: `${functions.config().qbconfig.apiuri}${companyID}/customer`,
-  //   body: payload,
-  //   headers: {
-  //     Authorization: `Bearer ${access_token}`
-  //   }
-  // };
-});
 export const quickbooksApi = functions.https.onRequest(app);

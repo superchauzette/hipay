@@ -13,7 +13,9 @@ import {
   ExpansionPanel,
   ExpansionPanelSummary,
   ExpansionPanelDetails,
-  CircularProgress
+  CircularProgress,
+  Button,
+  ExpansionPanelActions
 } from "@material-ui/core";
 import { Restaurant, DirectionsCar } from "@material-ui/icons";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
@@ -22,8 +24,13 @@ import { DocumentCRA } from "../CRA/pdf";
 import { DocumentNDF } from "../NDF/pdf";
 import { getTotal } from "../hooks/useTotal";
 import { DocumentIk } from "../IK/pdf";
-import { Check as CheckIcon, Close as CloseIcon } from "@material-ui/icons";
+import {
+  Check as CheckIcon,
+  Close as CloseIcon,
+  Build as BuildIcon
+} from "@material-ui/icons";
 import { IconText } from "../App/App";
+import { Link } from "react-router-dom";
 
 function Title({ title, data, fileName, document }) {
   return (
@@ -181,6 +188,13 @@ function Details({ user, cras, ndfs, iks, charges }) {
           />
         </Flex>
       </ExpansionPanelDetails>
+      <ExpansionPanelActions>
+        <Link to={`user/${user.id}`}>
+          <Button>
+            <BuildIcon />
+          </Button>
+        </Link>
+      </ExpansionPanelActions>
     </ExpansionPanel>
   );
 }

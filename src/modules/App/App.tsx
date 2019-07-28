@@ -11,6 +11,7 @@ import { IK } from "../IK";
 import { Charges } from "../Charges";
 import { Avatar, Mobile, Desktop } from "../CommonUi";
 import { Admin } from "../Admin";
+import { User } from "../User";
 import { Flex, Box, Text } from "rebass";
 import { AppBar, Button, Toolbar } from "@material-ui/core";
 import {
@@ -129,6 +130,8 @@ export function App() {
             />
             <Route path="/login" component={Login} />
             <AuthRoute path="/admin" isLogged={isLogged} component={Admin} />
+
+            <AuthRoute path="/user/:id" isLogged={isLogged} component={User} />
             <AuthRoute path="/cra" isLogged={isLogged} component={CRAS} />
             <AuthRoute
               path="/ndf"
