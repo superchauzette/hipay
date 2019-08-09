@@ -1,13 +1,16 @@
 import React from "react";
 import AddIcon from "@material-ui/icons/Add";
 import Fab from "@material-ui/core/Fab";
-import styled from "styled-components";
-import { position } from "styled-system";
 import { CircularProgress } from "@material-ui/core";
+import { MyBox } from "./MyBox";
 
-function BtnAddC(props) {
+export function BtnAdd(props) {
   return (
-    <div {...props}>
+    <MyBox
+      position="fixed"
+      style={{ right: "30px", bottom: "70px" }}
+      {...props}
+    >
       <Fab
         aria-label="Add"
         onClick={props.loading ? () => {} : props.onClick}
@@ -15,19 +18,6 @@ function BtnAddC(props) {
       >
         {props.loading ? <CircularProgress /> : <AddIcon />}
       </Fab>
-    </div>
+    </MyBox>
   );
 }
-
-const BtnAddStyled = styled(BtnAddC)`
-  ${position}
-`;
-
-export const BtnAdd = props => (
-  <BtnAddStyled
-    position="fixed"
-    bottom={["70px", "30px"]}
-    right="30px"
-    {...props}
-  />
-);

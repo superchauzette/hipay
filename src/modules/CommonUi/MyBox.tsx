@@ -1,12 +1,13 @@
 import React from "react";
 import styled from "styled-components";
-import { display, width, space, color } from "styled-system";
+import { display, width, space, color, position } from "styled-system";
 
 export const MyBox: any = styled.div`
   ${display}
   ${width}
   ${space}
   ${color}
+  ${position}
 `;
 
 export const Mobile = props => (
