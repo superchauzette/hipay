@@ -7,6 +7,7 @@ import * as admin from "firebase-admin";
 import * as cors from "cors";
 const db = admin.firestore();
 
+const domain = 'https://hipay.hi-way.io';
 const app = express();
 app.use(cors({ origin: true }));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -23,7 +24,7 @@ const getUser = async (userId: string) => {
 const userMiddleWare = async (req: any, res: any, next: any) => {
   const { userId } = req.query;
   if (!userId) {
-    res.redirect(`https://hipay-42.firebaseapp.com?error=nouser`);
+    res.redirect(`${domain}?error=nouser`);
   }
   const user = await db
     .collection("users")
@@ -34,7 +35,7 @@ const userMiddleWare = async (req: any, res: any, next: any) => {
     res.user = user;
     next();
   } else {
-    res.redirect(`https://hipay-42.firebaseapp.com?error=nouser`);
+    res.redirect(`${domain}?error=nouser`);
   }
 };
 
@@ -65,7 +66,7 @@ app.get("/authUri", urlencodedParser, userMiddleWare, async (req, res: any) => {
     console.log("authUri", "=>", authUri);
     res.redirect(authUri);
   } else {
-    res.redirect(`https://hipay-42.firebaseapp.com?error=noquickbook`);
+    res.redirect(`${domain}?error=noquickbook`);
   }
 });
 
@@ -79,7 +80,7 @@ app.get("/callback", async (req, res) => {
     console.error(
       `${user ? "No user in callback" : "users quickbook conf not present"}`
     );
-    res.redirect(`https://hipay-42.firebaseapp.com?error=noquickbook`);
+    res.redirect(`${domain}?error=noquickbook`);
   } else {
     const instanceOauthClient = oauthClient(
       user.quickbook.clientId,
@@ -92,7 +93,7 @@ app.get("/callback", async (req, res) => {
         const companyID = instanceOauthClient.getToken().realmId;
 
         res.redirect(
-          `https://hipay-42.firebaseapp.com?token=${
+          `${domain}?token=${
             oauth2_token_json.access_token
           }&refreshToken=${
             oauth2_token_json.refresh_token
@@ -107,7 +108,7 @@ app.get("/callback", async (req, res) => {
       .catch((e: any) => {
         console.error(e);
         // res.status(500).send(e);
-        res.redirect(`https://hipay-42.firebaseapp.com?error=true`);
+        res.redirect(`${domain}?error=true`);
       });
   }
 });
