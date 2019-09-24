@@ -109,9 +109,7 @@ function Details({ user, cras, ndfs, iks, charges }) {
                 </Box>
                 <LinkPdf
                   title={`a travaillé chez ${cra.client} ${cra.total} jours`}
-                  fileName={`cra-${user.info.displayName}-${cra.month}-${
-                    cra.year
-                  }.pdf`}
+                  fileName={`cra-${user.info.displayName}-${cra.month}-${cra.year}.pdf`}
                   document={<DocumentCRA cra={cra} user={user} />}
                 />
               </Flex>

@@ -4,7 +4,7 @@ import Icon from "@material-ui/icons/CloudDownload";
 import { Button } from "@material-ui/core";
 import { blue } from "../Theme";
 
-const LinkPdfComponent = props =>
+export const LinkPdf = (props: any) =>
   props.disabled ? (
     <Button variant="outlined" disabled={props.disabled}>
       <Icon style={{ marginRight: "6px" }} />
@@ -32,5 +32,3 @@ const LinkPdfComponent = props =>
       }
     </PDFDownloadLink>
   );
-
-export const LinkPdf = LinkPdfComponent;

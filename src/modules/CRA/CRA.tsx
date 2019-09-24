@@ -41,6 +41,14 @@ function getTotal(calendar: CalandarType[]): number {
   return Number(total);
 }
 
+function getDotType(value: string) {
+  return {
+    "1": "circle",
+    "0.5": "demi-circle",
+    "0": "none"
+  }[value];
+}
+
 export function CRA({
   cra,
   showTrash,
@@ -144,6 +152,12 @@ export function CRA({
     onRefresh();
   }
 
+  function handleDotClick(c: CalandarType) {
+    if (!c.isWeekend && !c.isJourFerie && !isSaved) {
+      updateCRA(c.nbOfday);
+    }
+  }
+
   return (
     <Flex flexDirection="column" width={1}>
       <UploadCRA
@@ -220,17 +234,9 @@ export function CRA({
                     <Text textAlign="center">{c.dayOfWeek}</Text>
                   </MyBox>
                   <Dot
-                    type={
-                      { "1": "circle", "0.5": "demi-circle", "0": "none" }[
-                        String(c.cra)
-                      ]
-                    }
+                    type={getDotType(String(c.cra))}
                     disabled={isSaved}
-                    onClick={() => {
-                      if (!c.isWeekend && !c.isJourFerie && !isSaved) {
-                        updateCRA(c.nbOfday);
-                      }
-                    }}
+                    onClick={() => handleDotClick(c)}
                   >
                     {c.nbOfday}
                   </Dot>
@@ -271,13 +277,25 @@ export function CRA({
               {isSaved && <Text ml={3}>Votre CRA est validé</Text>}
             </Flex>
             <Box mx="auto" />
-            {console.log({ isSaved })}
             {cra && user && (
               <LinkPdf
                 disabled={!isSaved}
                 label="imprimer"
-                fileName={`cra-${cra.client}-${cra.month}-${cra.year}.pdf`}
-                document={<DocumentCRA cra={cra} user={user} />}
+                fileName={`cra-${client}-${month}-${year}.pdf`}
+                document={
+                  <DocumentCRA
+                    user={user}
+                    cra={{
+                      calendar,
+                      client,
+                      commentaire,
+                      file,
+                      total,
+                      month,
+                      year
+                    }}
+                  />
+                }
               />
             )}
           </Flex>
