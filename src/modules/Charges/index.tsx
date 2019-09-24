@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Flex } from "rebass";
 import { MonthSelector, useDateChange } from "../CommonUi/MonthSelector";
 import { List, ListItem, Divider, CircularProgress } from "@material-ui/core";
 import { Card, Header, BtnAdd, PageWrapper } from "../CommonUi";
 import { useUserContext } from "../UserHelper";
 import { FormCharge } from "./FormCharge";
-import { chargesCol, storageRef, userCol } from "../FirebaseHelper";
+import { chargesCol, storageRef } from "../FirebaseHelper";
 import { ChargeType } from "./types";
 import { useCRUD } from "../hooks";
 
@@ -21,21 +21,6 @@ export function Charges() {
     handleChange,
     updateFile
   } = useCRUD<ChargeType>({ user, month, year }, deps);
-
-  const [mySociete, setMySociete] = useState("");
-  useEffect(() => {
-    const saveSociete = localStorage.getItem("MySociete");
-    if (saveSociete) setMySociete(saveSociete);
-  }, []);
-
-  function handleSociete(e) {
-    setMySociete(e.target.value);
-    localStorage.setItem("MySociete", e.target.value);
-    if (user)
-      userCol()
-        .doc(user.uid)
-        .update({ mySociete: e.target.value });
-  }
 
   return (
     <PageWrapper>

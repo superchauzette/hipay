@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useUserContext } from "../UserHelper";
-import { CRA } from "./CRA";
+import { FormCra } from "./FormCra";
 import {
   Header,
   PageWrapper,
@@ -8,22 +8,23 @@ import {
   MonthSelector,
   useDateChange
 } from "../CommonUi";
-import { craCol, userCol } from "../FirebaseHelper";
+import { userCol } from "../FirebaseHelper";
 import { getMyCras, getCalculatedCalendar } from "./service";
 import { CircularProgress } from "@material-ui/core";
 import { Flex } from "rebass";
+import { uidv4 } from "../uid";
 
 async function createNewCRA({ date, month, year, user }) {
   const calendar = await getCalculatedCalendar(date);
   const craData = {
+    id: uidv4(),
     calendar,
     month,
     year,
     userid: user.uid,
     user: userCol().doc(user.uid)
   };
-  const dataCreated = await craCol().add(craData);
-  return { id: dataCreated.id, ...craData };
+  return craData;
 }
 
 export function CRAS() {
@@ -38,6 +39,7 @@ export function CRAS() {
       if (user && month && year) {
         setLoading(true);
         const myCras = await getMyCras({ user, month, year });
+        console.log(myCras, user, month, year);
         if (myCras.length) {
           setCras(myCras);
         } else {
@@ -49,8 +51,10 @@ export function CRAS() {
     })();
   }, [user, month, year, date]);
 
-  async function addNewCRA() {
+  async function addNewCRA(e) {
     try {
+      e.preventDefault();
+      e.stopPropagation();
       setLoadingAdd(true);
       const newCra = await createNewCRA({ date, month, year, user });
       setCras(state => [...state, newCra]);
@@ -60,6 +64,8 @@ export function CRAS() {
       setLoadingAdd(false);
     }
   }
+
+  console.log(cras);
 
   return (
     <PageWrapper>
@@ -74,17 +80,13 @@ export function CRAS() {
 
       {!isLoading &&
         cras.map((cra, index) => (
-          <CRA
+          <FormCra
             key={cra.id}
             cra={cra}
             showTrash={index !== 0}
             user={user}
-            date={date}
             month={month}
             year={year}
-            onRefresh={() => {
-              getMyCras({ user, month, year }).then(setCras);
-            }}
           />
         ))}
 

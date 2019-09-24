@@ -36,7 +36,8 @@ export function useCRUD<T extends myType>(
     })();
   }, [collection, month, user, year]);
 
-  async function addData() {
+  async function addData(e: any) {
+    if (e) e.stopPropagation();
     const { id } = await collection().add({
       userid: user.uid,
       month,

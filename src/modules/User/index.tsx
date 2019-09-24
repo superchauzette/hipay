@@ -1,13 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { db, extractQuery } from "../FirebaseHelper";
-import {
-  TextField,
-  CardHeader,
-  CardContent,
-  CardActions
-} from "@material-ui/core";
+import { TextField, CardHeader, CardContent } from "@material-ui/core";
 import { Card, Header } from "../CommonUi";
-import { Title } from "@material-ui/icons";
 
 const AdminQuickbook = ({ user, handleChange }) => {
   return (
@@ -35,16 +29,17 @@ const AdminQuickbook = ({ user, handleChange }) => {
 
 export function User({ match }) {
   const [user, setUser] = useState();
-  const getUser = () =>
-    db()
-      .collection("users")
-      .doc(match.params.id)
-      .get()
-      .then(extractQuery)
-      .then(setUser);
+
   useEffect(() => {
+    const getUser = () =>
+      db()
+        .collection("users")
+        .doc(match.params.id)
+        .get()
+        .then(extractQuery)
+        .then(setUser);
     getUser();
-  }, []);
+  }, [match.params.id]);
   const handleChange = field => e => {
     db()
       .collection("users")

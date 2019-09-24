@@ -21,17 +21,15 @@ import { Dot } from "./Dot";
 
 type CRAProps = {
   cra: any;
-  date: Date;
   month: number;
   year: number;
   user: userType;
   showTrash?: boolean;
-  onRefresh: () => void;
 };
 
 export const tabDays = ["lu", "ma", "me", "je", "ve", "sa", "di"];
 
-function getTotal(calendar: CalandarType[]): number {
+export function getTotal(calendar: CalandarType[]): number {
   if (!calendar || !calendar.length) return 0;
 
   const total = calendar
@@ -49,15 +47,7 @@ function getDotType(value: string) {
   }[value];
 }
 
-export function CRA({
-  cra,
-  showTrash,
-  date,
-  month,
-  year,
-  user,
-  onRefresh
-}: CRAProps) {
+export function FormCra({ cra, showTrash, month, year, user }: CRAProps) {
   const [calendar, setCalendar] = useState([] as CalandarType[]);
   const [isSaved, setIsSaved] = useState(false);
   const [client, setClient] = useState("");
@@ -74,10 +64,16 @@ export function CRA({
       setFile(cra.file);
       setCommentaire(cra.commentaire);
     })();
-  }, [date, cra]);
+  }, [cra, month, year]);
 
   function save(mid, value) {
-    craCollection().save(mid, { ...value, total, client });
+    craCollection().save(mid, {
+      ...value,
+      client,
+      userid: cra.userid,
+      month,
+      year
+    });
   }
 
   function fillAll() {
@@ -95,6 +91,7 @@ export function CRA({
       if (c.cra === 1) return 0;
       return 0.5;
     }
+
     const calendarToSave = calendar.map(c =>
       c.nbOfday === nbOfday
         ? {
@@ -149,7 +146,6 @@ export function CRA({
 
   async function deleteCRA() {
     craCollection().remove(id);
-    onRefresh();
   }
 
   function handleDotClick(c: CalandarType) {

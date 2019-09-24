@@ -23,6 +23,7 @@ import { getResources, getUsers } from "./getResources";
 import { DocumentCRA } from "../CRA/pdf";
 import { DocumentNDF } from "../NDF/pdf";
 import { getTotal } from "../hooks/useTotal";
+import { getTotal as getTotalCra } from "../CRA/FormCra";
 import { DocumentIk } from "../IK/pdf";
 import {
   Check as CheckIcon,
@@ -86,7 +87,9 @@ function Details({ user, cras, ndfs, iks, charges }) {
             <Text>
               {cras &&
                 cras
-                  .map(cra => (cra.isSaved ? `${cra.total}j` : ""))
+                  .map(cra =>
+                    cra.isSaved ? `${getTotalCra(cra.calendar)}j` : ""
+                  )
                   .join(", ")}
             </Text>
           </Flex>
@@ -108,7 +111,7 @@ function Details({ user, cras, ndfs, iks, charges }) {
                   )}
                 </Box>
                 <LinkPdf
-                  title={`${cra.client} - ${cra.total} jours`}
+                  title={`${cra.client} - ${getTotalCra(cra.calendar)} jours`}
                   fileName={`cra-${user.info.displayName}-${cra.month}-${cra.year}.pdf`}
                   document={<DocumentCRA cra={cra} user={user} />}
                 />
