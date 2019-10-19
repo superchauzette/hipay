@@ -1,5 +1,6 @@
 import React from "react";
 import { Bar } from "react-chartjs-2";
+import { isMobile } from "react-device-detect";
 
 const data = (ca, salaries) => ({
   datasets: [
@@ -95,6 +96,10 @@ const options = {
 
 export const Chart = ({ ca, salaries }) => (
   <div>
-    <Bar data={data(ca, salaries)} options={options} />
+    <Bar
+      height={isMobile ? 200 : 150}
+      data={data(ca, salaries)}
+      options={options}
+    />
   </div>
 );
