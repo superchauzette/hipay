@@ -56,6 +56,7 @@ const ProvisioningForm = ({ year, month, user, currentMonth, currentYear }) => {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
+    console.log(user);
     setLoaded(false);
     db()
       .collection("provisioning")
@@ -70,6 +71,7 @@ const ProvisioningForm = ({ year, month, user, currentMonth, currentYear }) => {
       )
       .get()
       .then(qsnap => {
+        console.log(qsnap);
         if (qsnap.size) {
           setProvisioning(extractQuery(qsnap.docs[0]));
         }
@@ -83,13 +85,21 @@ const ProvisioningForm = ({ year, month, user, currentMonth, currentYear }) => {
         .collection("provisioning")
         .where("year", "==", year)
         .where("month", "==", month)
-        .where("user", "==", user.id)
+        .where(
+          "user",
+          "==",
+          db()
+            .collection("users")
+            .doc(user.id)
+        )
         .get();
-
+      console.log(currentProfisioning, currentProfisioning.size);
       if (currentProfisioning && currentProfisioning.size) {
-        currentProfisioning.docs[0].ref.update({
-          ...provisioning
-        });
+        currentProfisioning.docs[0].ref
+          .update({
+            ...provisioning
+          })
+          .catch(e => console.log(e));
       } else {
         db()
           .collection("provisioning")
