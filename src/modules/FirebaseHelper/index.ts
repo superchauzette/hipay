@@ -63,6 +63,7 @@ export const craCol = () => db().collection("cra");
 export const ndfCol = () => db().collection("ndf");
 export const ikCol = () => db().collection("ik");
 export const chargesCol = () => db().collection("charges");
+export const quickbookConfigCol = () => db().collection("quickbookConfig");
 
 const store = (type: string) => ({ user, year, month }: AppCollection) => (
   filename: string
