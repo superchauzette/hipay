@@ -71,7 +71,7 @@ type QuickBookResponse = {
 //   }
 // };
 
-export function DisplayData({ quickbookObj }) {
+export function DisplayData({ quickbookObj, provisioning }) {
   const [quickBooksData, setQuickBooksData] = useState<QuickbookData | null>(
     null
   );
@@ -84,7 +84,10 @@ export function DisplayData({ quickbookObj }) {
 
     const formContent = {
       quickbooks_token: quickbookObj.token,
-      realm_id: quickbookObj.realmId
+      realm_id: quickbookObj.realmId,
+      minimum_treasury: provisioning.minTreasury,
+      hiway_provision: provisioning.hiwayProvision,
+      accounting_provision: provisioning.accountingProvision
     };
     for (var key in formContent) {
       form_data.append(key, formContent[key]);
@@ -97,7 +100,7 @@ export function DisplayData({ quickbookObj }) {
       .then(res => res.json())
       .then((data: QuickBookResponse) => setQuickBooksData(data.dashboardData))
       .finally(() => setLoading(false));
-  }, [quickbookObj]);
+  }, [provisioning.accountingProvision, provisioning.hiwayProvision, provisioning.minTreasury, quickbookObj]);
   return (
     <div style={{ padding: "10px" }}>
       {quickBooksData && (

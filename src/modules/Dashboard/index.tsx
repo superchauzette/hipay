@@ -4,6 +4,7 @@ import { Button } from "@material-ui/core";
 import { DisplayData } from "./DisplayData";
 import { useUserContext } from "../UserHelper";
 import quickbooksLogo from "./qbLogo.png";
+import { db, extractQuery } from "../FirebaseHelper";
 
 function storeToken(search, quickbookStorage, setQuickbookObj) {
   const params = new URLSearchParams(search);
@@ -23,6 +24,39 @@ function storeToken(search, quickbookStorage, setQuickbookObj) {
   }
 }
 
+const useProvisioning = user => {
+  const [provisioning, setProvisioning] = useState(null);
+  const [loaded, setLoaded] = useState(false);
+  const currentMonth = new Date().getMonth();
+  const currentYear = new Date().getFullYear();
+  useEffect(() => {
+    if (user) {
+      setLoaded(false);
+      db()
+        .collection("provisioning")
+        .where("year", "==", currentYear)
+        .where("month", "==", currentMonth)
+        .where(
+          "user",
+          "==",
+          db()
+            .collection("users")
+            .doc(user.uid)
+        )
+        .get()
+        .then(qsnap => {
+          console.log(qsnap.size);
+          if (qsnap.size) {
+            setProvisioning(extractQuery(qsnap.docs[0]));
+          }
+          setLoaded(true);
+        })
+        .catch(() => setLoaded(true));
+    }
+  }, [currentMonth, currentYear, user]);
+  return [provisioning, loaded];
+};
+
 export function Dashboard({ location, history }) {
   const [quickBooksLogged, setQuickBooksLogged] = useState(false);
   const [quickbookObj, setQuickbookObj] = useState<{
@@ -31,8 +65,10 @@ export function Dashboard({ location, history }) {
     expireAt: number;
   } | null>(null);
   const user = useUserContext();
+  const [provisioning, provisioningLoaded] = useProvisioning(user);
+  console.log(provisioning, provisioningLoaded);
   useEffect(() => {
-    if (user) {
+    if (user && provisioning) {
       const quickbookStorage = JSON.parse(
         localStorage.getItem("quickbook") || "null"
       );
@@ -40,9 +76,7 @@ export function Dashboard({ location, history }) {
         if (quickbookStorage.expireAt < new Date().getTime()) {
           if (quickbookStorage.refreshExpireAt > new Date().getTime()) {
             fetch(
-              `https://us-central1-hipay-42.cloudfunctions.net/quickbooksApi/refreshAccessToken?refreshAccessToken=${
-                quickbookStorage.refreshToken
-              }&userId=${user.uid}`
+              `https://us-central1-hipay-42.cloudfunctions.net/quickbooksApi/refreshAccessToken?refreshAccessToken=${quickbookStorage.refreshToken}&userId=${user.uid}`
             )
               .then(res => res.json())
               .then(newTokenObj => {
@@ -70,17 +104,20 @@ export function Dashboard({ location, history }) {
         history.replace("/");
       }
     }
-  }, [user]);
+  }, [history, location.search, provisioning, quickbookObj, user]);
 
   useEffect(() => {
     if (user && quickbookObj && quickbookObj.token) {
       setQuickBooksLogged(true);
     }
   }, [quickbookObj, user]);
+  const hasNotProvisioning = provisioningLoaded && !provisioning;
   return (
     <React.Fragment>
-      {quickBooksLogged && <DisplayData quickbookObj={quickbookObj} />}
-      {!quickBooksLogged && user && (
+      {quickBooksLogged && provisioning && (
+        <DisplayData quickbookObj={quickbookObj} provisioning={provisioning} />
+      )}
+      {!quickBooksLogged && user && !hasNotProvisioning && (
         <div style={{ marginTop: "70px", textAlign: "center" }}>
           <div style={{ marginBottom: "20px" }}>
             Afin de récupérer vos informations bancaires vous devez vous
@@ -89,10 +126,7 @@ export function Dashboard({ location, history }) {
           <Button>
             <a
               style={{ textDecoration: "none" }}
-              href={`https://us-central1-hipay-42.cloudfunctions.net/quickbooksApi/authUri?userId=${
-                user.uid
-              }`}
-            >
+              href={`https://us-central1-hipay-42.cloudfunctions.net/quickbooksApi/authUri?userId=${user.uid}`}>
               <Button variant="raised">
                 <img
                   style={{ display: "inline-block", marginRight: "10px" }}
@@ -104,6 +138,14 @@ export function Dashboard({ location, history }) {
               </Button>
             </a>
           </Button>
+        </div>
+      )}
+      {hasNotProvisioning && (
+        <div style={{ marginTop: "70px", textAlign: "center" }}>
+          <div style={{ marginBottom: "20px" }}>
+            Les données relative a votre mois n'ont pas encore été saisi,
+            veuillez revenir plus tard pour voir votre dashboard
+          </div>
         </div>
       )}
     </React.Fragment>
