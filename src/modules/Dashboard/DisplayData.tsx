@@ -3,6 +3,7 @@ import { Card, CardHeader, CardContent, Typography } from "@material-ui/core";
 import { Box, Flex } from "rebass";
 import { Chart } from "./Chart";
 import { CardDisplayNumber } from "../CommonUi/CardDisplayNumber";
+import { months } from "../constants";
 
 export interface NumberOverMonths {
   Janvier: number;
@@ -100,13 +101,20 @@ export function DisplayData({ quickbookObj, provisioning }) {
       .then(res => res.json())
       .then((data: QuickBookResponse) => setQuickBooksData(data.dashboardData))
       .finally(() => setLoading(false));
-  }, [provisioning.accountingProvision, provisioning.hiwayProvision, provisioning.minTreasury, quickbookObj]);
+  }, [
+    provisioning.accountingProvision,
+    provisioning.hiwayProvision,
+    provisioning.minTreasury,
+    quickbookObj
+  ]);
   return (
     <div style={{ padding: "10px" }}>
       {quickBooksData && (
         <Flex wrap="wrap" flexDirection={["column", "column"]}>
           <Box wrap="wrap" p={3} width={[1, 1, 1]}>
-            <CardDisplayNumber title="Rémunération" subTitle="Juin">
+            <CardDisplayNumber
+              title="Rémunération"
+              subTitle={months[currentMonth]}>
               {Object.values(quickBooksData.salaryOverMonthes)[currentMonth]} €
             </CardDisplayNumber>
           </Box>

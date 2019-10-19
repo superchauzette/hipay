@@ -4,7 +4,7 @@ import { Bar } from "react-chartjs-2";
 const data = (ca, salaries) => ({
   datasets: [
     {
-      label: "Chiffre d'affaire",
+      label: "Chiffre d'affaires",
       type: "line",
       data: ca,
       fill: false,
@@ -18,7 +18,7 @@ const data = (ca, salaries) => ({
     },
     {
       type: "bar",
-      label: "Salaires",
+      label: "Rémunération",
       data: salaries,
       fill: false,
       backgroundColor: "#71B37C",
@@ -48,7 +48,7 @@ const options = {
           "Février",
           "Mars",
           "Avril",
-          "Mail",
+          "Mai",
           "Juin",
           "Juillet",
           "Août",

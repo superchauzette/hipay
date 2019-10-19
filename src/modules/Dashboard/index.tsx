@@ -66,7 +66,7 @@ export function Dashboard({ location, history }) {
   } | null>(null);
   const user = useUserContext();
   const [provisioning, provisioningLoaded] = useProvisioning(user);
-  console.log(provisioning, provisioningLoaded);
+
   useEffect(() => {
     if (user && provisioning) {
       const quickbookStorage = JSON.parse(
