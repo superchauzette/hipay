@@ -1,4 +1,5 @@
 import React from "react";
+import * as firebase from "firebase/app";
 import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 import { useAuth, UserProvider } from "../UserHelper";
 import { Theme, blue } from "../Theme";
@@ -56,8 +57,7 @@ function MenuMobile() {
       }}
       p={2}
       justifyContent="space-around"
-      bg={blue}
-    >
+      bg={blue}>
       <LinkIcon exact to="/" icon={<Home />} text="HOME" />
       <LinkIcon to="/cra" icon={<CalendarToday />} text="CRA" />
       <LinkIcon to="/ndf" icon={<Restaurant />} text="NDF" />
@@ -92,6 +92,14 @@ function HeaderBar({ authUser }) {
         <Text fontSize={3}>Hipay</Text>
         <Box m={"auto"} />
         <Avatar src={authUser && authUser.photoURL} m={2} />
+        <Button
+          onClick={() => {
+            firebase.auth().signOut();
+          }}
+          color="inherit"
+          variant="text">
+          Déconnexion
+        </Button>
       </Toolbar>
       <Toolbar variant="dense">
         <Menu />
