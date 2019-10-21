@@ -1,6 +1,7 @@
 import React from "react";
 import { Bar } from "react-chartjs-2";
 import { isMobile } from "react-device-detect";
+import { max } from "lodash";
 
 const data = (ca, salaries) => ({
   datasets: [
@@ -31,67 +32,83 @@ const data = (ca, salaries) => ({
   ]
 });
 
-const options = {
-  responsive: true,
-  tooltips: {
-    mode: "label"
-  },
-  elements: {
-    line: {
-      fill: false
-    }
-  },
-  scales: {
-    xAxes: [
-      {
-        labels: [
-          "Janvier",
-          "Février",
-          "Mars",
-          "Avril",
-          "Mai",
-          "Juin",
-          "Juillet",
-          "Août",
-          "Septembre",
-          "Octobre",
-          "Novembre",
-          "Décembre"
-        ],
+const options = (ca, salaries) => {
+  const maxValue = max([...ca, ...salaries]) + 1000;
+  console.log(maxValue);
+  return {
+    responsive: true,
+    tooltips: {
+      mode: "label"
+    },
+    elements: {
+      line: {
+        fill: false
+      }
+    },
+    scales: {
+      xAxes: [
+        {
+          labels: [
+            "Janvier",
+            "Février",
+            "Mars",
+            "Avril",
+            "Mai",
+            "Juin",
+            "Juillet",
+            "Août",
+            "Septembre",
+            "Octobre",
+            "Novembre",
+            "Décembre"
+          ],
 
-        display: true,
-        gridLines: {
-          display: false
+          display: true,
+          gridLines: {
+            display: false
+          }
         }
-      }
-    ],
-    yAxes: [
-      {
-        type: "linear",
-        display: true,
-        position: "left",
-        id: "y-axis-1",
-        gridLines: {
-          display: false
+      ],
+      yAxes: [
+        {
+          stacked: true,
+          type: "linear",
+          display: true,
+          position: "left",
+          id: "y-axis-1",
+          gridLines: {
+            display: false
+          },
+          labels: {
+            show: true
+          },
+          ticks: {
+            beginAtZero: true,
+            max: maxValue,
+            min: 0
+          }
         },
-        labels: {
-          show: true
+        {
+          stacked: true,
+          type: "linear",
+          display: true,
+          position: "right",
+          id: "y-axis-2",
+          gridLines: {
+            display: false
+          },
+          labels: {
+            show: true
+          },
+          ticks: {
+            beginAtZero: true,
+            max: maxValue,
+            min: 0
+          }
         }
-      },
-      {
-        type: "linear",
-        display: true,
-        position: "right",
-        id: "y-axis-2",
-        gridLines: {
-          display: false
-        },
-        labels: {
-          show: true
-        }
-      }
-    ]
-  }
+      ]
+    }
+  };
 };
 
 export const Chart = ({ ca, salaries }) => (
@@ -99,7 +116,7 @@ export const Chart = ({ ca, salaries }) => (
     <Bar
       height={isMobile ? 200 : 150}
       data={data(ca, salaries)}
-      options={options}
+      options={options(ca, salaries)}
     />
   </div>
 );
