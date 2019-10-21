@@ -114,7 +114,7 @@ export function Dashboard({ location, history }) {
   const hasNotProvisioning = provisioningLoaded && !provisioning;
   return (
     <React.Fragment>
-      {quickBooksLogged && provisioning && (
+      {quickbookObj && quickBooksLogged && provisioning && (
         <DisplayData quickbookObj={quickbookObj} provisioning={provisioning} />
       )}
       {!quickBooksLogged && user && !hasNotProvisioning && (
