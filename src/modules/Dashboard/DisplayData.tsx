@@ -115,7 +115,10 @@ export function DisplayData({ quickbookObj, provisioning }) {
             <CardDisplayNumber
               title="Rémunération"
               subTitle={months[currentMonth]}>
-              {Object.values(quickBooksData.salaryOverMonthes)[currentMonth]} €
+              {Object.values(quickBooksData.salaryOverMonthes)[
+                currentMonth
+              ].toLocaleString()}{" "}
+              €
             </CardDisplayNumber>
           </Box>
           <Typography style={{ textAlign: "center" }} variant="h5">
@@ -130,12 +133,12 @@ export function DisplayData({ quickbookObj, provisioning }) {
                   <Flex wrap="wrap" flexDirection={["column", "row"]}>
                     <Box wrap="wrap" p={3} width={[1, 1, 1 / 2]}>
                       <CardDisplayNumber title="Chiffre d'affaires">
-                        {quickBooksData.CA} €
+                        {quickBooksData.CA.toLocaleString()} €
                       </CardDisplayNumber>
                     </Box>
                     <Box wrap="wrap" p={3} width={[1, 1, 1 / 2]}>
                       <CardDisplayNumber title="Rémunération">
-                        {quickBooksData.INCOMES} €
+                        {quickBooksData.INCOMES.toLocaleString()} €
                       </CardDisplayNumber>
                     </Box>
                   </Flex>
@@ -161,12 +164,12 @@ export function DisplayData({ quickbookObj, provisioning }) {
                 <CardContent>
                   <Box p={3} width={[1, 1, 1]}>
                     <CardDisplayNumber title="Encours TVA">
-                      {quickBooksData.TVA_OUTSTANDING} €
+                      {quickBooksData.TVA_OUTSTANDING.toLocaleString()} €
                     </CardDisplayNumber>
                   </Box>
                   <Box p={3} width={[1, 1, 1]}>
                     <CardDisplayNumber title="Estimation cotisations sociales">
-                      {quickBooksData.COTISATION_SOCIALES} €
+                      {quickBooksData.COTISATION_SOCIALES.toLocaleString()} €
                     </CardDisplayNumber>
                   </Box>
                 </CardContent>
