@@ -4,6 +4,15 @@ import { Box, Flex } from "rebass";
 import { Chart } from "./Chart";
 import { CardDisplayNumber } from "../CommonUi/CardDisplayNumber";
 import { months } from "../constants";
+import { Loader } from "../CommonUi/Loader";
+
+const formatNumber = number => {
+  try {
+    return parseFloat(number).toLocaleString();
+  } catch (e) {
+    return number;
+  }
+};
 
 export interface NumberOverMonths {
   Janvier: number;
@@ -109,15 +118,20 @@ export function DisplayData({ quickbookObj, provisioning }) {
   ]);
   return (
     <div style={{ padding: "10px" }}>
+      {!loading && (
+        <div>
+          <Loader />
+        </div>
+      )}
       {quickBooksData && (
         <Flex wrap="wrap" flexDirection={["column", "column"]}>
           <Box wrap="wrap" p={3} width={[1, 1, 1]}>
             <CardDisplayNumber
               title="Rémunération"
               subTitle={months[currentMonth]}>
-              {Object.values(quickBooksData.salaryOverMonthes)[
-                currentMonth
-              ].toLocaleString()}{" "}
+              {formatNumber(
+                Object.values(quickBooksData.salaryOverMonthes)[currentMonth]
+              )}{" "}
               €
             </CardDisplayNumber>
           </Box>
@@ -133,12 +147,12 @@ export function DisplayData({ quickbookObj, provisioning }) {
                   <Flex wrap="wrap" flexDirection={["column", "row"]}>
                     <Box wrap="wrap" p={3} width={[1, 1, 1 / 2]}>
                       <CardDisplayNumber title="Chiffre d'affaires">
-                        {quickBooksData.CA.toLocaleString()} €
+                        {formatNumber(quickBooksData.CA)} €
                       </CardDisplayNumber>
                     </Box>
                     <Box wrap="wrap" p={3} width={[1, 1, 1 / 2]}>
                       <CardDisplayNumber title="Rémunération">
-                        {quickBooksData.INCOMES.toLocaleString()} €
+                        {formatNumber(quickBooksData.INCOMES)} €
                       </CardDisplayNumber>
                     </Box>
                   </Flex>
@@ -164,12 +178,12 @@ export function DisplayData({ quickbookObj, provisioning }) {
                 <CardContent>
                   <Box p={3} width={[1, 1, 1]}>
                     <CardDisplayNumber title="Encours TVA">
-                      {quickBooksData.TVA_OUTSTANDING.toLocaleString()} €
+                      {formatNumber(quickBooksData.TVA_OUTSTANDING)} €
                     </CardDisplayNumber>
                   </Box>
                   <Box p={3} width={[1, 1, 1]}>
                     <CardDisplayNumber title="Estimation cotisations sociales">
-                      {quickBooksData.COTISATION_SOCIALES.toLocaleString()} €
+                      {formatNumber(quickBooksData.COTISATION_SOCIALES)} €
                     </CardDisplayNumber>
                   </Box>
                 </CardContent>
