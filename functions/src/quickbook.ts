@@ -7,7 +7,7 @@ import * as admin from "firebase-admin";
 import * as cors from "cors";
 const db = admin.firestore();
 
-const domain = "https://hipay.hi-way.io";
+const domain = "https://portail.hiway-freelance.com";
 const app = express();
 app.use(cors({ origin: true }));
 app.use(bodyParser.urlencoded({ extended: true }));

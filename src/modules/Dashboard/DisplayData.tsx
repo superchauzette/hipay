@@ -118,7 +118,7 @@ export function DisplayData({ quickbookObj, provisioning }) {
   ]);
   return (
     <div style={{ padding: "10px" }}>
-      {!loading && (
+      {loading && (
         <div>
           <Loader />
         </div>
