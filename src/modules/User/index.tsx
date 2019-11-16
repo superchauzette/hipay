@@ -20,14 +20,14 @@ const AdminQuickbook = ({ user, handleChange }) => {
         <div>
           <TextField
             defaultValue={user.quickbook ? user.quickbook.clientId : ""}
-            onChange={() => handleChange("quickbook.clientId")}
+            onChange={handleChange("quickbook.clientId")}
             label="client id"
           />
         </div>
         <div>
           <TextField
             defaultValue={user.quickbook ? user.quickbook.clientSecret : ""}
-            onChange={() => handleChange("quickbook.clientSecret")}
+            onChange={handleChange("quickbook.clientSecret")}
             label="client secret"
           />
         </div>
@@ -56,7 +56,6 @@ const ProvisioningForm = ({ year, month, user, currentMonth, currentYear }) => {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    console.log(user);
     setLoaded(false);
     db()
       .collection("provisioning")
@@ -71,7 +70,6 @@ const ProvisioningForm = ({ year, month, user, currentMonth, currentYear }) => {
       )
       .get()
       .then(qsnap => {
-        console.log(qsnap);
         if (qsnap.size) {
           setProvisioning(extractQuery(qsnap.docs[0]));
         }
@@ -93,7 +91,6 @@ const ProvisioningForm = ({ year, month, user, currentMonth, currentYear }) => {
             .doc(user.id)
         )
         .get();
-      console.log(currentProfisioning, currentProfisioning.size);
       if (currentProfisioning && currentProfisioning.size) {
         currentProfisioning.docs[0].ref
           .update({
@@ -120,7 +117,8 @@ const ProvisioningForm = ({ year, month, user, currentMonth, currentYear }) => {
       style={{
         width: "100%",
         background: isCurrentMonth ? "#0077cc57" : "white"
-      }}>
+      }}
+    >
       <CardHeader title={months[month]}></CardHeader>
       {loaded && (
         <CardContent>
@@ -175,8 +173,6 @@ const QuickbookData = ({ user }) => {
   const { year, handleChangeYear } = useYearChange();
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth();
-  console.log(currentMonth);
-  console.log(currentYear);
   return (
     <Card>
       <CardHeader style={{ textAlign: "center" }} title="Provisioning" />
@@ -217,6 +213,7 @@ export function User({ match }) {
     getUser();
   }, [match.params.id]);
   const handleChange = field => e => {
+    console.log(e);
     db()
       .collection("users")
       .doc(user.id)
@@ -230,7 +227,8 @@ export function User({ match }) {
             display: "flex",
             alignItems: "center",
             flexDirection: "column"
-          }}>
+          }}
+        >
           <Header title={user.info.displayName} />
 
           <AdminQuickbook user={user} handleChange={handleChange} />
