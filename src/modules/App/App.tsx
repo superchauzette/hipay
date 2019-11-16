@@ -2,7 +2,7 @@ import React from "react";
 import * as firebase from "firebase/app";
 import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 import { useAuth, UserProvider } from "../UserHelper";
-import { Theme, blue } from "../Theme";
+import { Theme, red } from "../Theme";
 import { CRAS } from "../CRA";
 import { Login } from "../Login/Login";
 
@@ -57,7 +57,7 @@ function MenuMobile() {
       }}
       p={2}
       justifyContent="space-around"
-      bg={blue}
+      bg={red}
     >
       <LinkIcon exact to="/" icon={<Home />} text="HOME" />
       <LinkIcon to="/cra" icon={<CalendarToday />} text="CRA" />
@@ -88,7 +88,7 @@ function Menu() {
 
 function HeaderBar({ authUser }) {
   return (
-    <AppBar position="static" style={{ backgroundColor: blue }}>
+    <AppBar position="static" color="primary">
       <Toolbar variant="dense">
         <Text fontSize={3}>Hipay</Text>
         <Box m={"auto"} />
@@ -123,13 +123,14 @@ function AuthRoute({ isLogged, component: Component, ...props }) {
 
 export function App() {
   const { authUser, isLoggedOut } = useAuth();
+  const currentUser = firebase.auth().currentUser;
   console.log("authUser", authUser);
   console.log("isLoggedOut", isLoggedOut);
   return (
     <UserProvider value={authUser}>
       <Theme>
         <Router>
-          {authUser && (
+          {currentUser && (
             <Desktop>
               <HeaderBar authUser={authUser} />
             </Desktop>
@@ -162,7 +163,7 @@ export function App() {
               component={Charges}
             />
           </main>
-          {authUser && (
+          {currentUser && (
             <Mobile>
               <MenuMobile />
             </Mobile>
