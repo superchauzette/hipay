@@ -161,7 +161,7 @@ const ProvisioningForm = ({ year, month, user, currentMonth, currentYear }) => {
         </CardContent>
       )}
       <CardActions>
-        <Button variant="flat" color="primary" onClick={saveProvisioning}>
+        <Button variant="text" color="primary" onClick={saveProvisioning}>
           Save
         </Button>
       </CardActions>
@@ -213,7 +213,6 @@ export function User({ match }) {
     getUser();
   }, [match.params.id]);
   const handleChange = field => e => {
-    console.log(e);
     db()
       .collection("users")
       .doc(user.id)

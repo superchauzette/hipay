@@ -57,7 +57,8 @@ function MenuMobile() {
       }}
       p={2}
       justifyContent="space-around"
-      bg={blue}>
+      bg={blue}
+    >
       <LinkIcon exact to="/" icon={<Home />} text="HOME" />
       <LinkIcon to="/cra" icon={<CalendarToday />} text="CRA" />
       <LinkIcon to="/ndf" icon={<Restaurant />} text="NDF" />
@@ -97,7 +98,8 @@ function HeaderBar({ authUser }) {
             firebase.auth().signOut();
           }}
           color="inherit"
-          variant="text">
+          variant="text"
+        >
           Déconnexion
         </Button>
       </Toolbar>
