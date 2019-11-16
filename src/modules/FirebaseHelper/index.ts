@@ -44,7 +44,10 @@ export function useIsAdmin(): boolean {
         .get()
         .then(extractQueries)
         .then(tab => tab[0])
-        .then(adminDoc => setAdmin(adminDoc ? Boolean(adminDoc.id) : false));
+        .then(adminDoc => {
+          console.log("adminDoc", adminDoc);
+          return setAdmin(adminDoc ? Boolean(adminDoc.id) : false);
+        });
     }
   }, [user]);
 

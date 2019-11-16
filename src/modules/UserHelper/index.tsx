@@ -35,11 +35,13 @@ export function extractUser(user) {
 
 export function useAuth() {
   const [authUser, setUser] = useState(undefined as userType | undefined);
-  const [isLogged, setIsLogged] = useState(false);
+  const [isLoggedOut, setIsLoggedOut] = useState(false);
 
   useEffect(() => {
     auth().onAuthStateChanged(function(user) {
       if (user) {
+        setIsLoggedOut(false);
+        console.log("user", user.toJSON());
         // User is signed in.
         const data: userType = extractUser(user);
         setUser(data);
@@ -48,10 +50,10 @@ export function useAuth() {
           .doc(data.uid)
           .set({ info: data }, { merge: true });
       } else {
-        setIsLogged(true);
+        setIsLoggedOut(true);
       }
     });
   }, []);
 
-  return { authUser, isLogged };
+  return { authUser, isLoggedOut };
 }

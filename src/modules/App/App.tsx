@@ -4,7 +4,8 @@ import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 import { useAuth, UserProvider } from "../UserHelper";
 import { Theme, blue } from "../Theme";
 import { CRAS } from "../CRA";
-import { Login } from "../Login";
+import { Login } from "../Login/Login";
+
 import { NavLink } from "../CommonUi/NavLink";
 import { Dashboard } from "../Dashboard";
 import { NoteDeFrais } from "../NDF";
@@ -46,7 +47,6 @@ export const LinkIcon = ({ icon, text, ...props }) => (
 
 function MenuMobile() {
   const isAdmin = useIsAdmin();
-
   return (
     <Flex
       width="100%"
@@ -122,42 +122,51 @@ function AuthRoute({ isLogged, component: Component, ...props }) {
 }
 
 export function App() {
-  const { authUser, isLogged } = useAuth();
-
+  const { authUser, isLoggedOut } = useAuth();
+  console.log("authUser", authUser);
+  console.log("isLoggedOut", isLoggedOut);
   return (
     <UserProvider value={authUser}>
       <Theme>
         <Router>
-          <Desktop>
-            <HeaderBar authUser={authUser} />
-          </Desktop>
+          {authUser && (
+            <Desktop>
+              <HeaderBar authUser={authUser} />
+            </Desktop>
+          )}
           <main>
             <AuthRoute
               exact
               path="/"
-              isLogged={isLogged}
+              isLogged={isLoggedOut}
               component={Dashboard}
             />
             <Route path="/login" component={Login} />
-            <AuthRoute path="/admin" isLogged={isLogged} component={Admin} />
+            <AuthRoute path="/admin" isLogged={isLoggedOut} component={Admin} />
 
-            <AuthRoute path="/user/:id" isLogged={isLogged} component={User} />
-            <AuthRoute path="/cra" isLogged={isLogged} component={CRAS} />
+            <AuthRoute
+              path="/user/:id"
+              isLogged={isLoggedOut}
+              component={User}
+            />
+            <AuthRoute path="/cra" isLogged={isLoggedOut} component={CRAS} />
             <AuthRoute
               path="/ndf"
-              isLogged={isLogged}
+              isLogged={isLoggedOut}
               component={NoteDeFrais}
             />
-            <AuthRoute path="/ik" isLogged={isLogged} component={IK} />
+            <AuthRoute path="/ik" isLogged={isLoggedOut} component={IK} />
             <AuthRoute
               path="/charges"
-              isLogged={isLogged}
+              isLogged={isLoggedOut}
               component={Charges}
             />
           </main>
-          <Mobile>
-            <MenuMobile />
-          </Mobile>
+          {authUser && (
+            <Mobile>
+              <MenuMobile />
+            </Mobile>
+          )}
         </Router>
       </Theme>
     </UserProvider>
