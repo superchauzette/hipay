@@ -55,7 +55,6 @@ export function Login() {
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const { push } = useHistory();
   const signIn = (email: string, password: string) =>
     firebase
       .auth()
@@ -123,6 +122,13 @@ export function Login() {
             >
               Sign In
             </Button>
+            <Typography
+              style={{ textAlign: "center" }}
+              color="error"
+              variant="body1"
+            >
+              {errorMessage}
+            </Typography>
             {/* <Grid container>
             <Grid item xs>
               <Link href="#" variant="body2">

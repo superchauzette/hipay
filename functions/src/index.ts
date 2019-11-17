@@ -11,4 +11,5 @@ import * as admin from "firebase-admin";
 
 admin.initializeApp();
 export { quickbooksApi } from "./quickbook";
+export { users } from "./user";
 export { setAdminClaims, deleteAdminClaims } from "./adminUser";

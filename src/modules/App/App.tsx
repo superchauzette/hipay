@@ -5,6 +5,7 @@ import { useAuth, UserProvider } from "../UserHelper";
 import { Theme, red } from "../Theme";
 import { CRAS } from "../CRA";
 import { Login } from "../Login/Login";
+import { CreateAccountForm } from "../User/CreateAccountForm";
 
 import { NavLink } from "../CommonUi/NavLink";
 import { Dashboard } from "../Dashboard";
@@ -124,6 +125,11 @@ function AuthRoute({ isLogged, component: Component, ...props }) {
 export function App() {
   const { authUser, isLoggedOut } = useAuth();
   const currentUser = firebase.auth().currentUser;
+  if (currentUser) {
+    currentUser.getIdTokenResult(false).then(t => {
+      console.log("CLAIMS", t);
+    });
+  }
   console.log("authUser", authUser);
   console.log("isLoggedOut", isLoggedOut);
   return (
@@ -143,7 +149,18 @@ export function App() {
               component={Dashboard}
             />
             <Route path="/login" component={Login} />
-            <AuthRoute path="/admin" isLogged={isLoggedOut} component={Admin} />
+            <AuthRoute
+              exact
+              path="/admin/users/create"
+              isLogged={isLoggedOut}
+              component={CreateAccountForm}
+            />
+            <AuthRoute
+              exact
+              path="/admin"
+              isLogged={isLoggedOut}
+              component={Admin}
+            />
 
             <AuthRoute
               path="/user/:id"

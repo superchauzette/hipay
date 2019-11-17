@@ -15,13 +15,21 @@ import {
   ExpansionPanelDetails,
   CircularProgress,
   Button,
-  ExpansionPanelActions
+  ExpansionPanelActions,
+  Fab
 } from "@material-ui/core";
-import { Restaurant, DirectionsCar } from "@material-ui/icons";
+import {
+  Restaurant,
+  DirectionsCar,
+  SupervisedUserCircle
+} from "@material-ui/icons";
+import { useHistory } from "react-router-dom";
+
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { getResources, getUsers } from "./getResources";
 import { DocumentCRA } from "../CRA/pdf";
 import { DocumentNDF } from "../NDF/pdf";
+import {} from "../User/CreateAccountForm";
 import { getTotal } from "../hooks/useTotal";
 import { getTotal as getTotalCra } from "../CRA/FormCra";
 import { DocumentIk } from "../IK/pdf";
@@ -61,151 +69,167 @@ function hasIks(iks) {
 }
 
 function Details({ user, cras, ndfs, iks, charges }) {
-  return (
-    <ExpansionPanel>
-      <ExpansionPanelSummary
-        expandIcon={<ExpandMoreIcon />}
-        aria-controls="panel1a-content"
-      >
-        <Flex alignItems="center" justifyContent="space-between" width="100%">
-          <Flex alignItems="center">
-            <Avatar src={user.info.photoURL} />
-            <Text ml={2}>{user.info.displayName}</Text>
-          </Flex>
-          <Flex alignItems="center">
-            {hasNdk(ndfs) && (
-              <IconText color="blue" icon={<Restaurant />} text="NDF" mr={1} />
-            )}
-            {hasIks(iks) && (
-              <IconText
-                color="blue"
-                icon={<DirectionsCar />}
-                text="IK"
-                mr={1}
-              />
-            )}
-            <Text>
-              {cras &&
-                cras
-                  .map(cra =>
-                    cra.isSaved ? `${getTotalCra(cra.calendar)}j` : ""
-                  )
-                  .join(", ")}
-            </Text>
-          </Flex>
-        </Flex>
-      </ExpansionPanelSummary>
-      <ExpansionPanelDetails>
-        <Flex flexWrap="wrap" width={1}>
-          <Detail
-            key={user.id + "CRA"}
-            title="CRA"
-            data={cras}
-            render={cra => (
-              <Flex key={cra.id}>
-                <Box mr={2}>
-                  {cra.isSaved ? (
-                    <CheckIcon style={{ fill: "green" }} />
-                  ) : (
-                    <CloseIcon style={{ fill: "red" }} />
-                  )}
-                </Box>
-                <LinkPdf
-                  title={`${cra.client} - ${getTotalCra(cra.calendar)} jours`}
-                  fileName={`cra-${user.info.displayName}-${cra.month}-${cra.year}.pdf`}
-                  document={<DocumentCRA cra={cra} user={user} />}
-                />
-                <Text mx="2"> - </Text>
-                {cra.file && cra.file.name && (
-                  <DownloadLink
-                    type="cra"
-                    month={cra.month}
-                    year={cra.year}
-                    fileName={cra.file.name}
-                  />
-                )}
-              </Flex>
-            )}
-          />
-          <Detail
-            key={user.id + "ndf"}
-            title={
-              <Title
-                title="Note de Frais"
-                data={ndfs}
-                fileName={`ndf-${user.info.displayName}.pdf`}
-                document={
-                  <DocumentNDF
-                    notes={ndfs}
-                    total={getTotal(ndfs, (note: any) => note.montant || 0)}
-                    user={user}
-                  />
-                }
-              />
-            }
-            data={ndfs}
-            render={ndf => (
-              <Flex key={ndf.id} justifyContent="space-between">
-                <Text>{ndf.dateAchat} </Text>
-                <Text>{ndf.type} </Text>
-                <Text>{ndf.montant} €</Text>
-              </Flex>
-            )}
-          />
+  const { push } = useHistory();
 
-          <Detail
-            key={user.id + "ik"}
-            title={
-              <Title
-                title="Indeminté Kilométriques"
-                data={iks}
-                fileName={`iks-${user.info.displayName}.pdf`}
-                document={
-                  <DocumentIk
-                    iks={iks}
-                    total={getTotal(iks, (ik: any) => ik.montant || 0)}
-                    user={user}
+  return (
+    <>
+      <ExpansionPanel>
+        <ExpansionPanelSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1a-content"
+        >
+          <Flex alignItems="center" justifyContent="space-between" width="100%">
+            <Flex alignItems="center">
+              <Avatar src={user.info.photoURL} />
+              <Text ml={2}>{user.info.displayName}</Text>
+            </Flex>
+            <Flex alignItems="center">
+              {hasNdk(ndfs) && (
+                <IconText
+                  color="blue"
+                  icon={<Restaurant />}
+                  text="NDF"
+                  mr={1}
+                />
+              )}
+              {hasIks(iks) && (
+                <IconText
+                  color="blue"
+                  icon={<DirectionsCar />}
+                  text="IK"
+                  mr={1}
+                />
+              )}
+              <Text>
+                {cras &&
+                  cras
+                    .map(cra =>
+                      cra.isSaved ? `${getTotalCra(cra.calendar)}j` : ""
+                    )
+                    .join(", ")}
+              </Text>
+            </Flex>
+          </Flex>
+        </ExpansionPanelSummary>
+        <ExpansionPanelDetails>
+          <Flex flexWrap="wrap" width={1}>
+            <Detail
+              key={user.id + "CRA"}
+              title="CRA"
+              data={cras}
+              render={cra => (
+                <Flex key={cra.id}>
+                  <Box mr={2}>
+                    {cra.isSaved ? (
+                      <CheckIcon style={{ fill: "green" }} />
+                    ) : (
+                      <CloseIcon style={{ fill: "red" }} />
+                    )}
+                  </Box>
+                  <LinkPdf
+                    title={`${cra.client} - ${getTotalCra(cra.calendar)} jours`}
+                    fileName={`cra-${user.info.displayName}-${cra.month}-${cra.year}.pdf`}
+                    document={<DocumentCRA cra={cra} user={user} />}
                   />
-                }
-              />
-            }
-            data={iks}
-            render={ik => (
-              <Flex key={ik.id} justifyContent="space-between" pr={[0, 2]}>
-                <Text>{ik.dateIk}</Text>
-                <Text>{ik.kmParcourus}</Text>
-                <Text>{ik.montant} €</Text>
-              </Flex>
-            )}
-          />
-          <Detail
-            key={user.id + "Charges"}
-            title="Charges"
-            data={charges}
-            render={charge => (
-              <Flex key={charge.id} justifyContent="space-between">
-                <Text>{charge.description}</Text>
-                {charge.file && (
-                  <DownloadLink
-                    type="charges"
-                    month={charge.month}
-                    year={charge.year}
-                    fileName={charge.file.name}
-                  />
-                )}
-              </Flex>
-            )}
-          />
-        </Flex>
-      </ExpansionPanelDetails>
-      <ExpansionPanelActions>
-        <Link to={`user/${user.id}`}>
-          <Button>
-            <BuildIcon />
-          </Button>
-        </Link>
-      </ExpansionPanelActions>
-    </ExpansionPanel>
+                  <Text mx="2"> - </Text>
+                  {cra.file && cra.file.name && (
+                    <DownloadLink
+                      type="cra"
+                      month={cra.month}
+                      year={cra.year}
+                      fileName={cra.file.name}
+                    />
+                  )}
+                </Flex>
+              )}
+            />
+            <Detail
+              key={user.id + "ndf"}
+              title={
+                <Title
+                  title="Note de Frais"
+                  data={ndfs}
+                  fileName={`ndf-${user.info.displayName}.pdf`}
+                  document={
+                    <DocumentNDF
+                      notes={ndfs}
+                      total={getTotal(ndfs, (note: any) => note.montant || 0)}
+                      user={user}
+                    />
+                  }
+                />
+              }
+              data={ndfs}
+              render={ndf => (
+                <Flex key={ndf.id} justifyContent="space-between">
+                  <Text>{ndf.dateAchat} </Text>
+                  <Text>{ndf.type} </Text>
+                  <Text>{ndf.montant} €</Text>
+                </Flex>
+              )}
+            />
+
+            <Detail
+              key={user.id + "ik"}
+              title={
+                <Title
+                  title="Indeminté Kilométriques"
+                  data={iks}
+                  fileName={`iks-${user.info.displayName}.pdf`}
+                  document={
+                    <DocumentIk
+                      iks={iks}
+                      total={getTotal(iks, (ik: any) => ik.montant || 0)}
+                      user={user}
+                    />
+                  }
+                />
+              }
+              data={iks}
+              render={ik => (
+                <Flex key={ik.id} justifyContent="space-between" pr={[0, 2]}>
+                  <Text>{ik.dateIk}</Text>
+                  <Text>{ik.kmParcourus}</Text>
+                  <Text>{ik.montant} €</Text>
+                </Flex>
+              )}
+            />
+            <Detail
+              key={user.id + "Charges"}
+              title="Charges"
+              data={charges}
+              render={charge => (
+                <Flex key={charge.id} justifyContent="space-between">
+                  <Text>{charge.description}</Text>
+                  {charge.file && (
+                    <DownloadLink
+                      type="charges"
+                      month={charge.month}
+                      year={charge.year}
+                      fileName={charge.file.name}
+                    />
+                  )}
+                </Flex>
+              )}
+            />
+          </Flex>
+        </ExpansionPanelDetails>
+        <ExpansionPanelActions>
+          <Link to={`user/${user.id}`}>
+            <Button>
+              <BuildIcon />
+            </Button>
+          </Link>
+        </ExpansionPanelActions>
+      </ExpansionPanel>
+      <Fab
+        onClick={() => push("/admin/users/create")}
+        color="secondary"
+        style={{ position: "absolute", right: "30px", bottom: "70px" }}
+      >
+        <SupervisedUserCircle />
+      </Fab>
+    </>
   );
 }
 
