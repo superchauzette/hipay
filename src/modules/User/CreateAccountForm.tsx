@@ -36,6 +36,8 @@ export function CreateAccountForm() {
             db()
               .collection("admin")
               .add({ email: user.email });
+          } else {
+            throw new Error("Cant create account");
           }
           return res.json();
         })
@@ -44,7 +46,8 @@ export function CreateAccountForm() {
             .collection("users")
             .doc(data.uid)
             .set({ info: data }, { merge: true });
-        });
+        })
+        .catch(() => console.log("ERROR DE CREATION"));
     }
   };
   const handleFieldChange = (field: Field) => value => {
