@@ -222,7 +222,7 @@ export function User({ match }) {
   console.log("USER page", Boolean(user));
   return (
     <div>
-      {Boolean(user) && (
+      {user && (
         <div
           style={{
             display: "flex",
@@ -235,7 +235,6 @@ export function User({ match }) {
           <QuickbookData user={user} />
         </div>
       )}
-      {!Boolean(user) && <Redirect to="/notfound" />}
     </div>
   );
 }
