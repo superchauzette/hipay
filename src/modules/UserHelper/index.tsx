@@ -41,14 +41,9 @@ export function useAuth() {
     auth().onAuthStateChanged(function(user) {
       if (user) {
         setIsLoggedOut(false);
-        console.log("user", user.toJSON());
         // User is signed in.
         const data: userType = extractUser(user);
         setUser(data);
-        db()
-          .collection("users")
-          .doc(data.uid)
-          .set({ info: data }, { merge: true });
       } else {
         setIsLoggedOut(true);
       }

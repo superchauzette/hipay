@@ -11,6 +11,7 @@ import {
 import { Card, Header } from "../CommonUi";
 import { YearSelector, useYearChange } from "../CommonUi/YearSelector";
 import { months } from "../constants";
+import { Redirect } from "react-router";
 
 const AdminQuickbook = ({ user, handleChange }) => {
   return (
@@ -218,9 +219,10 @@ export function User({ match }) {
       .doc(user.id)
       .update({ [field]: e.target.value });
   };
+  console.log("USER page", Boolean(user));
   return (
     <div>
-      {user && (
+      {Boolean(user) && (
         <div
           style={{
             display: "flex",
@@ -229,11 +231,11 @@ export function User({ match }) {
           }}
         >
           <Header title={user.info.displayName} />
-
           <AdminQuickbook user={user} handleChange={handleChange} />
           <QuickbookData user={user} />
         </div>
       )}
+      {!Boolean(user) && <Redirect to="/notfound" />}
     </div>
   );
 }

@@ -11,15 +11,8 @@ import {
   TableHead
 } from "@material-ui/core";
 
-// export const DisplayDate = (date:any) => {
-//   try {
-
-//   }
-// }
-
 export function LastUsersCreated() {
   const [users, setUsers] = useState<any[] | null>(null);
-  const [loading, setLoading] = useState<any[] | null>(null);
   useEffect(() => {
     const unsubscribe = db()
       .collection("users")
@@ -30,22 +23,24 @@ export function LastUsersCreated() {
 
     return () => unsubscribe();
   }, []);
-  console.log(users);
 
   return (
     <Grid spacing={4} container>
       {users && Boolean(users.length) && (
         <Table>
           <TableHead>
-            <TableCell>Nom</TableCell>
-            <TableCell>Créé le</TableCell>
+            <TableRow>
+              <TableCell>Nom</TableCell>
+              <TableCell>Créé le</TableCell>
+            </TableRow>
           </TableHead>
           <TableBody>
             {users.map(u => (
               <TableRow key={u.info.uid}>
                 <TableCell>{u.info.displayName}</TableCell>
                 <TableCell>
-                  {u.info.createdAt && u.info.createdAt.toDate().toTimeString()}
+                  {u.info.createdAt &&
+                    u.info.createdAt.toDate().toLocaleString()}
                 </TableCell>
               </TableRow>
             ))}

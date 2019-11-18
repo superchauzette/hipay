@@ -125,13 +125,7 @@ function AuthRoute({ isLogged, component: Component, ...props }) {
 export function App() {
   const { authUser, isLoggedOut } = useAuth();
   const currentUser = firebase.auth().currentUser;
-  if (currentUser) {
-    currentUser.getIdTokenResult(false).then(t => {
-      console.log("CLAIMS", t);
-    });
-  }
-  console.log("authUser", authUser);
-  console.log("isLoggedOut", isLoggedOut);
+
   return (
     <UserProvider value={authUser}>
       <Theme>
