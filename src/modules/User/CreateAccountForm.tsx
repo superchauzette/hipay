@@ -15,6 +15,8 @@ type User = {
   email?: string;
   password?: string;
   isAdmin?: boolean;
+  clientId?: string;
+  clientSecret?: string;
 };
 
 type Field = keyof User;
@@ -45,7 +47,16 @@ export function CreateAccountForm() {
           db()
             .collection("users")
             .doc(data.uid)
-            .set({ info: data }, { merge: true });
+            .set(
+              {
+                info: data,
+                quickbook: {
+                  clientId: user.clientId,
+                  clientSecret: user.clientSecret
+                }
+              },
+              { merge: true }
+            );
         })
         .catch(() => console.log("ERROR DE CREATION"));
     }
@@ -129,6 +140,35 @@ export function CreateAccountForm() {
                   />
                 }
                 label="Admin"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Typography variant="subtitle1">Quickbooks</Typography>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                type="clientId"
+                onChange={e => handleFieldChange("clientId")(e.target.value)}
+                required
+                id="clientId"
+                name="clientId"
+                label="clientId"
+                fullWidth
+                autoComplete="clientId"
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                type="clientSecret"
+                onChange={e =>
+                  handleFieldChange("clientSecret")(e.target.value)
+                }
+                required
+                id="clientSecret"
+                name="clientSecret"
+                label="clientSecret"
+                fullWidth
+                autoComplete="clientSecret"
               />
             </Grid>
           </Grid>
