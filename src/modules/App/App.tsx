@@ -16,7 +16,7 @@ import { Avatar, Mobile, Desktop } from "../CommonUi";
 import { Admin } from "../Admin";
 import { User } from "../User";
 import { Flex, Box, Text } from "rebass";
-import { AppBar, Button, Toolbar } from "@material-ui/core";
+import { AppBar, Button, Toolbar, Typography } from "@material-ui/core";
 import {
   Home,
   Restaurant,
@@ -93,6 +93,7 @@ function HeaderBar({ authUser }) {
       <Toolbar variant="dense">
         <Text fontSize={3}>Hipay</Text>
         <Box m={"auto"} />
+        <Typography>{authUser.displayName}</Typography>
         <Avatar src={authUser && authUser.photoURL} m={2} />
         <Button
           onClick={() => {
