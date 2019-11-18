@@ -7,7 +7,14 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import { db } from "../FirebaseHelper";
 
 import Checkbox from "@material-ui/core/Checkbox";
-import { Card, CardContent, CardActions, Button } from "@material-ui/core";
+import {
+  Card,
+  CardContent,
+  CardActions,
+  Button,
+  Paper
+} from "@material-ui/core";
+import { LastUsersCreated } from "./LastUsersCreated";
 
 type User = {
   firstName?: string;
@@ -22,7 +29,15 @@ type User = {
 type Field = keyof User;
 
 export function CreateAccountForm() {
-  const [user, setUser] = useState<User | null>({});
+  const [user, setUser] = useState<User>({
+    firstName: "",
+    lastname: "",
+    email: "",
+    password: "",
+    isAdmin: false,
+    clientId: "",
+    clientSecret: ""
+  });
   const createUser = () => {
     if (user && user.email && user.password) {
       fetch(`https://us-central1-hipay-42.cloudfunctions.net/users/`, {
@@ -44,12 +59,16 @@ export function CreateAccountForm() {
           return res.json();
         })
         .then(data => {
+          const { passwordHash, tokensValidAfterTime, ...dataToSave } = data;
           db()
             .collection("users")
-            .doc(data.uid)
+            .doc(dataToSave.uid)
             .set(
               {
-                info: data,
+                info: {
+                  ...dataToSave,
+                  createdAt: new Date(data.metadata.creationTime)
+                },
                 quickbook: {
                   clientId: user.clientId,
                   clientSecret: user.clientSecret
@@ -57,6 +76,17 @@ export function CreateAccountForm() {
               },
               { merge: true }
             );
+        })
+        .then(() => {
+          setUser({
+            firstName: "",
+            lastname: "",
+            email: "",
+            password: "",
+            isAdmin: false,
+            clientId: "",
+            clientSecret: ""
+          });
         })
         .catch(() => console.log("ERROR DE CREATION"));
     }
@@ -88,6 +118,7 @@ export function CreateAccountForm() {
                 name="firstName"
                 label="First name"
                 fullWidth
+                value={user.firstName}
                 autoComplete="fname"
               />
             </Grid>
@@ -99,6 +130,7 @@ export function CreateAccountForm() {
                 name="lastName"
                 label="Last name"
                 fullWidth
+                value={user.lastname}
                 autoComplete="lname"
               />
             </Grid>
@@ -112,6 +144,7 @@ export function CreateAccountForm() {
                 name="email"
                 label="email"
                 fullWidth
+                value={user.email}
                 autoComplete="email"
               />
             </Grid>
@@ -124,6 +157,7 @@ export function CreateAccountForm() {
                 name="password"
                 label="password"
                 fullWidth
+                value={user.password}
                 autoComplete="password"
               />
             </Grid>
@@ -137,6 +171,7 @@ export function CreateAccountForm() {
                     color="secondary"
                     name="saveAddress"
                     value="yes"
+                    checked={user.isAdmin}
                   />
                 }
                 label="Admin"
@@ -154,6 +189,7 @@ export function CreateAccountForm() {
                 name="clientId"
                 label="clientId"
                 fullWidth
+                value={user.clientId}
                 autoComplete="clientId"
               />
             </Grid>
@@ -168,6 +204,7 @@ export function CreateAccountForm() {
                 name="clientSecret"
                 label="clientSecret"
                 fullWidth
+                value={user.clientSecret}
                 autoComplete="clientSecret"
               />
             </Grid>
@@ -178,6 +215,15 @@ export function CreateAccountForm() {
             Créer
           </Button>
         </CardActions>
+      </Card>
+
+      <Card style={{ margin: "20px 40px" }}>
+        <CardContent>
+          <Typography variant="h5" gutterBottom>
+            Derniers comptes créés
+          </Typography>
+          <LastUsersCreated />
+        </CardContent>
       </Card>
     </form>
   );
