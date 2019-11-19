@@ -1,18 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { db, extractQuery } from "../FirebaseHelper";
-import {
-  TextField,
-  CardHeader,
-  CardContent,
-  Paper,
-  Tabs,
-  Tab,
-  Typography,
-  Box,
-  useTheme
-} from "@material-ui/core";
-import { Card } from "../CommonUi";
+import { Paper, Tabs, Tab, Typography, Box, useTheme } from "@material-ui/core";
 import { Provisioning } from "./Provisioning";
+import { AdminQuickbook } from "./AdminQuickbook";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -38,30 +28,6 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 
-const AdminQuickbook = ({ user, handleChange }) => {
-  return (
-    <Card>
-      <CardHeader title="Quickbooks" />
-      <CardContent>
-        <div>
-          <TextField
-            defaultValue={user.quickbook ? user.quickbook.clientId : ""}
-            onChange={handleChange("quickbook.clientId")}
-            label="client id"
-          />
-        </div>
-        <div>
-          <TextField
-            defaultValue={user.quickbook ? user.quickbook.clientSecret : ""}
-            onChange={handleChange("quickbook.clientSecret")}
-            label="client secret"
-          />
-        </div>
-      </CardContent>
-    </Card>
-  );
-};
-
 export function User({ match }) {
   const [user, setUser] = useState();
   const [tab, setTab] = React.useState(0);
@@ -81,12 +47,7 @@ export function User({ match }) {
         .then(setUser);
     getUser();
   }, [match.params.id]);
-  const handleChange = field => e => {
-    db()
-      .collection("users")
-      .doc(user.id)
-      .update({ [field]: e.target.value });
-  };
+
   return (
     <div>
       {user && (
@@ -104,7 +65,7 @@ export function User({ match }) {
             </Tabs>
           </Paper>
           <TabPanel value={tab} index={0} dir={theme.direction}>
-            <AdminQuickbook user={user} handleChange={handleChange} />
+            <AdminQuickbook user={user} />
           </TabPanel>
           <TabPanel value={tab} index={1} dir={theme.direction}>
             <Provisioning user={user} />
