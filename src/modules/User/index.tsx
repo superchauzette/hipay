@@ -3,30 +3,8 @@ import { db, extractQuery } from "../FirebaseHelper";
 import { Paper, Tabs, Tab, Typography, Box, useTheme } from "@material-ui/core";
 import { Provisioning } from "./Provisioning";
 import { AdminQuickbook } from "./AdminQuickbook";
-
-interface TabPanelProps {
-  children?: React.ReactNode;
-  dir?: string;
-  index: any;
-  value: any;
-}
-
-function TabPanel(props: TabPanelProps) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <Typography
-      component="div"
-      role="tabpanel"
-      hidden={value !== index}
-      id={`full-width-tabpanel-${index}`}
-      aria-labelledby={`full-width-tab-${index}`}
-      {...other}
-    >
-      <Box p={3}>{children}</Box>
-    </Typography>
-  );
-}
+import { TabPanel } from "../CommonUi/TabPanel";
+import { Fisc } from "./Fisc";
 
 export function User({ match }) {
   const [user, setUser] = useState();
@@ -42,9 +20,7 @@ export function User({ match }) {
       db()
         .collection("users")
         .doc(match.params.id)
-        .get()
-        .then(extractQuery)
-        .then(setUser);
+        .onSnapshot(qs => setUser(extractQuery(qs)));
     getUser();
   }, [match.params.id]);
 
@@ -62,6 +38,7 @@ export function User({ match }) {
             >
               <Tab label="Quickbooks"></Tab>
               <Tab label="Provisioning"></Tab>
+              <Tab label="Fisc & Social"></Tab>
             </Tabs>
           </Paper>
           <TabPanel value={tab} index={0} dir={theme.direction}>
@@ -70,18 +47,10 @@ export function User({ match }) {
           <TabPanel value={tab} index={1} dir={theme.direction}>
             <Provisioning user={user} />
           </TabPanel>
+          <TabPanel value={tab} index={2} dir={theme.direction}>
+            <Fisc user={user} />
+          </TabPanel>
         </>
-        // <div
-        //   style={{
-        //     display: "flex",
-        //     alignItems: "center",
-        //     flexDirection: "column"
-        //   }}
-        // >
-        //   <Header title={user.info.displayName} />
-        //   <AdminQuickbook user={user} handleChange={handleChange} />
-        //   <QuickbookData user={user} />
-        // </div>
       )}
     </div>
   );
