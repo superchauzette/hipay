@@ -34,7 +34,6 @@ const data = (ca, salaries) => ({
 
 const options = (ca, salaries) => {
   const maxValue = max([...ca, ...salaries]) + 1000;
-  console.log(maxValue);
   return {
     responsive: true,
     tooltips: {

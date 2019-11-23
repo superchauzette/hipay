@@ -2,9 +2,11 @@ import React from "react";
 import * as firebase from "firebase/app";
 import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 import { useAuth, UserProvider } from "../UserHelper";
-import { Theme, blue } from "../Theme";
+import { Theme, red } from "../Theme";
 import { CRAS } from "../CRA";
-import { Login } from "../Login";
+import { Login } from "../Login/Login";
+import { CreateAccountForm } from "../User/CreateAccountForm";
+
 import { NavLink } from "../CommonUi/NavLink";
 import { Dashboard } from "../Dashboard";
 import { NoteDeFrais } from "../NDF";
@@ -14,7 +16,7 @@ import { Avatar, Mobile, Desktop } from "../CommonUi";
 import { Admin } from "../Admin";
 import { User } from "../User";
 import { Flex, Box, Text } from "rebass";
-import { AppBar, Button, Toolbar } from "@material-ui/core";
+import { AppBar, Button, Toolbar, Typography } from "@material-ui/core";
 import {
   Home,
   Restaurant,
@@ -46,7 +48,6 @@ export const LinkIcon = ({ icon, text, ...props }) => (
 
 function MenuMobile() {
   const isAdmin = useIsAdmin();
-
   return (
     <Flex
       width="100%"
@@ -57,7 +58,8 @@ function MenuMobile() {
       }}
       p={2}
       justifyContent="space-around"
-      bg={blue}>
+      bg={red}
+    >
       <LinkIcon exact to="/" icon={<Home />} text="HOME" />
       <LinkIcon to="/cra" icon={<CalendarToday />} text="CRA" />
       <LinkIcon to="/ndf" icon={<Restaurant />} text="NDF" />
@@ -87,17 +89,19 @@ function Menu() {
 
 function HeaderBar({ authUser }) {
   return (
-    <AppBar position="static" style={{ backgroundColor: blue }}>
+    <AppBar position="static" color="primary">
       <Toolbar variant="dense">
         <Text fontSize={3}>Hipay</Text>
         <Box m={"auto"} />
+        <Typography>{authUser.displayName}</Typography>
         <Avatar src={authUser && authUser.photoURL} m={2} />
         <Button
           onClick={() => {
             firebase.auth().signOut();
           }}
           color="inherit"
-          variant="text">
+          variant="text"
+        >
           Déconnexion
         </Button>
       </Toolbar>
@@ -120,42 +124,62 @@ function AuthRoute({ isLogged, component: Component, ...props }) {
 }
 
 export function App() {
-  const { authUser, isLogged } = useAuth();
+  const { authUser, isLoggedOut } = useAuth();
+  const currentUser = firebase.auth().currentUser;
 
   return (
     <UserProvider value={authUser}>
       <Theme>
         <Router>
-          <Desktop>
-            <HeaderBar authUser={authUser} />
-          </Desktop>
+          {currentUser && (
+            <Desktop>
+              <HeaderBar authUser={authUser} />
+            </Desktop>
+          )}
           <main>
             <AuthRoute
               exact
               path="/"
-              isLogged={isLogged}
+              isLogged={isLoggedOut}
               component={Dashboard}
             />
             <Route path="/login" component={Login} />
-            <AuthRoute path="/admin" isLogged={isLogged} component={Admin} />
+            <AuthRoute
+              exact
+              path="/admin/users/create"
+              isLogged={isLoggedOut}
+              component={CreateAccountForm}
+            />
+            <AuthRoute
+              exact
+              path="/admin"
+              isLogged={isLoggedOut}
+              component={Admin}
+            />
 
-            <AuthRoute path="/user/:id" isLogged={isLogged} component={User} />
-            <AuthRoute path="/cra" isLogged={isLogged} component={CRAS} />
+            <AuthRoute
+              path="/user/:id"
+              isLogged={isLoggedOut}
+              component={User}
+            />
+            <AuthRoute path="/cra" isLogged={isLoggedOut} component={CRAS} />
             <AuthRoute
               path="/ndf"
-              isLogged={isLogged}
+              isLogged={isLoggedOut}
               component={NoteDeFrais}
             />
-            <AuthRoute path="/ik" isLogged={isLogged} component={IK} />
+            <AuthRoute path="/ik" isLogged={isLoggedOut} component={IK} />
             <AuthRoute
               path="/charges"
-              isLogged={isLogged}
+              isLogged={isLoggedOut}
               component={Charges}
             />
           </main>
-          <Mobile>
-            <MenuMobile />
-          </Mobile>
+          {currentUser && (
+            <Mobile>
+              <MenuMobile />
+            </Mobile>
+          )}
         </Router>
       </Theme>
     </UserProvider>

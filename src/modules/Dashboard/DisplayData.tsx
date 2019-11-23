@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Card, CardHeader, CardContent, Typography } from "@material-ui/core";
 import { Box, Flex } from "rebass";
+import { findLastIndex, take } from "lodash";
 import { Chart } from "./Chart";
 import { CardDisplayNumber } from "../CommonUi/CardDisplayNumber";
 import { months } from "../constants";
@@ -44,6 +45,12 @@ type QuickBookResponse = {
   dashboardData: QuickbookData;
 };
 
+const computeChartValues = values => {
+  const lastMonth = findLastIndex(values, v => v > 0);
+  const noZeroValues = take(values, lastMonth + 1);
+  return noZeroValues;
+};
+
 // const fakeData = {
 //   CA: 47500.0,
 //   COTISATION_SOCIALES: 0,
@@ -56,7 +63,7 @@ type QuickBookResponse = {
 //     Février: 10000.0,
 //     Mars: 9000.0,
 //     Avril: 9500.0,
-//     Mai: 9000.0,
+//     Mai: 0,
 //     Juin: 2000,
 //     Juillet: 4440,
 //     Août: 0,
@@ -74,7 +81,7 @@ type QuickBookResponse = {
 //     Juin: 0,
 //     Juillet: 0,
 //     Août: 0,
-//     Septembre: 0,
+//     Septembre: 400,
 //     Octobre: 0,
 //     Novembre: 0,
 //     Décembre: 0
@@ -128,7 +135,8 @@ export function DisplayData({ quickbookObj, provisioning }) {
           <Box wrap="wrap" p={3} width={[1, 1, 1]}>
             <CardDisplayNumber
               title="Rémunération"
-              subTitle={months[currentMonth]}>
+              subTitle={months[currentMonth]}
+            >
               {formatNumber(
                 Object.values(quickBooksData.salaryOverMonthes)[currentMonth]
               )}{" "}
@@ -158,12 +166,12 @@ export function DisplayData({ quickbookObj, provisioning }) {
                   </Flex>
                   <Box wrap="wrap" p={3} width={[1]}>
                     <Chart
-                      ca={Object.values(quickBooksData.caOverMonthes).filter(
-                        f => f > 0
+                      ca={computeChartValues(
+                        Object.values(quickBooksData.caOverMonthes)
                       )}
-                      salaries={Object.values(
-                        quickBooksData.salaryOverMonthes
-                      ).filter(f => f > 0)}
+                      salaries={computeChartValues(
+                        Object.values(quickBooksData.salaryOverMonthes)
+                      )}
                     />
                   </Box>
                 </CardContent>

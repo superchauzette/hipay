@@ -26,7 +26,7 @@ export function CardDisplayNumber({
           paddingBottom: "10px"
         }}
       >
-        <Typography style={{ fontWeight: 600 }} variant="headline">
+        <Typography style={{ fontWeight: 600 }} variant="caption">
           {children}
         </Typography>
       </CardContent>

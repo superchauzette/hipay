@@ -126,7 +126,8 @@ export function Dashboard({ location, history }) {
           <Button>
             <a
               style={{ textDecoration: "none" }}
-              href={`https://us-central1-hipay-42.cloudfunctions.net/quickbooksApi/authUri?userId=${user.uid}`}>
+              href={`https://us-central1-hipay-42.cloudfunctions.net/quickbooksApi/authUri?userId=${user.uid}`}
+            >
               <Button variant="contained">
                 <img
                   style={{ display: "inline-block", marginRight: "10px" }}

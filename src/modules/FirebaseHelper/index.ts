@@ -36,17 +36,12 @@ export function useIsAdmin(): boolean {
   const user = useUserContext();
   const [isAdmin, setAdmin] = useState(false);
 
-  useEffect(() => {
-    if (user) {
-      db()
-        .collection("admin")
-        .where("email", "==", user.email)
-        .get()
-        .then(extractQueries)
-        .then(tab => tab[0])
-        .then(adminDoc => setAdmin(adminDoc ? Boolean(adminDoc.id) : false));
-    }
-  }, [user]);
+  const currentUser = firebase.auth().currentUser;
+  if (currentUser) {
+    currentUser.getIdTokenResult(false).then(t => {
+      setAdmin(Boolean(t.claims.admin));
+    });
+  }
 
   return isAdmin;
 }
