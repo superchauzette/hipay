@@ -24,7 +24,7 @@ type SaveState = {
   loading: boolean;
   error: boolean;
 };
-type FiscValue = {
+export type FiscValue = {
   type: "MENSUEL" | "AFFILIATION" | "AMOUNT";
   amount?: number;
   date?: string;
@@ -71,7 +71,7 @@ const FiscField = ({
         <FormControl fullWidth component="code">
           <FormLabel>Activer</FormLabel>
           <Switch
-            checked={fiscValue.disable}
+            checked={!fiscValue.disable}
             onClick={() => update("disable")(!fiscValue.disable)}
           />
         </FormControl>
@@ -148,7 +148,7 @@ const FiscField = ({
   );
 };
 
-export const Fisc = ({ user }) => {
+export const FiscAdmin = ({ user }) => {
   const [saveState, setSaveState] = useState({
     "fisc.urssaf": {
       saved: get(user, "fisc.urssaf"),

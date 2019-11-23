@@ -4,7 +4,7 @@ import { Paper, Tabs, Tab, Typography, Box, useTheme } from "@material-ui/core";
 import { Provisioning } from "./Provisioning";
 import { AdminQuickbook } from "./AdminQuickbook";
 import { TabPanel } from "../CommonUi/TabPanel";
-import { Fisc } from "./Fisc";
+import { FiscAdmin } from "./FiscAdmin";
 import { userType } from "../UserHelper";
 
 export function User({ match }) {
@@ -50,7 +50,7 @@ export function User({ match }) {
             <Provisioning user={user} />
           </TabPanel>
           <TabPanel value={tab} index={2} dir={theme.direction}>
-            <Fisc user={user} />
+            <FiscAdmin user={user} />
           </TabPanel>
         </>
       )}

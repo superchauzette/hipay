@@ -3,14 +3,32 @@ import { CardContent, Card, CardHeader, Typography } from "@material-ui/core";
 
 type CardDisplayNumberProps = {
   children: ReactNode;
-  title: string;
+  title: React.ReactNode;
   subTitle?: string;
+  valueVariant?:
+    | "h1"
+    | "h2"
+    | "h3"
+    | "h4"
+    | "h5"
+    | "h6"
+    | "subtitle1"
+    | "subtitle2"
+    | "body1"
+    | "body2"
+    | "caption"
+    | "button"
+    | "overline"
+    | "srOnly"
+    | "inherit"
+    | undefined;
 };
 
 export function CardDisplayNumber({
   children,
   title,
-  subTitle
+  subTitle,
+  valueVariant = "h6"
 }: CardDisplayNumberProps) {
   return (
     <Card>
@@ -26,7 +44,11 @@ export function CardDisplayNumber({
           paddingBottom: "10px"
         }}
       >
-        <Typography style={{ fontWeight: 600 }} variant="caption">
+        <Typography
+          color="primary"
+          style={{ fontWeight: 600 }}
+          variant={valueVariant}
+        >
           {children}
         </Typography>
       </CardContent>

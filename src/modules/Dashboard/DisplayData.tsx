@@ -6,8 +6,10 @@ import { Chart } from "./Chart";
 import { CardDisplayNumber } from "../CommonUi/CardDisplayNumber";
 import { months } from "../constants";
 import { Loader } from "../CommonUi/Loader";
+import { Fisc } from "./Fisc";
+import { InColor } from "../CommonUi/InColor";
 
-const formatNumber = number => {
+export const formatNumber = number => {
   try {
     return parseFloat(number).toLocaleString();
   } catch (e) {
@@ -51,42 +53,42 @@ const computeChartValues = values => {
   return noZeroValues;
 };
 
-// const fakeData = {
-//   CA: 47500.0,
-//   COTISATION_SOCIALES: 0,
-//   INCOMES: 21600.0,
-//   EXPENSES: 25220.24,
-//   TREASURY: 40242.72,
-//   TVA_OUTSTANDING: 11247.49,
-//   caOverMonthes: {
-//     Janvier: 10000.0,
-//     Février: 10000.0,
-//     Mars: 9000.0,
-//     Avril: 9500.0,
-//     Mai: 0,
-//     Juin: 2000,
-//     Juillet: 4440,
-//     Août: 0,
-//     Septembre: 0,
-//     Octobre: 0,
-//     Novembre: 0,
-//     Décembre: 0
-//   },
-//   salaryOverMonthes: {
-//     Janvier: 4000,
-//     Février: 10600,
-//     Mars: 5000,
-//     Avril: 6000,
-//     Mai: 5000,
-//     Juin: 0,
-//     Juillet: 0,
-//     Août: 0,
-//     Septembre: 400,
-//     Octobre: 0,
-//     Novembre: 0,
-//     Décembre: 0
-//   }
-// };
+const fakeData = {
+  CA: 47500.0,
+  COTISATION_SOCIALES: 0,
+  INCOMES: 21600.0,
+  EXPENSES: 25220.24,
+  TREASURY: 40242.72,
+  TVA_OUTSTANDING: 11247.49,
+  caOverMonthes: {
+    Janvier: 10000.0,
+    Février: 10000.0,
+    Mars: 9000.0,
+    Avril: 9500.0,
+    Mai: 0,
+    Juin: 2000,
+    Juillet: 4440,
+    Août: 0,
+    Septembre: 0,
+    Octobre: 0,
+    Novembre: 0,
+    Décembre: 0
+  },
+  salaryOverMonthes: {
+    Janvier: 4000,
+    Février: 10600,
+    Mars: 5000,
+    Avril: 6000,
+    Mai: 5000,
+    Juin: 0,
+    Juillet: 0,
+    Août: 0,
+    Septembre: 400,
+    Octobre: 0,
+    Novembre: 0,
+    Décembre: 0
+  }
+};
 
 export function DisplayData({ quickbookObj, provisioning }) {
   const [quickBooksData, setQuickBooksData] = useState<QuickbookData | null>(
@@ -95,7 +97,6 @@ export function DisplayData({ quickbookObj, provisioning }) {
   const [loading, setLoading] = useState(false);
   const currentMonth = new Date().getMonth();
   const currentYear = new Date().getFullYear();
-  console.log(quickBooksData);
   useEffect(() => {
     const form_data = new FormData();
 
@@ -134,7 +135,11 @@ export function DisplayData({ quickbookObj, provisioning }) {
         <Flex wrap="wrap" flexDirection={["column", "column"]}>
           <Box wrap="wrap" p={3} width={[1, 1, 1]}>
             <CardDisplayNumber
-              title="Rémunération"
+              title={
+                <>
+                  <InColor color="red">R</InColor>émunération
+                </>
+              }
               subTitle={months[currentMonth]}
             >
               {formatNumber(
@@ -150,7 +155,14 @@ export function DisplayData({ quickbookObj, provisioning }) {
           <Flex wrap="wrap" flexDirection={["column", "row"]}>
             <Box wrap="wrap" p={3} width={[1, 1, 2 / 3]}>
               <Card>
-                <CardHeader style={{ textAlign: "center" }} title="Activité" />
+                <CardHeader
+                  style={{ textAlign: "center" }}
+                  title={
+                    <>
+                      <InColor color="red">A</InColor>ctivité
+                    </>
+                  }
+                />
                 <CardContent>
                   <Flex wrap="wrap" flexDirection={["column", "row"]}>
                     <Box wrap="wrap" p={3} width={[1, 1, 1 / 2]}>
@@ -178,24 +190,7 @@ export function DisplayData({ quickbookObj, provisioning }) {
               </Card>
             </Box>
             <Box wrap="wrap" p={3} width={[1, 1, 1 / 3]}>
-              <Card>
-                <CardHeader
-                  style={{ textAlign: "center" }}
-                  title="Fisc & social"
-                />
-                <CardContent>
-                  <Box p={3} width={[1, 1, 1]}>
-                    <CardDisplayNumber title="Encours TVA">
-                      {formatNumber(quickBooksData.TVA_OUTSTANDING)} €
-                    </CardDisplayNumber>
-                  </Box>
-                  <Box p={3} width={[1, 1, 1]}>
-                    <CardDisplayNumber title="Estimation cotisations sociales">
-                      {formatNumber(quickBooksData.COTISATION_SOCIALES)} €
-                    </CardDisplayNumber>
-                  </Box>
-                </CardContent>
-              </Card>
+              <Fisc />
             </Box>
           </Flex>
         </Flex>

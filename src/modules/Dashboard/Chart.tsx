@@ -2,6 +2,7 @@ import React from "react";
 import { Bar } from "react-chartjs-2";
 import { isMobile } from "react-device-detect";
 import { max } from "lodash";
+import { red, blue } from "../Theme";
 
 const data = (ca, salaries) => ({
   datasets: [
@@ -10,12 +11,12 @@ const data = (ca, salaries) => ({
       type: "line",
       data: ca,
       fill: false,
-      borderColor: "#EC932F",
-      backgroundColor: "#EC932F",
-      pointBorderColor: "#EC932F",
-      pointBackgroundColor: "#EC932F",
-      pointHoverBackgroundColor: "#EC932F",
-      pointHoverBorderColor: "#EC932F",
+      borderColor: red,
+      backgroundColor: red,
+      pointBorderColor: red,
+      pointBackgroundColor: red,
+      pointHoverBackgroundColor: red,
+      pointHoverBorderColor: red,
       yAxisID: "y-axis-2"
     },
     {
@@ -23,10 +24,10 @@ const data = (ca, salaries) => ({
       label: "Rémunération",
       data: salaries,
       fill: false,
-      backgroundColor: "#71B37C",
-      borderColor: "#71B37C",
-      hoverBackgroundColor: "#71B37C",
-      hoverBorderColor: "#71B37C",
+      backgroundColor: blue,
+      borderColor: blue,
+      hoverBackgroundColor: blue,
+      hoverBorderColor: blue,
       yAxisID: "y-axis-1"
     }
   ]

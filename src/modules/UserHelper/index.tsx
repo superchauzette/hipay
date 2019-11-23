@@ -1,5 +1,6 @@
 import React, { useState, useEffect, createContext, useContext } from "react";
 import { auth, db } from "../FirebaseHelper";
+import { FiscValue } from "../User/FiscAdmin";
 
 export type userType = {
   uid: string;
@@ -9,6 +10,15 @@ export type userType = {
   photoURL: string | null;
   isAnonymous: boolean;
   providerData: (firebase.UserInfo | null)[];
+  fisc?: {
+    cipav?: FiscValue;
+    urssaf?: FiscValue;
+    tva?: FiscValue;
+  };
+  quickbook?: {
+    clientId?: string;
+    clientSecret: string;
+  };
 };
 
 const contextUser = createContext({} as userType);
@@ -29,7 +39,9 @@ export function extractUser(user) {
     emailVerified: user.emailVerified,
     photoURL,
     isAnonymous,
-    providerData
+    providerData,
+    fisc: user.fisc,
+    quickbook: user.quickbook
   };
 }
 
@@ -38,12 +50,17 @@ export function useAuth() {
   const [isLoggedOut, setIsLoggedOut] = useState(false);
 
   useEffect(() => {
-    auth().onAuthStateChanged(function(user) {
+    auth().onAuthStateChanged(async function(user) {
       if (user) {
         setIsLoggedOut(false);
         // User is signed in.
         const data: userType = extractUser(user);
-        setUser(data);
+        const dbUser = await db()
+          .collection("users")
+          .doc(user.uid)
+          .get();
+
+        setUser(extractUser(dbUser.data()));
       } else {
         setIsLoggedOut(true);
       }
