@@ -60,7 +60,7 @@ app.get("/authUri", urlencodedParser, userMiddleWare, async (req, res: any) => {
       user.quickbook.clientSecret
     ).authorizeUri({
       scope: [OAuthClient.scopes.Accounting],
-      state: user.info.uid
+      state: user.uid
     });
     console.log("authUri", "=>", authUri);
     res.redirect(authUri);

@@ -80,8 +80,8 @@ function Details({ user, cras, ndfs, iks, charges }) {
         >
           <Flex alignItems="center" justifyContent="space-between" width="100%">
             <Flex alignItems="center">
-              <Avatar src={user.info.photoURL} />
-              <Text ml={2}>{user.info.displayName}</Text>
+              <Avatar src={user.photoURL} />
+              <Text ml={2}>{user.displayName}</Text>
             </Flex>
             <Flex alignItems="center">
               {hasNdk(ndfs) && (
@@ -128,7 +128,7 @@ function Details({ user, cras, ndfs, iks, charges }) {
                   </Box>
                   <LinkPdf
                     title={`${cra.client} - ${getTotalCra(cra.calendar)} jours`}
-                    fileName={`cra-${user.info.displayName}-${cra.month}-${cra.year}.pdf`}
+                    fileName={`cra-${user.displayName}-${cra.month}-${cra.year}.pdf`}
                     document={<DocumentCRA cra={cra} user={user} />}
                   />
                   <Text mx="2"> - </Text>
@@ -149,7 +149,7 @@ function Details({ user, cras, ndfs, iks, charges }) {
                 <Title
                   title="Note de Frais"
                   data={ndfs}
-                  fileName={`ndf-${user.info.displayName}.pdf`}
+                  fileName={`ndf-${user.displayName}.pdf`}
                   document={
                     <DocumentNDF
                       notes={ndfs}
@@ -175,7 +175,7 @@ function Details({ user, cras, ndfs, iks, charges }) {
                 <Title
                   title="Indeminté Kilométriques"
                   data={iks}
-                  fileName={`iks-${user.info.displayName}.pdf`}
+                  fileName={`iks-${user.displayName}.pdf`}
                   document={
                     <DocumentIk
                       iks={iks}

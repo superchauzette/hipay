@@ -5,9 +5,10 @@ import { Provisioning } from "./Provisioning";
 import { AdminQuickbook } from "./AdminQuickbook";
 import { TabPanel } from "../CommonUi/TabPanel";
 import { Fisc } from "./Fisc";
+import { userType } from "../UserHelper";
 
 export function User({ match }) {
-  const [user, setUser] = useState();
+  const [user, setUser] = useState<userType>();
   const [tab, setTab] = React.useState(0);
   const theme = useTheme();
 
@@ -23,12 +24,13 @@ export function User({ match }) {
         .onSnapshot(qs => setUser(extractQuery(qs)));
     getUser();
   }, [match.params.id]);
-
+  console.log(user);
   return (
     <div>
       {user && (
         <>
           <Paper square>
+            <Typography variant="h3">{user.displayName}</Typography>
             <Tabs
               value={tab}
               indicatorColor="primary"

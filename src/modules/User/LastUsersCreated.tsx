@@ -16,7 +16,7 @@ export function LastUsersCreated() {
   useEffect(() => {
     const unsubscribe = db()
       .collection("users")
-      .orderBy("info.metadata.creationTime", "desc")
+      .orderBy("metadata.creationTime", "desc")
       .onSnapshot(doc => {
         setUsers(extractQueries(doc));
       });
@@ -36,11 +36,10 @@ export function LastUsersCreated() {
           </TableHead>
           <TableBody>
             {users.map(u => (
-              <TableRow key={u.info.uid}>
-                <TableCell>{u.info.displayName}</TableCell>
+              <TableRow key={u.uid}>
+                <TableCell>{u.displayName}</TableCell>
                 <TableCell>
-                  {u.info.createdAt &&
-                    u.info.createdAt.toDate().toLocaleString()}
+                  {u.createdAt && u.createdAt.toDate().toLocaleString()}
                 </TableCell>
               </TableRow>
             ))}

@@ -65,10 +65,8 @@ export function CreateAccountForm() {
             .doc(dataToSave.uid)
             .set(
               {
-                info: {
-                  ...dataToSave,
-                  createdAt: new Date(data.metadata.creationTime)
-                },
+                ...dataToSave,
+                createdAt: new Date(data.metadata.creationTime),
                 quickbook: {
                   clientId: user.clientId,
                   clientSecret: user.clientSecret
