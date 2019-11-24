@@ -30,7 +30,12 @@ export function User({ match }) {
       {user && (
         <>
           <Paper square>
-            <Typography variant="h3">{user.displayName}</Typography>
+            <Typography
+              style={{ textAlign: "center", paddingTop: "20px" }}
+              variant="h4"
+            >
+              {user.displayName}
+            </Typography>
             <Tabs
               value={tab}
               indicatorColor="primary"
