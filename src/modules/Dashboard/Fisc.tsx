@@ -26,7 +26,11 @@ const getSentence = (fiscValue: FiscValue) => {
 
 const FiscBlock = ({ value, label }: { value: FiscValue; label: string }) => (
   <Box p={3} width={[1, 1, 1]}>
-    <CardDisplayNumber valueVariant="subtitle1" title={label}>
+    <CardDisplayNumber
+      typographyStyle={{ fontWeight: 400 }}
+      valueVariant="subtitle2"
+      title={label}
+    >
       {getSentence(value)}
     </CardDisplayNumber>
   </Box>

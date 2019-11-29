@@ -5,6 +5,7 @@ type CardDisplayNumberProps = {
   children: ReactNode;
   title: React.ReactNode;
   subTitle?: string;
+  typographyStyle?: React.CSSProperties;
   valueVariant?:
     | "h1"
     | "h2"
@@ -28,7 +29,8 @@ export function CardDisplayNumber({
   children,
   title,
   subTitle,
-  valueVariant = "h6"
+  valueVariant = "h6",
+  typographyStyle
 }: CardDisplayNumberProps) {
   return (
     <Card>
@@ -46,7 +48,7 @@ export function CardDisplayNumber({
       >
         <Typography
           color="primary"
-          style={{ fontWeight: 600 }}
+          style={{ fontWeight: 600, ...typographyStyle }}
           variant={valueVariant}
         >
           {children}

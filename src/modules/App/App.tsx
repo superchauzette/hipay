@@ -132,9 +132,7 @@ export function App() {
       <Theme>
         <Router>
           {currentUser && (
-            <Desktop>
-              <HeaderBar authUser={authUser} />
-            </Desktop>
+            <Desktop>{authUser && <HeaderBar authUser={authUser} />}</Desktop>
           )}
           <main>
             <AuthRoute
