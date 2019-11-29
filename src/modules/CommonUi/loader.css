@@ -16,17 +16,17 @@
   width: 30px;
   height: 30px;
   border-radius: 20%;
-  background-color: #296dcf;
+  background-color: #e94d4d;
   margin: 5px;
   transition: 0.2s;
   animation: square 2.4s linear infinite;
 }
 .square2 > span:nth-last-child(2) {
-  background-color: #569bfc;
+  background-color: rgb(236, 102, 102);
   animation-delay: 0.8s;
 }
 .square2 > span:nth-last-child(3) {
-  background-color: #8ebcfd;
+  background-color: rgb(233, 147, 147);
   animation-delay: 1.6s;
 }
 
