@@ -11,6 +11,7 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Logo from "../../assets/logo.svg";
+import { CircularProgress } from "@material-ui/core";
 
 function Copyright() {
   return (
@@ -54,8 +55,10 @@ export function Login() {
   const classes = useStyles();
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const signIn = (email: string, password: string) =>
+  const signIn = (email: string, password: string) => {
+    setLoading(true);
     firebase
       .auth()
       .signInWithEmailAndPassword(email, password)
@@ -67,7 +70,11 @@ export function Login() {
         console.log(errorCode);
         console.log(errorMessage);
         // ...
+      })
+      .finally(() => {
+        setLoading(false);
       });
+  };
   if (auth().currentUser) {
     return <Redirect to="/" />;
   }
@@ -116,11 +123,13 @@ export function Login() {
             <Button
               type="submit"
               fullWidth
+              disabled={loading}
               variant="contained"
               color="primary"
               className={classes.submit}
             >
-              Sign In
+              {!loading && <>Connexion</>}
+              {loading && <CircularProgress size={24} />}
             </Button>
             <Typography
               style={{ textAlign: "center" }}

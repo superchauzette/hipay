@@ -97,6 +97,7 @@ function HeaderBar({ authUser }) {
         <Avatar src={authUser && authUser.photoURL} m={2} />
         <Button
           onClick={() => {
+            localStorage.removeItem("quickbook");
             firebase.auth().signOut();
           }}
           color="inherit"
