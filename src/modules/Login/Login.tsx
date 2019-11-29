@@ -12,6 +12,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Logo from "../../assets/logo.svg";
 import { CircularProgress } from "@material-ui/core";
+import { InColor } from "../CommonUi/InColor";
 
 function Copyright() {
   return (
@@ -48,6 +49,11 @@ const useStyles = makeStyles(theme => ({
   },
   submit: {
     margin: theme.spacing(3, 0, 2)
+  },
+  title: {
+    display: "flex",
+    alignItems: "center",
+    flexDirection: "row"
   }
 }));
 
@@ -83,10 +89,16 @@ export function Login() {
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <div className={classes.paper}>
-          <img width="60px" src={Logo} />
-          <Typography component="h1" variant="h5">
-            Connexion
-          </Typography>
+          <div className={classes.title}>
+            <Typography
+              style={{ padding: "0 10px" }}
+              component="h1"
+              variant="h5"
+            >
+              <InColor color="red">Hi</InColor>pay by
+            </Typography>
+            <img width="60px" src={Logo} />
+          </div>
           <form
             className={classes.form}
             onSubmit={e => {
