@@ -53,7 +53,7 @@ const useStyles = makeStyles(theme => ({
   title: {
     display: "flex",
     alignItems: "center",
-    flexDirection: "row"
+    flexDirection: "column"
   }
 }));
 
@@ -64,7 +64,7 @@ export function Login() {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const signIn = (email: string, password: string) => {
-    setLoading(true);
+    // setLoading(true);
     firebase
       .auth()
       .signInWithEmailAndPassword(email, password)
@@ -78,7 +78,8 @@ export function Login() {
         // ...
       })
       .finally(() => {
-        setLoading(false);
+        console.log("tricj");
+        // setLoading(false);
       });
   };
   if (auth().currentUser) {
@@ -90,14 +91,17 @@ export function Login() {
         <CssBaseline />
         <div className={classes.paper}>
           <div className={classes.title}>
+            <img width="60px" src={Logo} />
             <Typography
-              style={{ padding: "0 10px" }}
+              style={{ padding: "0 10px", marginTop: "15px" }}
               component="h1"
               variant="h5"
             >
-              <InColor color="red">Hi</InColor>pay by
+              Bienvenue sur le Portail <InColor color="red">Hiway</InColor>
             </Typography>
-            <img width="60px" src={Logo} />
+            <Typography variant="caption" style={{ marginTop: "15px" }}>
+              Connectez-vous avec vos identifiants communiqués par Hiway
+            </Typography>
           </div>
           <form
             className={classes.form}

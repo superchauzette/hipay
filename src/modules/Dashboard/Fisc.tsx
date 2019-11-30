@@ -10,7 +10,7 @@ import { useUserContext } from "../UserHelper";
 import { InColor } from "../CommonUi/InColor";
 
 const getSentence = (fiscValue: FiscValue) => {
-  const { type, disable, amount, date } = fiscValue;
+  const { type, amount, date } = fiscValue;
   switch (type) {
     case "AFFILIATION":
       return "En cours d'affiliation.";
@@ -27,7 +27,7 @@ const getSentence = (fiscValue: FiscValue) => {
 const FiscBlock = ({ value, label }: { value: FiscValue; label: string }) => (
   <Box p={3} width={[1, 1, 1]}>
     <CardDisplayNumber
-      typographyStyle={{ fontWeight: 400 }}
+      typographyStyle={{ fontWeight: 500 }}
       valueVariant="subtitle2"
       title={label}
     >
@@ -47,8 +47,8 @@ export function Fisc({}) {
             style={{ textAlign: "center" }}
             title={
               <>
-                <InColor color="red">F</InColor>isc &{" "}
-                <InColor color="red">s</InColor>ocial
+                <InColor color="red">F</InColor>iscal &{" "}
+                <InColor color="red">S</InColor>ocial
               </>
             }
           />
@@ -56,7 +56,11 @@ export function Fisc({}) {
             {map(currentUser.fisc, (value: FiscValue, key: string) => (
               <>
                 {!value.disable && (
-                  <FiscBlock key={key} value={value} label={key} />
+                  <FiscBlock
+                    key={key}
+                    value={value}
+                    label={key.toUpperCase()}
+                  />
                 )}
               </>
             ))}

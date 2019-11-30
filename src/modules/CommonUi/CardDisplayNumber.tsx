@@ -1,5 +1,6 @@
 import React, { ReactNode } from "react";
 import { CardContent, Card, CardHeader, Typography } from "@material-ui/core";
+import { variant } from "styled-system";
 
 type CardDisplayNumberProps = {
   children: ReactNode;
