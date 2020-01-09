@@ -200,9 +200,9 @@ export function FormCra({ cra, showTrash, month, year, user }: CRAProps) {
             )}
             <Box m="auto" />
             <Flex alignItems="center">
-              <Text mx={1}>Total :</Text>
+              <Text mx={1}>Total jours travaillés :</Text>
               <Text fontWeight={"bold"} fontSize={3}>
-                {total}
+                {total} jours
               </Text>
             </Flex>
           </Flex>

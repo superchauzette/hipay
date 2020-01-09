@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
-import * as firebase from "firebase/app";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import { db } from "../FirebaseHelper";
 
@@ -12,7 +11,6 @@ import {
   CardContent,
   CardActions,
   Button,
-  Paper
 } from "@material-ui/core";
 import { LastUsersCreated } from "./LastUsersCreated";
 

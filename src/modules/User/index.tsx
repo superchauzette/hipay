@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { db, extractQuery } from "../FirebaseHelper";
-import { Paper, Tabs, Tab, Typography, Box, useTheme } from "@material-ui/core";
+import { Paper, Tabs, Tab, Typography, useTheme } from "@material-ui/core";
 import { Provisioning } from "./Provisioning";
 import { AdminQuickbook } from "./AdminQuickbook";
 import { TabPanel } from "../CommonUi/TabPanel";

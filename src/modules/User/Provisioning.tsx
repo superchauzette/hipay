@@ -11,7 +11,7 @@ import { Card } from "../CommonUi";
 import { months } from "../constants";
 import { times } from "lodash";
 import { useYearChange, YearSelector } from "../CommonUi/YearSelector";
-import { Check, CheckCircle } from "@material-ui/icons";
+import { CheckCircle } from "@material-ui/icons";
 
 type ProvisioningField =
   | "minTreasury"

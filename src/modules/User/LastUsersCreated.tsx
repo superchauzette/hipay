@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { db, extractQueries } from "../FirebaseHelper";
-import { firestore } from "firebase";
 import {
-  Typography,
   Table,
   Grid,
   TableRow,

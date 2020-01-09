@@ -61,7 +61,7 @@ export function Login() {
   const classes = useStyles();
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const signIn = (email: string, password: string) => {
     // setLoading(true);
@@ -91,7 +91,7 @@ export function Login() {
         <CssBaseline />
         <div className={classes.paper}>
           <div className={classes.title}>
-            <img width="60px" src={Logo} />
+            <img width="60px" src={Logo} alt="logo-hiway" />
             <Typography
               style={{ padding: "0 10px", marginTop: "15px" }}
               component="h1"

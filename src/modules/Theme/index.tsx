@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  createMuiTheme,
-  makeStyles,
-  ThemeProvider
-} from "@material-ui/core/styles";
-import { red as mRed } from "@material-ui/core/colors";
+import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 type ThemeProp = {
   children: any;
 };

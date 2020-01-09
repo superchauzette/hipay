@@ -4,8 +4,6 @@ import {
   TextField,
   CardHeader,
   CardContent,
-  Typography,
-  Box
 } from "@material-ui/core";
 import { Card } from "../CommonUi";
 import { CheckCircle } from "@material-ui/icons";

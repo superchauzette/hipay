@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React from "react";
 import { CardHeader, CardContent, Card } from "@material-ui/core";
 import { CardDisplayNumber } from "../CommonUi/CardDisplayNumber";
 import { formatNumber } from "./DisplayData";
@@ -36,7 +36,7 @@ const FiscBlock = ({ value, label }: { value: FiscValue; label: string }) => (
   </Box>
 );
 
-export function Fisc({}) {
+export function Fisc() {
   const currentUser = useUserContext();
 
   return (
