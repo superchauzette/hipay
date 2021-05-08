@@ -18,7 +18,7 @@
     "dayjs": "^1.8.17",
     "firebase": "^6.0.2",
     "husky": "^2.3.0",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.21",
     "material-table": "^1.36.4",
     "react": "^16.8.6",
     "react-chartjs-2": "^2.7.6",
